@@ -37,6 +37,18 @@
    x
    y))
 
+(defn- simple?
+  [x]
+  (or (keyword? x) (symbol? x) (string? x) (int? x)))
+
+(defn- sequence?
+  [xs]
+  (or (vector? xs) (list? xs) (set? xs)))
+
+(defn- simple-seq?
+  [xs]
+  (and (sequence? xs) (every? simple? xs)))
+
 (defmacro fast-get-in-th
   [m ks]
   {:pre [(vector? ks)]}
@@ -44,45 +56,63 @@
 
 (defmacro fast-get-in-inline
   "Like `get-in` but faster and uses code generation.
-  Must accept vector as `ks`"
+  `ks` must be either vector, list or set."
   [m ks]
-  {:pre [(vector? ks)]}
-  (let [chain#
+  {:pre [(simple-seq? ks)]}
+  (let [ks (seq ks)
+        chain#
         (map (fn [k] `(get ~k)) ks)]
     `(-> ~m ~@chain#)))
 
+(defn- destruct-map
+  [m ks]
+  (let [gmap (gensym "map__")
+        syms (map (comp gensym symbol) ks)]
+    (vec
+     (concat `(~gmap ~m)
+             (mapcat
+              (fn [sym k]
+                `(~sym (get ~gmap ~k)))
+              syms
+              ks)))))
+
+(defn- extract-syms
+  [bs]
+  (map first (partition 2 (drop 2 bs))))
 
 (defmacro fast-select-keys-inline
   "Like `select-keys` but faster and uses code generation.
-  Must accept vector as `ks`"
+  `ks` must be either vector, list or set."
   [m ks]
-  {:pre [(vector? ks)]}
-  (let [target (gensym "m__")
-        syms (map (comp gensym symbol) ks)
-        bindings (vec
-                  (concat `(~target ~m)
-                          (mapcat (fn [sym k] `(~sym (get ~target ~k))) syms ks)))
-        final-form (interleave ks syms)
-        hm-form (apply hash-map final-form)]
+  {:pre [(simple-seq? ks)]}
+  (let [ks (seq ks)
+        bindings (destruct-map m ks)
+        syms (extract-syms bindings)
+        form (apply hash-map (interleave ks syms))]
     `(let ~bindings
-       ~hm-form)))
+       ~form)))
+
+(def ^:private cache (atom {}))
+
+(defn- anon-record
+  [fields]
+  (if-let [grec (get @cache fields)]
+    grec
+    (let [grec (gensym "Rec")]
+      (println "defing record of name:" grec "with fields:" fields)
+      (eval `(defrecord ~grec ~fields))
+      (swap! cache assoc fields grec)
+      grec)))
 
 (defmacro defrec->inline-select-keys
   "Like `select-keys` but faster and uses code generation.
-  Must accept vector as `ks`"
+  `ks` must be either vector, list or set."
   [m ks]
-  {:pre [(vector? ks)]}
-  (let [target (gensym "m__")
+  {:pre [(simple-seq? ks)]}
+  (let [ks (seq ks)
         fields (mapv symbol ks)
-        syms (map gensym fields)
-        recname (gensym "Rec")
-        bindings (vec
-                  (concat `(~target ~m)
-                          (mapcat (fn [sym k] `(~sym (get ~target ~k))) syms ks)))
-        final-form (interleave ks syms)
-        hm-form (apply hash-map final-form)]
-    (do
-      (println "defing record of name:" recname "with fields:" fields)
-      (eval `(defrecord ~recname ~fields))
-      `(let ~bindings
-         (~(resolve (symbol (str '-> recname))) ~@syms)))))
+        grec (anon-record fields)
+        bindings (destruct-map m ks)
+        syms (extract-syms bindings)]
+    `(let ~bindings
+       (~(resolve (symbol (str '-> grec))) ~@syms))))
