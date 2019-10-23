@@ -18,15 +18,27 @@
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
   (cc/quick-bench
-   (sut/fast-assoc m :x "y"))) ;; 34.418271 ns
+   (sut/fast-assoc m :x "y"))) ;; 34.418271 ns, 62.417304 ns
+
+(let [m {:a 1 :b 2 :c 3 :d 4}]
+  (cc/bench
+   (sut/fast-assoc m :x "y"))) ;; 31.409151 ns
 
 (let [m (->Foo 1 2 3 4)]
   (cc/quick-bench
-   (sut/fast-assoc m :x "y"))) ;; 123.171412 ns
+   (sut/fast-assoc m :x "y"))) ;; 119 - 123.171412 ns
+
+(let [m (->Foo 1 2 3 4)]
+  (cc/bench
+   (sut/fast-assoc m :x "y"))) ;; 105.788254 ns
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
   (cc/quick-bench
    (assoc m :x "y"))) ;; 44.996516 ns
+
+(let [m {:a 1 :b 2 :c 3 :d 4}]
+  (cc/bench
+   (assoc m :x "y"))) ;; 42.187467 ns
 
 (let [m (->Foo 1 2 3 4)]
   (cc/quick-bench
@@ -39,8 +51,16 @@
    (sut/fast-get m :c))) ;; 17.998342 ns
 
 (let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
+  (cc/bench
+   (sut/fast-get m :c))) ;; 15.341296 ns
+
+(let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
   (cc/quick-bench
    (get m :c))) ;; 45.384442 ns
+
+(let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
+  (cc/bench
+   (get m :c))) ;; 38.447998 ns
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
   (cc/quick-bench
@@ -59,8 +79,18 @@
 
 (let [m {:a 1 :b 2 :c 3 :d 4}
       n {:x 1 :y 2 :z 3 :u 4}]
+  (cc/bench
+   (merge m n))) ;; 572.398767 ns
+
+(let [m {:a 1 :b 2 :c 3 :d 4}
+      n {:x 1 :y 2 :z 3 :u 4}]
   (cc/quick-bench
    (sut/fast-map-merge m n))) ;; 1.025504 µs
+
+(let [m {:a 1 :b 2 :c 3 :d 4}
+      n {:x 1 :y 2 :z 3 :u 4}]
+  (cc/bench
+   (sut/fast-map-merge m n))) ;; 541.253515
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
   (cc/quick-bench
