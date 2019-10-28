@@ -45,9 +45,22 @@
   [xs]
   (or (vector? xs) (list? xs) (set? xs)))
 
+(defn- try-resolve
+  [sym]
+  (when (symbol? sym)
+    (when-let [r (resolve sym)]
+      (deref r))))
+
 (defn- simple-seq?
   [xs]
-  (and (sequence? xs) (every? simple? xs)))
+  (let [xs (or (try-resolve xs) xs)]
+    (and (sequence? xs) (every? simple? xs))))
+
+(defn- simple-seq
+  [xs]
+  (let [xs (or (try-resolve xs) xs)]
+    (and (sequence? xs) (every? simple? xs) (seq xs))))
+
 
 (defmacro fast-get-in-th
   [m ks]
@@ -59,7 +72,7 @@
   `ks` must be either vector, list or set."
   [m ks]
   {:pre [(simple-seq? ks)]}
-  (let [ks (seq ks)
+  (let [ks (simple-seq ks)
         chain#
         (map (fn [k] `(get ~k)) ks)]
     `(-> ~m ~@chain#)))
@@ -85,7 +98,7 @@
   `ks` must be either vector, list or set."
   [m ks]
   {:pre [(simple-seq? ks)]}
-  (let [ks (seq ks)
+  (let [ks (simple-seq ks)
         bindings (destruct-map m ks)
         syms (extract-syms bindings)
         form (apply hash-map (interleave ks syms))]
@@ -109,7 +122,7 @@
   `ks` must be either vector, list or set."
   [m ks]
   {:pre [(simple-seq? ks)]}
-  (let [ks (seq ks)
+  (let [ks (simple-seq ks)
         fields (mapv symbol ks)
         grec (anon-record fields)
         bindings (destruct-map m ks)
