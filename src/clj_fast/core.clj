@@ -37,6 +37,19 @@
    x
    y))
 
+(defmacro inline-merge
+  [& [m & ms]]
+  (let [conjs# (map (fn [m] `(conj ~m)) ms)]
+    `(-> (or ~m {})
+         ~@conjs#)))
+
+
+(defmacro inline-fast-map-merge
+  [& [m & ms]]
+  (let [conjs# (map (fn [m] `(fast-map-merge ~m)) ms)]
+    `(-> (or ~m {})
+         ~@conjs#)))
+
 (defn- simple?
   [x]
   (or (keyword? x) (symbol? x) (string? x) (int? x)))
@@ -128,4 +141,4 @@
         bindings (destruct-map m ks)
         syms (extract-syms bindings)]
     `(let ~bindings
-       (~(resolve (symbol (str '-> grec))) ~@syms))))
+       (~(symbol (str '-> grec)) ~@syms))))
