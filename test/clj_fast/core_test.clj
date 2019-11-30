@@ -44,6 +44,10 @@
   (cc/quick-bench
    (assoc m :x "y"))) ;; 121.102786 ns
 
+(let [m (->Foo 1 2 3 4)]
+  (cc/quick-bench
+   (assoc m :x "y")))
+
 ;;; Fast Get
 
 (let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
