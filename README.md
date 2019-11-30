@@ -8,7 +8,35 @@ Some of the code is based on implementations in metosin's projects. Credit in co
 
 ## Usage
 
-See tests
+See tests.
+
+## Experimental implementations
+
+See [results.md](doc/results.md) for experiments' benchmark results.
+
+### Assoc
+
+- `fast-assoc` by Metosin.
+- Inlined `assoc` which expands the "rest" args. (not tested)
+
+### Get
+
+- `fast-get` by Metosin.
+
+### Merge
+
+- `fast-map-merge`: Metosin's implementation. Uses `kv-reduce` to `fast-assoc` all of one map into another.
+- `inline-merge`: inlines core's `merge` reduction over a sequence of maps with `conj` to a nested `conj` of all maps.
+- `inline-fast-map-merge`: same but with Metosin's `fast-map-merge`.
+
+### Get in
+
+- `fast-get-in-inline`: given that all keys are written as explicit arguments and not a sequence, `get-in` can be expanded into a series of `get`s.
+
+### select-keys
+
+- `fast-select-keys-inline`: same case with `get-in` can be done with
+`select-keys`.
 
 ## License
 
