@@ -291,9 +291,36 @@
 
   )
 
+(defn bench-assoc-in
+  []
+
+  (title "Assoc In")
+
+  (title "assoc-in 1")
+  (cc/quick-bench (assoc-in {} [1] 2))
+  (title "assoc-in 2")
+  (cc/quick-bench (assoc-in {} [1 2] 3))
+  (title "assoc-in 3")
+  (cc/quick-bench (assoc-in {} [1 2 3] 4))
+  (title "assoc-in 4")
+  (cc/quick-bench (assoc-in {} [1 2 3 4] 5))
+
+
+  (title "inline-assoc-in 1")
+  (criterium.core/quick-bench (sut/inline-assoc-in {} [1] 2))
+  (title "inline-assoc-in 2")
+  (criterium.core/quick-bench (sut/inline-assoc-in {} [1 2] 3))
+  (title "inline-assoc-in 3")
+  (criterium.core/quick-bench (sut/inline-assoc-in {} [1 2 3] 4))
+  (title "inline-assoc-in 4")
+  (criterium.core/quick-bench (sut/inline-assoc-in {} [1 2 3 4] 5))
+
+  )
+
 (defn -main
   []
   (bench-assoc)
+  (bench-assoc-in)
   (bench-get)
   (bench-merge)
   (bench-get-in)
