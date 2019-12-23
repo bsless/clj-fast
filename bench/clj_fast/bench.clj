@@ -46,12 +46,37 @@
   (title "get from map")
   (let [m {:a 1 :b 2 :c 3 :d 4}]
     (cc/quick-bench
-     (get m :c))) ;; 24.625179 ns
+     (get m :c)))
+
+  (title "map on keyword")
+  (let [m {:a 1 :b 2 :c 3 :d 4}]
+    (cc/quick-bench
+     (m :c)))
+
+  (title "keyword on map")
+  (let [m {:a 1 :b 2 :c 3 :d 4}]
+    (cc/quick-bench
+     (:c m)))
 
   (title "get from record")
   (let [m (->Foo 1 2 3 4)]
     (cc/quick-bench
-     (get m :c))) ;; 15.707654 ns
+     (get m :c)))
+
+  (title "keyword on record")
+  (let [m (->Foo 1 2 3 4)]
+    (cc/quick-bench
+     (:c m)))
+
+  (title ".get from record")
+  (let [m (->Foo 1 2 3 4)]
+    (cc/quick-bench
+     (.get ^Foo m :c)))
+
+  (title "get field from record")
+  (let [m (->Foo 1 2 3 4)]
+    (cc/quick-bench
+     (.c ^Foo m)))
 
   (title "get from fast-map")
   (let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
