@@ -25,9 +25,21 @@ Benchmarks are run on all combinations of the following:
 
 Assoc and fast assoc performance are tested with maps and records.
 
+### assoc-in
+
+Assoc-in is tested vs. an inlined implementation with vanilla maps, gets and 
+assoc, all core functions.
+
 ### get
 
 `get` was tested on `map`, `record` and `fast-map`, `fast-get` was tested on `fast-map`.
+
+Moreover, different get methods were tested:
+- map on keyword.
+- keyword on map.
+- keyword on record.
+- `.get` from record.
+- `.field` from record.
 
 ### merge
 
@@ -59,6 +71,10 @@ run in the REPL. Requires further study.
 - `assoc` to record ~twice as fast as `assoc`ing to map.
 - `fast-assoc` ~ 5.7% faster than `assoc`. (Metosin)
 
+### Assoc-in
+
+- the inlined implementation is always faster and exhibits compounding returns 
+for deeper maps.
 
 ### get
 
@@ -66,6 +82,8 @@ NOTE: Same case as the assoc experiment, with benchmarks results being the oppos
 
 - `get` from record ~50% slower than from map.
 - `fast-get` from `fast-map` ~ 8.4% faster than `get`ting from regular map. (Metosin)
+- map on keyword > keyword on map > get from map (ordered by speed)
+- field from record > keyword on record > .get from record > get from record.
 
 ### merge
 
@@ -89,213 +107,291 @@ on the number of selected keys.
 
 | heap  | gc       | test                     | execution time mean |
 |-------|----------|--------------------------|---------------------|
-| big   | g1       | assoc to map             | 61.113236 ns        |
-| big   | g1       | assoc to record          | 36.828432 ns        |
-| big   | g1       | fast-assoc to map        | 58.754356 ns        |
-| big   | g1       | fast-assoc to record     | 36.853542 ns        |
-| big   | g1       | get from map             | 11.254120 ns        |
-| big   | g1       | get from record          | 15.916688 ns        |
-| big   | g1       | get from fast-map        | 34.639626 ns        |
-| big   | g1       | fast-get from fast-map   | 8.398670 ns         |
-| big   | g1       | merge maps               | 468.518879 ns       |
-| big   | g1       | fast merge maps          | 337.044207 ns       |
-| big   | g1       | merge 2 maps             | 488.225915 ns       |
-| big   | g1       | inline merge 2 maps      | 413.263303 ns       |
-| big   | g1       | inline fast merge 2 maps | 331.951817 ns       |
-| big   | g1       | merge 3 maps             | 1.649107 µs         |
-| big   | g1       | inline merge 3 maps      | 1.498700 µs         |
-| big   | g1       | inline fast merge 3 maps | 1.469241 µs         |
-| big   | g1       | merge 4 maps             | 1.982242 µs         |
-| big   | g1       | inline merge 4 maps      | 1.799967 µs         |
-| big   | g1       | inline fast merge 4 maps | 1.852189 µs         |
-| big   | g1       | get-in 1                 | 47.321596 ns        |
-| big   | g1       | fast get-in 1            | 11.091595 ns        |
-| big   | g1       | get-in 2                 | 62.515774 ns        |
-| big   | g1       | fast get-in 2            | 17.281130 ns        |
-| big   | g1       | get-in 3                 | 81.709551 ns        |
-| big   | g1       | fast get-in 3            | 23.984918 ns        |
-| big   | g1       | get-in 4                 | 94.852758 ns        |
-| big   | g1       | fast get-in 4            | 31.363205 ns        |
-| big   | g1       | select 1/4 keys          | 192.805338 ns       |
-| big   | g1       | fast select 1/4 keys     | 24.008573 ns        |
-| big   | g1       | select 2/4 keys          | 269.009349 ns       |
-| big   | g1       | fast select 2/4 keys     | 32.971846 ns        |
-| big   | g1       | select 3/4 keys          | 341.285199 ns       |
-| big   | g1       | fast select 3/4 keys     | 42.623406 ns        |
-| big   | g1       | select 4/4 keys          | 417.725270 ns       |
-| big   | g1       | fast select 4/4 keys     | 55.718222 ns        |
-| big   | parallel | assoc to map             | 30.336250 ns        |
-| big   | parallel | assoc to record          | 15.148405 ns        |
-| big   | parallel | fast-assoc to map        | 28.612822 ns        |
-| big   | parallel | fast-assoc to record     | 14.223970 ns        |
-| big   | parallel | get from map             | 8.577455 ns         |
-| big   | parallel | get from record          | 12.991712 ns        |
-| big   | parallel | get from fast-map        | 29.870261 ns        |
-| big   | parallel | fast-get from fast-map   | 7.858593 ns         |
-| big   | parallel | merge maps               | 320.763397 ns       |
-| big   | parallel | fast merge maps          | 213.801150 ns       |
-| big   | parallel | merge 2 maps             | 350.122623 ns       |
-| big   | parallel | inline merge 2 maps      | 273.055883 ns       |
-| big   | parallel | inline fast merge 2 maps | 219.514630 ns       |
-| big   | parallel | merge 3 maps             | 1.117836 µs         |
-| big   | parallel | inline merge 3 maps      | 996.941313 ns       |
-| big   | parallel | inline fast merge 3 maps | 967.513389 ns       |
-| big   | parallel | merge 4 maps             | 1.402239 µs         |
-| big   | parallel | inline merge 4 maps      | 1.232263 µs         |
-| big   | parallel | inline fast merge 4 maps | 1.229546 µs         |
-| big   | parallel | get-in 1                 | 35.329460 ns        |
-| big   | parallel | fast get-in 1            | 9.337990 ns         |
-| big   | parallel | get-in 2                 | 53.094068 ns        |
-| big   | parallel | fast get-in 2            | 10.847565 ns        |
-| big   | parallel | get-in 3                 | 69.783249 ns        |
-| big   | parallel | fast get-in 3            | 16.530730 ns        |
-| big   | parallel | get-in 4                 | 83.155383 ns        |
-| big   | parallel | fast get-in 4            | 20.386126 ns        |
-| big   | parallel | select 1/4 keys          | 163.978379 ns       |
-| big   | parallel | fast select 1/4 keys     | 10.057898 ns        |
-| big   | parallel | select 2/4 keys          | 209.495863 ns       |
-| big   | parallel | fast select 2/4 keys     | 15.536302 ns        |
-| big   | parallel | select 3/4 keys          | 257.684443 ns       |
-| big   | parallel | fast select 3/4 keys     | 23.050187 ns        |
-| big   | parallel | select 4/4 keys          | 313.336666 ns       |
-| big   | parallel | fast select 4/4 keys     | 31.287005 ns        |
-| med   | g1       | assoc to map             | 45.976070 ns        |
-| med   | g1       | assoc to record          | 20.416762 ns        |
-| med   | g1       | fast-assoc to map        | 46.616263 ns        |
-| med   | g1       | fast-assoc to record     | 25.896974 ns        |
-| med   | g1       | get from map             | 6.806355 ns         |
-| med   | g1       | get from record          | 10.711427 ns        |
-| med   | g1       | get from fast-map        | 30.365640 ns        |
-| med   | g1       | fast-get from fast-map   | 6.583860 ns         |
-| med   | g1       | merge maps               | 433.511969 ns       |
-| med   | g1       | fast merge maps          | 322.899167 ns       |
-| med   | g1       | merge 2 maps             | 471.333021 ns       |
-| med   | g1       | inline merge 2 maps      | 392.670811 ns       |
-| med   | g1       | inline fast merge 2 maps | 326.465833 ns       |
-| med   | g1       | merge 3 maps             | 1.697041 µs         |
-| med   | g1       | inline merge 3 maps      | 1.532228 µs         |
-| med   | g1       | inline fast merge 3 maps | 1.516973 µs         |
-| med   | g1       | merge 4 maps             | 2.042337 µs         |
-| med   | g1       | inline merge 4 maps      | 1.816936 µs         |
-| med   | g1       | inline fast merge 4 maps | 1.850177 µs         |
-| med   | g1       | get-in 1                 | 35.676935 ns        |
-| med   | g1       | fast get-in 1            | 7.116657 ns         |
-| med   | g1       | get-in 2                 | 51.302351 ns        |
-| med   | g1       | fast get-in 2            | 12.300912 ns        |
-| med   | g1       | get-in 3                 | 71.771528 ns        |
-| med   | g1       | fast get-in 3            | 18.291218 ns        |
-| med   | g1       | get-in 4                 | 86.642301 ns        |
-| med   | g1       | fast get-in 4            | 14.479901 ns        |
-| med   | g1       | select 1/4 keys          | 176.532454 ns       |
-| med   | g1       | fast select 1/4 keys     | 11.138244 ns        |
-| med   | g1       | select 2/4 keys          | 253.908699 ns       |
-| med   | g1       | fast select 2/4 keys     | 17.962061 ns        |
-| med   | g1       | select 3/4 keys          | 327.359457 ns       |
-| med   | g1       | fast select 3/4 keys     | 27.035221 ns        |
-| med   | g1       | select 4/4 keys          | 410.271550 ns       |
-| med   | g1       | fast select 4/4 keys     | 37.981408 ns        |
-| med   | parallel | assoc to map             | 30.201673 ns        |
-| med   | parallel | assoc to record          | 14.871616 ns        |
-| med   | parallel | fast-assoc to map        | 27.196398 ns        |
-| med   | parallel | fast-assoc to record     | 13.986674 ns        |
-| med   | parallel | get from map             | 8.307771 ns         |
-| med   | parallel | get from record          | 12.706873 ns        |
-| med   | parallel | get from fast-map        | 28.276485 ns        |
-| med   | parallel | fast-get from fast-map   | 8.548348 ns         |
-| med   | parallel | merge maps               | 322.278781 ns       |
-| med   | parallel | fast merge maps          | 203.270152 ns       |
-| med   | parallel | merge 2 maps             | 341.591746 ns       |
-| med   | parallel | inline merge 2 maps      | 267.099709 ns       |
-| med   | parallel | inline fast merge 2 maps | 208.388395 ns       |
-| med   | parallel | merge 3 maps             | 1.118419 µs         |
-| med   | parallel | inline merge 3 maps      | 994.581396 ns       |
-| med   | parallel | inline fast merge 3 maps | 959.486032 ns       |
-| med   | parallel | merge 4 maps             | 1.406699 µs         |
-| med   | parallel | inline merge 4 maps      | 1.221757 µs         |
-| med   | parallel | inline fast merge 4 maps | 1.210160 µs         |
-| med   | parallel | get-in 1                 | 35.019328 ns        |
-| med   | parallel | fast get-in 1            | 8.814005 ns         |
-| med   | parallel | get-in 2                 | 52.345580 ns        |
-| med   | parallel | fast get-in 2            | 16.352097 ns        |
-| med   | parallel | get-in 3                 | 71.015159 ns        |
-| med   | parallel | fast get-in 3            | 23.261005 ns        |
-| med   | parallel | get-in 4                 | 83.307510 ns        |
-| med   | parallel | fast get-in 4            | 19.905461 ns        |
-| med   | parallel | select 1/4 keys          | 159.221260 ns       |
-| med   | parallel | fast select 1/4 keys     | 9.341288 ns         |
-| med   | parallel | select 2/4 keys          | 205.247535 ns       |
-| med   | parallel | fast select 2/4 keys     | 15.684404 ns        |
-| med   | parallel | select 3/4 keys          | 248.231714 ns       |
-| med   | parallel | fast select 3/4 keys     | 24.595231 ns        |
-| med   | parallel | select 4/4 keys          | 294.449093 ns       |
-| med   | parallel | fast select 4/4 keys     | 30.842832 ns        |
-| small | g1       | assoc to map             | 44.114516 ns        |
-| small | g1       | assoc to record          | 20.496610 ns        |
-| small | g1       | fast-assoc to map        | 43.817474 ns        |
-| small | g1       | fast-assoc to record     | 23.992041 ns        |
-| small | g1       | get from map             | 6.145270 ns         |
-| small | g1       | get from record          | 10.446559 ns        |
-| small | g1       | get from fast-map        | 28.535200 ns        |
-| small | g1       | fast-get from fast-map   | 6.130083 ns         |
-| small | g1       | merge maps               | 412.498729 ns       |
-| small | g1       | fast merge maps          | 305.025975 ns       |
-| small | g1       | merge 2 maps             | 455.026719 ns       |
-| small | g1       | inline merge 2 maps      | 367.279979 ns       |
-| small | g1       | inline fast merge 2 maps | 310.293840 ns       |
-| small | g1       | merge 3 maps             | 1.558245 µs         |
-| small | g1       | inline merge 3 maps      | 1.442795 µs         |
-| small | g1       | inline fast merge 3 maps | 1.385871 µs         |
-| small | g1       | merge 4 maps             | 1.884263 µs         |
-| small | g1       | inline merge 4 maps      | 1.694471 µs         |
-| small | g1       | inline fast merge 4 maps | 1.710964 µs         |
-| small | g1       | get-in 1                 | 39.620108 ns        |
-| small | g1       | fast get-in 1            | 7.554090 ns         |
-| small | g1       | get-in 2                 | 49.442630 ns        |
-| small | g1       | fast get-in 2            | 12.073545 ns        |
-| small | g1       | get-in 3                 | 67.963449 ns        |
-| small | g1       | fast get-in 3            | 17.609219 ns        |
-| small | g1       | get-in 4                 | 81.463681 ns        |
-| small | g1       | fast get-in 4            | 22.450452 ns        |
-| small | g1       | select 1/4 keys          | 174.683094 ns       |
-| small | g1       | fast select 1/4 keys     | 11.595299 ns        |
-| small | g1       | select 2/4 keys          | 247.062633 ns       |
-| small | g1       | fast select 2/4 keys     | 19.002476 ns        |
-| small | g1       | select 3/4 keys          | 322.856196 ns       |
-| small | g1       | fast select 3/4 keys     | 26.788163 ns        |
-| small | g1       | select 4/4 keys          | 400.971945 ns       |
-| small | g1       | fast select 4/4 keys     | 37.519308 ns        |
-| small | parallel | assoc to map             | 30.559915 ns        |
-| small | parallel | assoc to record          | 18.440237 ns        |
-| small | parallel | fast-assoc to map        | 29.182437 ns        |
-| small | parallel | fast-assoc to record     | 15.317732 ns        |
-| small | parallel | get from map             | 8.121661 ns         |
-| small | parallel | get from record          | 12.776023 ns        |
-| small | parallel | get from fast-map        | 29.734204 ns        |
-| small | parallel | fast-get from fast-map   | 7.735057 ns         |
-| small | parallel | merge maps               | 319.205700 ns       |
-| small | parallel | fast merge maps          | 169.451789 ns       |
-| small | parallel | merge 2 maps             | 340.684097 ns       |
-| small | parallel | inline merge 2 maps      | 268.477196 ns       |
-| small | parallel | inline fast merge 2 maps | 166.656775 ns       |
-| small | parallel | merge 3 maps             | 1.099006 µs         |
-| small | parallel | inline merge 3 maps      | 965.866296 ns       |
-| small | parallel | inline fast merge 3 maps | 933.204850 ns       |
-| small | parallel | merge 4 maps             | 1.355002 µs         |
-| small | parallel | inline merge 4 maps      | 1.196923 µs         |
-| small | parallel | inline fast merge 4 maps | 1.161537 µs         |
-| small | parallel | get-in 1                 | 34.593876 ns        |
-| small | parallel | fast get-in 1            | 8.478306 ns         |
-| small | parallel | get-in 2                 | 48.940654 ns        |
-| small | parallel | fast get-in 2            | 15.078371 ns        |
-| small | parallel | get-in 3                 | 66.426761 ns        |
-| small | parallel | fast get-in 3            | 15.124507 ns        |
-| small | parallel | get-in 4                 | 77.934975 ns        |
-| small | parallel | fast get-in 4            | 18.981123 ns        |
-| small | parallel | select 1/4 keys          | 162.602320 ns       |
-| small | parallel | fast select 1/4 keys     | 10.699589 ns        |
-| small | parallel | select 2/4 keys          | 203.301940 ns       |
-| small | parallel | fast select 2/4 keys     | 15.931536 ns        |
-| small | parallel | select 3/4 keys          | 249.721216 ns       |
-| small | parallel | fast select 3/4 keys     | 23.322767 ns        |
-| small | parallel | select 4/4 keys          | 294.004449 ns       |
-| small | parallel | fast select 4/4 keys     | 29.192648 ns        |
+| big   | g1       | assoc to map             | 59.332289 ns        |
+| big   | g1       | assoc to record          | 37.817791 ns        |
+| big   | g1       | fast-assoc to map        | 58.745566 ns        |
+| big   | g1       | fast-assoc to record     | 38.130746 ns        |
+| big   | g1       | assoc-in 1               | 55.401622 ns        |
+| big   | g1       | assoc-in 2               | 80.624996 ns        |
+| big   | g1       | assoc-in 3               | 192.783355 ns       |
+| big   | g1       | assoc-in 4               | 213.392817 ns       |
+| big   | g1       | inline-assoc-in 1        | 34.242111 ns        |
+| big   | g1       | inline-assoc-in 2        | 47.701248 ns        |
+| big   | g1       | inline-assoc-in 3        | 56.055236 ns        |
+| big   | g1       | inline-assoc-in 4        | 64.356245 ns        |
+| big   | g1       | get from map             | 12.062397 ns        |
+| big   | g1       | map on keyword           | 9.588496 ns         |
+| big   | g1       | keyword on map           | 10.667132 ns        |
+| big   | g1       | get from record          | 19.981760 ns        |
+| big   | g1       | keyword on record        | 6.742613 ns         |
+| big   | g1       | .get from record         | 12.936960 ns        |
+| big   | g1       | get field from record    | 4.459152 ns         |
+| big   | g1       | get from fast-map        | 39.422209 ns        |
+| big   | g1       | fast-get from fast-map   | 10.350487 ns        |
+| big   | g1       | merge maps               | 475.631317 ns       |
+| big   | g1       | fast merge maps          | 339.311945 ns       |
+| big   | g1       | merge 2 maps             | 498.986602 ns       |
+| big   | g1       | inline merge 2 maps      | 410.048586 ns       |
+| big   | g1       | inline fast merge 2 maps | 340.333425 ns       |
+| big   | g1       | merge 3 maps             | 1.740212 µs         |
+| big   | g1       | inline merge 3 maps      | 1.527734 µs         |
+| big   | g1       | inline fast merge 3 maps | 1.514455 µs         |
+| big   | g1       | merge 4 maps             | 2.077769 µs         |
+| big   | g1       | inline merge 4 maps      | 1.872643 µs         |
+| big   | g1       | inline fast merge 4 maps | 1.878031 µs         |
+| big   | g1       | get-in 1                 | 41.409732 ns        |
+| big   | g1       | fast get-in 1            | 8.635020 ns         |
+| big   | g1       | get-in 2                 | 55.447390 ns        |
+| big   | g1       | fast get-in 2            | 13.116437 ns        |
+| big   | g1       | get-in 3                 | 75.028493 ns        |
+| big   | g1       | fast get-in 3            | 19.523285 ns        |
+| big   | g1       | get-in 4                 | 86.881961 ns        |
+| big   | g1       | fast get-in 4            | 23.385800 ns        |
+| big   | g1       | select 1/4 keys          | 190.425200 ns       |
+| big   | g1       | fast select 1/4 keys     | 22.999439 ns        |
+| big   | g1       | select 2/4 keys          | 272.499804 ns       |
+| big   | g1       | fast select 2/4 keys     | 29.172286 ns        |
+| big   | g1       | select 3/4 keys          | 366.475217 ns       |
+| big   | g1       | fast select 3/4 keys     | 39.829664 ns        |
+| big   | g1       | select 4/4 keys          | 434.643118 ns       |
+| big   | g1       | fast select 4/4 keys     | 54.022224 ns        |
+| big   | parallel | assoc to map             | 32.928582 ns        |
+| big   | parallel | assoc to record          | 20.446087 ns        |
+| big   | parallel | fast-assoc to map        | 29.502707 ns        |
+| big   | parallel | fast-assoc to record     | 16.348120 ns        |
+| big   | parallel | assoc-in 1               | 58.213462 ns        |
+| big   | parallel | assoc-in 2               | 80.355196 ns        |
+| big   | parallel | assoc-in 3               | 174.212831 ns       |
+| big   | parallel | assoc-in 4               | 195.459019 ns       |
+| big   | parallel | inline-assoc-in 1        | 39.048452 ns        |
+| big   | parallel | inline-assoc-in 2        | 119.447055 ns       |
+| big   | parallel | inline-assoc-in 3        | 132.599956 ns       |
+| big   | parallel | inline-assoc-in 4        | 132.870844 ns       |
+| big   | parallel | get from map             | 10.527692 ns        |
+| big   | parallel | map on keyword           | 8.198648 ns         |
+| big   | parallel | keyword on map           | 10.579735 ns        |
+| big   | parallel | get from record          | 13.530892 ns        |
+| big   | parallel | keyword on record        | 5.337923 ns         |
+| big   | parallel | .get from record         | 11.568563 ns        |
+| big   | parallel | get field from record    | 3.241501 ns         |
+| big   | parallel | get from fast-map        | 35.473335 ns        |
+| big   | parallel | fast-get from fast-map   | 8.567708 ns         |
+| big   | parallel | merge maps               | 347.655705 ns       |
+| big   | parallel | fast merge maps          | 235.524543 ns       |
+| big   | parallel | merge 2 maps             | 400.498928 ns       |
+| big   | parallel | inline merge 2 maps      | 290.172027 ns       |
+| big   | parallel | inline fast merge 2 maps | 236.766179 ns       |
+| big   | parallel | merge 3 maps             | 1.202006 µs         |
+| big   | parallel | inline merge 3 maps      | 1.065885 µs         |
+| big   | parallel | inline fast merge 3 maps | 1.030146 µs         |
+| big   | parallel | merge 4 maps             | 1.537560 µs         |
+| big   | parallel | inline merge 4 maps      | 1.327976 µs         |
+| big   | parallel | inline fast merge 4 maps | 1.299183 µs         |
+| big   | parallel | get-in 1                 | 37.481520 ns        |
+| big   | parallel | fast get-in 1            | 9.600175 ns         |
+| big   | parallel | get-in 2                 | 53.096389 ns        |
+| big   | parallel | fast get-in 2            | 17.359211 ns        |
+| big   | parallel | get-in 3                 | 71.010664 ns        |
+| big   | parallel | fast get-in 3            | 17.586213 ns        |
+| big   | parallel | get-in 4                 | 85.462583 ns        |
+| big   | parallel | fast get-in 4            | 21.161095 ns        |
+| big   | parallel | select 1/4 keys          | 174.924109 ns       |
+| big   | parallel | fast select 1/4 keys     | 11.400825 ns        |
+| big   | parallel | select 2/4 keys          | 223.177093 ns       |
+| big   | parallel | fast select 2/4 keys     | 17.823062 ns        |
+| big   | parallel | select 3/4 keys          | 273.173577 ns       |
+| big   | parallel | fast select 3/4 keys     | 24.636845 ns        |
+| big   | parallel | select 4/4 keys          | 325.571896 ns       |
+| big   | parallel | fast select 4/4 keys     | 34.395232 ns        |
+| med   | g1       | assoc to map             | 51.046722 ns        |
+| med   | g1       | assoc to record          | 28.271085 ns        |
+| med   | g1       | fast-assoc to map        | 48.819286 ns        |
+| med   | g1       | fast-assoc to record     | 27.344378 ns        |
+| med   | g1       | assoc-in 1               | 45.567260 ns        |
+| med   | g1       | assoc-in 2               | 72.605293 ns        |
+| med   | g1       | assoc-in 3               | 184.430012 ns       |
+| med   | g1       | assoc-in 4               | 205.577025 ns       |
+| med   | g1       | inline-assoc-in 1        | 23.347550 ns        |
+| med   | g1       | inline-assoc-in 2        | 34.121930 ns        |
+| med   | g1       | inline-assoc-in 3        | 44.075392 ns        |
+| med   | g1       | inline-assoc-in 4        | 56.272411 ns        |
+| med   | g1       | get from map             | 8.766992 ns         |
+| med   | g1       | map on keyword           | 5.940280 ns         |
+| med   | g1       | keyword on map           | 7.684307 ns         |
+| med   | g1       | get from record          | 11.302393 ns        |
+| med   | g1       | keyword on record        | 4.094054 ns         |
+| med   | g1       | .get from record         | 8.798486 ns         |
+| med   | g1       | get field from record    | 2.804539 ns         |
+| med   | g1       | get from fast-map        | 35.960625 ns        |
+| med   | g1       | fast-get from fast-map   | 6.341502 ns         |
+| med   | g1       | merge maps               | 449.240905 ns       |
+| med   | g1       | fast merge maps          | 330.673556 ns       |
+| med   | g1       | merge 2 maps             | 491.076049 ns       |
+| med   | g1       | inline merge 2 maps      | 404.880242 ns       |
+| med   | g1       | inline fast merge 2 maps | 328.919549 ns       |
+| med   | g1       | merge 3 maps             | 1.656626 µs         |
+| med   | g1       | inline merge 3 maps      | 1.500121 µs         |
+| med   | g1       | inline fast merge 3 maps | 1.482626 µs         |
+| med   | g1       | merge 4 maps             | 2.082713 µs         |
+| med   | g1       | inline merge 4 maps      | 1.859986 µs         |
+| med   | g1       | inline fast merge 4 maps | 1.897681 µs         |
+| med   | g1       | get-in 1                 | 35.452887 ns        |
+| med   | g1       | fast get-in 1            | 7.104161 ns         |
+| med   | g1       | get-in 2                 | 49.642836 ns        |
+| med   | g1       | fast get-in 2            | 11.944550 ns        |
+| med   | g1       | get-in 3                 | 71.148620 ns        |
+| med   | g1       | fast get-in 3            | 11.756572 ns        |
+| med   | g1       | get-in 4                 | 86.056836 ns        |
+| med   | g1       | fast get-in 4            | 14.471972 ns        |
+| med   | g1       | select 1/4 keys          | 184.251997 ns       |
+| med   | g1       | fast select 1/4 keys     | 11.546493 ns        |
+| med   | g1       | select 2/4 keys          | 261.605759 ns       |
+| med   | g1       | fast select 2/4 keys     | 17.688072 ns        |
+| med   | g1       | select 3/4 keys          | 335.078348 ns       |
+| med   | g1       | fast select 3/4 keys     | 28.244369 ns        |
+| med   | g1       | select 4/4 keys          | 411.665584 ns       |
+| med   | g1       | fast select 4/4 keys     | 36.746129 ns        |
+| med   | parallel | assoc to map             | 32.816854 ns        |
+| med   | parallel | assoc to record          | 21.455291 ns        |
+| med   | parallel | fast-assoc to map        | 30.972880 ns        |
+| med   | parallel | fast-assoc to record     | 15.767671 ns        |
+| med   | parallel | assoc-in 1               | 66.722851 ns        |
+| med   | parallel | assoc-in 2               | 97.666359 ns        |
+| med   | parallel | assoc-in 3               | 204.360843 ns       |
+| med   | parallel | assoc-in 4               | 230.833788 ns       |
+| med   | parallel | inline-assoc-in 1        | 111.571909 ns       |
+| med   | parallel | inline-assoc-in 2        | 119.389995 ns       |
+| med   | parallel | inline-assoc-in 3        | 129.400426 ns       |
+| med   | parallel | inline-assoc-in 4        | 135.195647 ns       |
+| med   | parallel | get from map             | 10.260191 ns        |
+| med   | parallel | map on keyword           | 7.574712 ns         |
+| med   | parallel | keyword on map           | 9.385637 ns         |
+| med   | parallel | get from record          | 13.551867 ns        |
+| med   | parallel | keyword on record        | 5.297737 ns         |
+| med   | parallel | .get from record         | 11.230381 ns        |
+| med   | parallel | get field from record    | 2.830761 ns         |
+| med   | parallel | get from fast-map        | 36.519058 ns        |
+| med   | parallel | fast-get from fast-map   | 8.445671 ns         |
+| med   | parallel | merge maps               | 354.773666 ns       |
+| med   | parallel | fast merge maps          | 220.719467 ns       |
+| med   | parallel | merge 2 maps             | 385.602278 ns       |
+| med   | parallel | inline merge 2 maps      | 286.700270 ns       |
+| med   | parallel | inline fast merge 2 maps | 218.298030 ns       |
+| med   | parallel | merge 3 maps             | 1.229720 µs         |
+| med   | parallel | inline merge 3 maps      | 1.057462 µs         |
+| med   | parallel | inline fast merge 3 maps | 1.007392 µs         |
+| med   | parallel | merge 4 maps             | 1.543486 µs         |
+| med   | parallel | inline merge 4 maps      | 1.402021 µs         |
+| med   | parallel | inline fast merge 4 maps | 1.273665 µs         |
+| med   | parallel | get-in 1                 | 37.119941 ns        |
+| med   | parallel | fast get-in 1            | 9.277836 ns         |
+| med   | parallel | get-in 2                 | 52.930622 ns        |
+| med   | parallel | fast get-in 2            | 17.178237 ns        |
+| med   | parallel | get-in 3                 | 71.649230 ns        |
+| med   | parallel | fast get-in 3            | 23.609074 ns        |
+| med   | parallel | get-in 4                 | 88.262548 ns        |
+| med   | parallel | fast get-in 4            | 19.807807 ns        |
+| med   | parallel | select 1/4 keys          | 191.446694 ns       |
+| med   | parallel | fast select 1/4 keys     | 11.325831 ns        |
+| med   | parallel | select 2/4 keys          | 273.711523 ns       |
+| med   | parallel | fast select 2/4 keys     | 20.313217 ns        |
+| med   | parallel | select 3/4 keys          | 347.366049 ns       |
+| med   | parallel | fast select 3/4 keys     | 22.696730 ns        |
+| med   | parallel | select 4/4 keys          | 358.466666 ns       |
+| med   | parallel | fast select 4/4 keys     | 33.401705 ns        |
+| small | g1       | assoc to map             | 50.370181 ns        |
+| small | g1       | assoc to record          | 26.768723 ns        |
+| small | g1       | fast-assoc to map        | 47.003602 ns        |
+| small | g1       | fast-assoc to record     | 26.669350 ns        |
+| small | g1       | assoc-in 1               | 44.903473 ns        |
+| small | g1       | assoc-in 2               | 72.325635 ns        |
+| small | g1       | assoc-in 3               | 172.828045 ns       |
+| small | g1       | assoc-in 4               | 203.929691 ns       |
+| small | g1       | inline-assoc-in 1        | 22.354323 ns        |
+| small | g1       | inline-assoc-in 2        | 30.154590 ns        |
+| small | g1       | inline-assoc-in 3        | 37.755347 ns        |
+| small | g1       | inline-assoc-in 4        | 46.933515 ns        |
+| small | g1       | get from map             | 7.041507 ns         |
+| small | g1       | map on keyword           | 5.964055 ns         |
+| small | g1       | keyword on map           | 13.276343 ns        |
+| small | g1       | get from record          | 11.637279 ns        |
+| small | g1       | keyword on record        | 5.162029 ns         |
+| small | g1       | .get from record         | 8.686448 ns         |
+| small | g1       | get field from record    | 3.253523 ns         |
+| small | g1       | get from fast-map        | 36.473490 ns        |
+| small | g1       | fast-get from fast-map   | 6.825633 ns         |
+| small | g1       | merge maps               | 461.178224 ns       |
+| small | g1       | fast merge maps          | 327.707789 ns       |
+| small | g1       | merge 2 maps             | 494.381186 ns       |
+| small | g1       | inline merge 2 maps      | 417.167723 ns       |
+| small | g1       | inline fast merge 2 maps | 337.355828 ns       |
+| small | g1       | merge 3 maps             | 1.701648 µs         |
+| small | g1       | inline merge 3 maps      | 1.541413 µs         |
+| small | g1       | inline fast merge 3 maps | 1.512119 µs         |
+| small | g1       | merge 4 maps             | 1.995103 µs         |
+| small | g1       | inline merge 4 maps      | 1.838894 µs         |
+| small | g1       | inline fast merge 4 maps | 1.916917 µs         |
+| small | g1       | get-in 1                 | 34.880021 ns        |
+| small | g1       | fast get-in 1            | 7.502044 ns         |
+| small | g1       | get-in 2                 | 53.651392 ns        |
+| small | g1       | fast get-in 2            | 9.234544 ns         |
+| small | g1       | get-in 3                 | 70.019072 ns        |
+| small | g1       | fast get-in 3            | 11.914789 ns        |
+| small | g1       | get-in 4                 | 85.144262 ns        |
+| small | g1       | fast get-in 4            | 15.094950 ns        |
+| small | g1       | select 1/4 keys          | 183.335504 ns       |
+| small | g1       | fast select 1/4 keys     | 12.141344 ns        |
+| small | g1       | select 2/4 keys          | 262.677577 ns       |
+| small | g1       | fast select 2/4 keys     | 19.374445 ns        |
+| small | g1       | select 3/4 keys          | 336.513424 ns       |
+| small | g1       | fast select 3/4 keys     | 30.052434 ns        |
+| small | g1       | select 4/4 keys          | 422.432701 ns       |
+| small | g1       | fast select 4/4 keys     | 39.221278 ns        |
+| small | parallel | assoc to map             | 33.008467 ns        |
+| small | parallel | assoc to record          | 20.817475 ns        |
+| small | parallel | fast-assoc to map        | 30.826503 ns        |
+| small | parallel | fast-assoc to record     | 16.092035 ns        |
+| small | parallel | assoc-in 1               | 55.631617 ns        |
+| small | parallel | assoc-in 2               | 83.062750 ns        |
+| small | parallel | assoc-in 3               | 186.146620 ns       |
+| small | parallel | assoc-in 4               | 214.371304 ns       |
+| small | parallel | inline-assoc-in 1        | 38.039322 ns        |
+| small | parallel | inline-assoc-in 2        | 44.933155 ns        |
+| small | parallel | inline-assoc-in 3        | 52.564147 ns        |
+| small | parallel | inline-assoc-in 4        | 56.862140 ns        |
+| small | parallel | get from map             | 9.088907 ns         |
+| small | parallel | map on keyword           | 7.462205 ns         |
+| small | parallel | keyword on map           | 8.489695 ns         |
+| small | parallel | get from record          | 12.298008 ns        |
+| small | parallel | keyword on record        | 5.546769 ns         |
+| small | parallel | .get from record         | 9.974411 ns         |
+| small | parallel | get field from record    | 3.091465 ns         |
+| small | parallel | get from fast-map        | 35.169612 ns        |
+| small | parallel | fast-get from fast-map   | 7.824765 ns         |
+| small | parallel | merge maps               | 355.172816 ns       |
+| small | parallel | fast merge maps          | 225.698704 ns       |
+| small | parallel | merge 2 maps             | 387.508335 ns       |
+| small | parallel | inline merge 2 maps      | 282.705428 ns       |
+| small | parallel | inline fast merge 2 maps | 220.856816 ns       |
+| small | parallel | merge 3 maps             | 1.197984 µs         |
+| small | parallel | inline merge 3 maps      | 1.036725 µs         |
+| small | parallel | inline fast merge 3 maps | 985.635652 ns       |
+| small | parallel | merge 4 maps             | 1.564001 µs         |
+| small | parallel | inline merge 4 maps      | 1.262949 µs         |
+| small | parallel | inline fast merge 4 maps | 1.248962 µs         |
+| small | parallel | get-in 1                 | 37.240187 ns        |
+| small | parallel | fast get-in 1            | 8.231005 ns         |
+| small | parallel | get-in 2                 | 59.387337 ns        |
+| small | parallel | fast get-in 2            | 13.672582 ns        |
+| small | parallel | get-in 3                 | 72.205593 ns        |
+| small | parallel | fast get-in 3            | 17.660160 ns        |
+| small | parallel | get-in 4                 | 76.566448 ns        |
+| small | parallel | fast get-in 4            | 22.120572 ns        |
+| small | parallel | select 1/4 keys          | 187.972608 ns       |
+| small | parallel | fast select 1/4 keys     | 11.570107 ns        |
+| small | parallel | select 2/4 keys          | 239.516919 ns       |
+| small | parallel | fast select 2/4 keys     | 16.343722 ns        |
+| small | parallel | select 3/4 keys          | 287.652327 ns       |
+| small | parallel | fast select 3/4 keys     | 28.252189 ns        |
+| small | parallel | select 4/4 keys          | 431.191645 ns       |
+| small | parallel | fast select 4/4 keys     | 34.818244 ns        |
