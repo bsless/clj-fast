@@ -8,12 +8,19 @@
   :profiles
   {:dev
    {:dependencies
-    [[criterium "0.4.5"]]}
+    [[criterium "0.4.5"]
+     [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]}
    :bench
    [:dev
     {:source-paths
-     ["src" "bench"]
+     ["bench"]
      :main clj-fast.bench
+     :aot :all}]
+   :prof
+   [:dev
+    {:source-paths
+     ["prof"]
+     :main clj-fast.prof
      :aot :all}]
    :big-heap {:jvm-opts ["-Xmx9g" "-Xms9G"]}
    :med-heap {:jvm-opts ["-Xmx5g" "-Xms5G"]}
