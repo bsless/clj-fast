@@ -147,12 +147,14 @@
   [m ks v]
   (let [ks* (butlast ks)
         syms (repeatedly (inc (count ks*)) gensym)
-        bs (loop [bs [(first syms) (list 'get m (first ks*))]
+        bs (loop [bs [(first syms) `(get ~m ~(first ks*))]
                   ks (next ks*)
                   syms (next syms)]
              (if ks
                (let [k (first ks)]
-                 (recur (conj bs (first syms) (list 'get (last (butlast bs)) k))
+                 (recur (conj bs
+                              (first syms)
+                              `(get ~(last (butlast bs)) ~k))
                         (next ks)
                         (next syms)))
                bs))
@@ -160,10 +162,10 @@
         (fn iter
           [[sym & syms] [k & ks] v]
           (if ks
-            (list 'assoc sym k (iter syms ks v))
-            (list 'assoc sym k v)))]
-    (list 'let bs
-          (iter (list* m syms) ks v))))
+            `(assoc ~sym ~k ~(iter syms ks v))
+            `(assoc ~sym ~k ~v)))]
+    `(let ~bs
+          ~(iter (list* m syms) ks v))))
 
 (defmacro inline-assoc-in
   [m ks v]
