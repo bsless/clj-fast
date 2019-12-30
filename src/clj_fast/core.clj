@@ -170,4 +170,4 @@
 (defmacro inline-assoc-in
   [m ks v]
   {:pre [(simple-seq? ks)]}
-  (do-assoc-in m ks v))
+  (do-assoc-in m (simple-seq ks) v))
