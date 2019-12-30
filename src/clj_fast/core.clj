@@ -90,6 +90,18 @@
         (map (fn [k] `(get ~k)) ks)]
     `(-> ~m ~@chain#)))
 
+(defmacro inline-get-some-in
+  [m ks]
+  {:pre [(simple-seq? ks)]}
+  (let [ks (simple-seq ks)
+        sym (gensym "m__")
+        steps
+        (map (fn [step] `(if (nil? ~sym) nil (~sym ~step)))
+             ks)]
+    `(let [~sym ~m
+           ~@(interleave (repeat sym) steps)]
+       ~sym)))
+
 (defn- destruct-map
   [m ks]
   (let [gmap (gensym "map__")
