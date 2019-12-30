@@ -171,3 +171,32 @@
   [m ks v]
   {:pre [(simple-seq? ks)]}
   (do-assoc-in m (simple-seq ks) v))
+
+(defn do-update-in
+  [m ks f & args]
+  (let [ks* (butlast ks)
+        syms (repeatedly (inc (count ks*)) gensym)
+        bs (loop [bs [(first syms) `(get ~m ~(first ks*))]
+                  ks (next ks*)
+                  syms (next syms)]
+             (if ks
+               (let [k (first ks)]
+                 (recur (conj bs
+                              (first syms)
+                              `(get ~(last (butlast bs)) ~k))
+                        (next ks)
+                        (next syms)))
+               bs))
+        iter
+        (fn iter
+          [[sym & syms] ks]
+          (let [[k & ks] ks]
+            (if ks
+              `(assoc ~sym ~k ~(iter syms ks))
+              `(assoc ~sym ~k (apply ~f (get ~sym ~k) ~@args)))))]
+    `(let ~bs
+       ~(iter (list* m syms) ks ))))
+
+(defmacro inline-update-in
+  [m ks f & args]
+  (do-update-in m (simple-seq ks) f args))
