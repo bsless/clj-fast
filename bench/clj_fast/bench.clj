@@ -188,6 +188,11 @@
     (cc/quick-bench
      (sut/inline-get-in m [:d])))
 
+  (title "get some in 1")
+  (let [m {:a 1}]
+    (cc/quick-bench
+     (sut/inline-get-some-in m [:a])))
+
   (title "get-in 2")
   (let [m {:c {:d 1}}]
     (cc/quick-bench
@@ -197,6 +202,11 @@
   (let [m {:c {:d 1}}]
     (cc/quick-bench
      (sut/inline-get-in m [:c :d])))
+
+  (title "get some in 2")
+  (let [m {:a {:b 1}}]
+    (cc/quick-bench
+     (sut/inline-get-some-in m [:a :b])))
 
   (title "get-in 3")
   (let [m {:b {:c {:d 1}}}]
@@ -208,6 +218,11 @@
     (cc/quick-bench
      (sut/inline-get-in m [:b :c :d])))
 
+  (title "get some in 3")
+  (let [m {:a {:b {:c 1}}}]
+    (cc/quick-bench
+     (sut/inline-get-some-in m [:a :b :c])))
+
   (title "get-in 4")
   (let [m {:a {:b {:c {:d 1}}}}]
     (cc/quick-bench
@@ -217,6 +232,11 @@
   (let [m {:a {:b {:c {:d 1}}}}]
     (cc/quick-bench
      (sut/inline-get-in m [:a :b :c :d]))) ;; 37.911144 ns
+
+  (title "get some in 4")
+  (let [m {:a {:b {:c {:d 1}}}}]
+    (cc/quick-bench
+     (sut/inline-get-some-in m [:a :b :c :d])))
 
   )
 
