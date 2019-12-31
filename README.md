@@ -10,6 +10,19 @@ Some of the code is based on implementations in metosin's projects. Credit in co
 
 See benchmarks.
 
+Add in your `project.clj`:
+
+```clojure
+[bsless/clj-fast "0.0.1-alpha"]
+```
+
+And require:
+
+```clojure
+(require '[clj-fast.core :as fast])
+```
+
+
 ## Experimental implementations
 
 See [results.md](doc/results.md) for experiments' benchmark results.
