@@ -1,5 +1,5 @@
-(defproject clj-fast "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+(defproject bsless/clj-fast "0.0.1-SNAPSHOT"
+  :description "Fast Inline Clojure Core functions"
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
