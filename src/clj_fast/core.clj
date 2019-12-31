@@ -142,7 +142,7 @@
       (swap! cache assoc fields grec)
       grec)))
 
-(defmacro defrec->inline-select-keys
+(defmacro ^:private defrec->inline-select-keys
   "Like `select-keys` but faster and uses code generation.
   `ks` must be either vector, list or set."
   [m ks]
