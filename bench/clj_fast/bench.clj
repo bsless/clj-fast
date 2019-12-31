@@ -337,10 +337,42 @@
 
   )
 
+(defn bench-update-in
+  []
+
+  (title "Update In")
+
+  (let [m {:a 1}]
+    (title "update-in 1")
+    (cc/quick-bench (update-in m [:a] inc))
+    (title "inline-update-in 1")
+    (cc/quick-bench (sut/inline-update-in m [:a] inc)))
+
+  (let [m {:a {:b 1}}]
+    (title "update-in 2")
+    (cc/quick-bench (update-in m [:a :b] inc))
+    (title "inline-update-in 2")
+    (cc/quick-bench (sut/inline-update-in m [:a :b] inc)))
+
+  (let [m {:a {:b {:c 1}}}]
+    (title "update-in 3")
+    (cc/quick-bench (update-in m [:a :b :c] inc))
+    (title "inline-update-in 3")
+    (cc/quick-bench (sut/inline-update-in m [:a :b :c] inc)))
+
+  (let [m {:a {:b {:c {:d 1}}}}]
+    (title "update-in 4")
+    (cc/quick-bench (update-in m [:a :b :c :d] inc))
+    (title "inline-update-in 4")
+    (cc/quick-bench (sut/inline-update-in m [:a :b :c :d] inc)))
+
+  )
+
 (defn -main
   []
   (bench-assoc)
   (bench-assoc-in)
+  (bench-update-in)
   (bench-get)
   (bench-merge)
   (bench-get-in)
