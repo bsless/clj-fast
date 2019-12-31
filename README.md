@@ -8,7 +8,7 @@ Some of the code is based on implementations in metosin's projects. Credit in co
 
 ## Usage
 
-See tests.
+See benchmarks.
 
 ## Experimental implementations
 
@@ -36,6 +36,15 @@ See [results.md](doc/results.md) for experiments' benchmark results.
 ### Get in
 
 - `inline-get-in`: given that all keys are written as explicit arguments and not a sequence, `get-in` can be expanded into a series of `get`s.
+- `inline-get-some-in`: same as above, but maps can be invoked on the keys. nil checks every iteration.
+
+### Assoc in
+
+- `inline-assoc-in`: same as `inline-get-in` but with `assoc-in`.
+
+### Assoc in
+
+- `inline-update-in`: same as `inline-assoc-in` but with `update-in`.
 
 ### select-keys
 
