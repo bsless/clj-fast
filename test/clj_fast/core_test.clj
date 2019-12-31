@@ -125,11 +125,11 @@
 
 (let [m {:a {:b {:c {:d 1}}}}]
   (cc/quick-bench
-   (sut/fast-get-in-inline m [:a :b :c :d]))) ;; 54.218510 ns
+   (sut/inline-get-in m [:a :b :c :d]))) ;; 54.218510 ns
 
 (let [m {:a {:b {:c {:d 1}}}}]
   (cc/bench
-   (sut/fast-get-in-inline m [:a :b :c :d]))) ;; 37.911144 ns
+   (sut/inline-get-in m [:a :b :c :d]))) ;; 37.911144 ns
 
 ;;; Select Keys
 

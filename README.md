@@ -35,7 +35,7 @@ See [results.md](doc/results.md) for experiments' benchmark results.
 
 ### Get in
 
-- `fast-get-in-inline`: given that all keys are written as explicit arguments and not a sequence, `get-in` can be expanded into a series of `get`s.
+- `inline-get-in`: given that all keys are written as explicit arguments and not a sequence, `get-in` can be expanded into a series of `get`s.
 
 ### select-keys
 

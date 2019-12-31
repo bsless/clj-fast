@@ -186,7 +186,7 @@
   (title "fast get-in 1")
   (let [m {:d 1}]
     (cc/quick-bench
-     (sut/fast-get-in-inline m [:d])))
+     (sut/inline-get-in m [:d])))
 
   (title "get-in 2")
   (let [m {:c {:d 1}}]
@@ -196,7 +196,7 @@
   (title "fast get-in 2")
   (let [m {:c {:d 1}}]
     (cc/quick-bench
-     (sut/fast-get-in-inline m [:c :d])))
+     (sut/inline-get-in m [:c :d])))
 
   (title "get-in 3")
   (let [m {:b {:c {:d 1}}}]
@@ -206,7 +206,7 @@
   (title "fast get-in 3")
   (let [m {:b {:c {:d 1}}}]
     (cc/quick-bench
-     (sut/fast-get-in-inline m [:b :c :d])))
+     (sut/inline-get-in m [:b :c :d])))
 
   (title "get-in 4")
   (let [m {:a {:b {:c {:d 1}}}}]
@@ -216,7 +216,7 @@
   (title "fast get-in 4")
   (let [m {:a {:b {:c {:d 1}}}}]
     (cc/quick-bench
-     (sut/fast-get-in-inline m [:a :b :c :d]))) ;; 37.911144 ns
+     (sut/inline-get-in m [:a :b :c :d]))) ;; 37.911144 ns
 
   )
 

@@ -80,7 +80,7 @@
   {:pre [(vector? ks)]}
   `(-> ~m ~@ks))
 
-(defmacro fast-get-in-inline
+(defmacro inline-get-in
   "Like `get-in` but faster and uses code generation.
   `ks` must be either vector, list or set."
   [m ks]
