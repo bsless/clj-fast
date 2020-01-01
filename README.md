@@ -8,7 +8,7 @@ Some of the code is based on implementations in metosin's projects. Credit in co
 
 ## Usage
 
-See benchmarks.
+### Requirements
 
 Add in your `project.clj`:
 
@@ -20,6 +20,36 @@ And require:
 
 ```clojure
 (require '[clj-fast.core :as fast])
+```
+
+### Functions and Macros
+
+#### Fast(er) Functions
+
+- `fast-assoc`: Used like `assoc` but doesn't take variable key-values, only one pair.
+- `fast-map` & `fast-get`: Wrappers for `java.util.HashMap`.
+- `fast-map-merge`: Slightly faster version for `merge`, takes only 2 maps.
+
+#### Inline Macros
+
+Like regular core functions but sequence arguments must be written explicitly or `def`ed in advance:
+
+```clojure
+(def ks [:a :b])
+
+(fast/inline-get-in m ks)
+
+(fast/inline-get-in m [:c :d])
+
+(fast/inline-get-some-in m [:c :d])
+
+(fast/inline-assoc-in m [:c :d] foo)
+
+(fast/inline-update-in m [:c :d] inc)
+
+(fast/inline-select-keys m [:a :b :c])
+
+(fast/inline-merge m1 m2 m3)
 ```
 
 
@@ -61,7 +91,7 @@ See [results.md](doc/results.md) for experiments' benchmark results.
 
 ### select-keys
 
-- `fast-select-keys-inline`: same case with `get-in` can be done with
+- `inline-select-keys`: same case with `get-in` can be done with
 `select-keys`.
 
 ## License
