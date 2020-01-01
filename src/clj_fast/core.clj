@@ -119,7 +119,7 @@
   [bs]
   (map first (partition 2 (drop 2 bs))))
 
-(defmacro fast-select-keys-inline
+(defmacro inline-select-keys
   "Like `select-keys` but faster and uses code generation.
   `ks` must be either vector, list or set."
   [m ks]

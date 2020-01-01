@@ -253,7 +253,7 @@
   (title "fast select 1/4 keys")
   (let [m {:a 1 :b 2 :c 3 :d 4}]
     (cc/quick-bench
-     (sut/fast-select-keys-inline m [:a])))
+     (sut/inline-select-keys m [:a])))
 
   #_#_
   (title "fast record select 1/4 keys")
@@ -269,7 +269,7 @@
   (title "fast select 2/4 keys")
   (let [m {:a 1 :b 2 :c 3 :d 4}]
     (cc/quick-bench
-     (sut/fast-select-keys-inline m [:a :b])))
+     (sut/inline-select-keys m [:a :b])))
 
   #_#_
   (title "fast record select 2/4 keys")
@@ -285,7 +285,7 @@
   (title "fast select 3/4 keys")
   (let [m {:a 1 :b 2 :c 3 :d 4}]
     (cc/quick-bench
-     (sut/fast-select-keys-inline m [:a :b :c])))
+     (sut/inline-select-keys m [:a :b :c])))
 
   #_#_
   (title "fast record select 3/4 keys")
@@ -301,7 +301,7 @@
   (title "fast select 4/4 keys")
   (let [m {:a 1 :b 2 :c 3 :d 4}]
     (cc/quick-bench
-     (sut/fast-select-keys-inline m [:a :b :c :d])))
+     (sut/inline-select-keys m [:a :b :c :d])))
 
   #_#_
   (title "fast record select 4/4 keys")

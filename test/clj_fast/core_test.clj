@@ -168,11 +168,11 @@
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
   (cc/quick-bench
-   (sut/fast-select-keys-inline m [:a :b :c]))) ;; 75.913866 ns
+   (sut/inline-select-keys m [:a :b :c]))) ;; 75.913866 ns
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
   (cc/bench
-   (sut/fast-select-keys-inline m [:a :b :c]))) ;; 60.196715 ns
+   (sut/inline-select-keys m [:a :b :c]))) ;; 60.196715 ns
 ;; 51~52 ns
 
 (let [m {:a 1 :b 2 :c 3 :d 4}]
