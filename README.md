@@ -13,7 +13,7 @@ Some of the code is based on implementations in metosin's projects. Credit in co
 Add in your `project.clj`:
 
 ```clojure
-[bsless/clj-fast "0.0.1-alpha"]
+[bsless/clj-fast "0.0.2-alpha"]
 ```
 
 And require:

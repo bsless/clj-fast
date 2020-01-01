@@ -1,4 +1,4 @@
-(defproject bsless/clj-fast "0.0.1-alpha"
+(defproject bsless/clj-fast "0.0.2-alpha"
   :description "Fast Inline Clojure Core functions"
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
