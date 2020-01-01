@@ -130,30 +130,32 @@
     `(let ~bindings
        ~form)))
 
-(def ^:private cache (atom {}))
+(comment
+  (def ^:private cache (atom {}))
 
-(defn- anon-record
-  [fields]
-  (if-let [grec (get @cache fields)]
-    grec
-    (let [grec (gensym "Rec")]
-      (println "defing record of name:" grec "with fields:" fields)
-      (eval `(defrecord ~grec ~fields))
-      (swap! cache assoc fields grec)
-      grec)))
+  (defn- anon-record
+    [fields]
+    (if-let [grec (get @cache fields)]
+      grec
+      (let [grec (gensym "Rec")]
+        (println "defing record of name:" grec "with fields:" fields)
+        (eval `(defrecord ~grec ~fields))
+        (swap! cache assoc fields grec)
+        grec)))
 
-(defmacro ^:private defrec->inline-select-keys
-  "Like `select-keys` but faster and uses code generation.
+  (defmacro defrec->inline-select-keys
+    "Like `select-keys` but faster and uses code generation.
   `ks` must be either vector, list or set."
-  [m ks]
-  {:pre [(simple-seq? ks)]}
-  (let [ks (simple-seq ks)
-        fields (mapv symbol ks)
-        grec (anon-record fields)
-        bindings (destruct-map m ks)
-        syms (extract-syms bindings)]
-    `(let ~bindings
-       (~(symbol (str '-> grec)) ~@syms))))
+    [m ks]
+    {:pre [(simple-seq? ks)]}
+    (let [ks (simple-seq ks)
+          fields (mapv symbol ks)
+          grec (anon-record fields)
+          bindings (destruct-map m ks)
+          syms (extract-syms bindings)]
+      `(let ~bindings
+         (~(symbol (str '-> grec)) ~@syms))))
+  )
 
 (defn- do-assoc-in
   [m ks v]
