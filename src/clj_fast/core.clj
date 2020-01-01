@@ -214,4 +214,5 @@
 
 (defmacro inline-update-in
   [m ks f & args]
+  {:pre [(simple-seq? ks)]}
   (do-update-in m (simple-seq ks) f args))
