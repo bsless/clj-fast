@@ -75,10 +75,11 @@
     (and (sequence? xs) (every? simple? xs) (seq xs))))
 
 
-(defmacro fast-get-in-th
-  [m ks]
-  {:pre [(vector? ks)]}
-  `(-> ~m ~@ks))
+(comment
+  (defmacro fast-get-in-th
+    [m ks]
+    {:pre [(vector? ks)]}
+    `(-> ~m ~@ks)))
 
 (defmacro inline-get-in
   "Like `get-in` but faster and uses code generation.
