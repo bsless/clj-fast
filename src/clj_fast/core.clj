@@ -186,30 +186,28 @@
   {:pre [(simple-seq? ks)]}
   (do-assoc-in m (simple-seq ks) v))
 
-(defn do-update-in
-  [m ks f & args]
-  (let [ks* (butlast ks)
-        syms (repeatedly (inc (count ks*)) gensym)
-        bs (loop [bs [(first syms) `(get ~m ~(first ks*))]
-                  ks (next ks*)
-                  syms (next syms)]
-             (if ks
-               (let [k (first ks)]
-                 (recur (conj bs
-                              (first syms)
-                              `(get ~(last (butlast bs)) ~k))
-                        (next ks)
-                        (next syms)))
-               bs))
+(defn- do-update-in
+  [m ks f args]
+  (let [me {:tag clojure.lang.Associative}
+        g (with-meta (gensym "m__") me)
+        gs (repeatedly (count ks) #(with-meta (gensym) me))
+        gs+ (list* g gs)
+        bs
+        (into
+         [g m]
+         (mapcat (fn [g- g k]
+                   [g- `(get ~g ~k)])
+                 gs
+                 gs+
+                 ks))
         iter
         (fn iter
-          [[sym & syms] ks]
-          (let [[k & ks] ks]
-            (if ks
-              `(assoc ~sym ~k ~(iter syms ks))
-              `(assoc ~sym ~k (apply ~f (get ~sym ~k) ~@args)))))]
+          [[sym & syms] [k & ks]]
+          (if ks
+            `(assoc ~sym ~k ~(iter syms ks))
+            `(assoc ~sym ~k (~f ~(first syms) ~@args))))]
     `(let ~bs
-       ~(iter (list* m syms) ks ))))
+       ~(iter gs+ ks))))
 
 (defmacro inline-update-in
   [m ks f & args]
