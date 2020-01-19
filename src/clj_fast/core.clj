@@ -106,7 +106,7 @@
 (defn- destruct-map
   [m ks]
   (let [gmap (gensym "map__")
-        syms (map (comp gensym symbol) ks)]
+        syms (repeatedly (count ks) #(gensym))]
     (vec
      (concat `(~gmap ~m)
              (mapcat
