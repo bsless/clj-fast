@@ -43,12 +43,31 @@
     `(-> (or ~m {})
          ~@conjs#)))
 
-
 (defmacro inline-fast-map-merge
   [& [m & ms]]
   (let [conjs# (map (fn [m] `(fast-map-merge ~m)) ms)]
     `(-> (or ~m {})
          ~@conjs#)))
+
+;;; Credit github.com/joinr: github.com/bsless/clj-fast/issues/1
+(defn rmerge! [^clojure.lang.IKVReduce l  r]
+  (.kvreduce
+   l
+   (fn [^clojure.lang.ITransientAssociative acc k v]
+     (if-not (acc k)
+       (.assoc acc k v)
+       acc))
+   r))
+
+(defmacro inline-tmerge
+  ([] {})
+  ([m] m)
+  ([m1 m2 & ms]
+   (let [ms (list* m1 m2 ms)
+         end (last ms)
+         ms (reverse (butlast ms))
+         ops (map (fn [m] `(rmerge! ~m)) ms)]
+     `(->> (transient ~end) ~@ops persistent!))))
 
 (defn- simple?
   [x]
