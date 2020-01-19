@@ -5,23 +5,43 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.1"]]
   :direct-linking true
+  :target-path "target/%s"
   :profiles
-  {:dev
-   {:dependencies
+  {:uberjar
+   {:source-paths
+    ["bench"]
+    :dependencies
+    [[org.clojure/tools.cli "0.4.2"]
+     [org.clojure/test.check "0.9.0"]
+     [criterium "0.4.5"]
+     [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]
+    :main clj-fast.bench
+    :aot :all}
+   :dev
+   {:source-paths
+    ["bench" "prof"]
+    :dependencies
     [[criterium "0.4.5"]
+     [org.clojure/test.check "0.9.0"]
+     [org.clojure/tools.cli "0.4.2"]
      [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]}
    :bench
-   [:dev
-    {:source-paths
-     ["bench"]
-     :main clj-fast.bench
-     :aot :all}]
+   {:source-paths
+    ["bench"]
+    :dependencies
+    [[org.clojure/tools.cli "0.4.2"]
+     [criterium "0.4.5"]
+     [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]
+    :main clj-fast.bench
+    :aot :all}
    :prof
-   [:dev
-    {:source-paths
-     ["prof"]
-     :main clj-fast.prof
-     :aot :all}]
+   {:source-paths
+    ["prof"]
+    :dependencies
+    [[criterium "0.4.5"]
+     [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]
+    :main clj-fast.prof
+    :aot :all}
    :big-heap {:jvm-opts ["-Xmx9g" "-Xms9G"]}
    :med-heap {:jvm-opts ["-Xmx5g" "-Xms5G"]}
    :small-heap {:jvm-opts ["-Xmx2g" "-Xms2G"]}
