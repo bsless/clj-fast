@@ -1,6 +1,7 @@
 (ns clj-fast.core
   (:import
-   (java.util HashMap Map)))
+   (java.util HashMap Map)
+   [java.util.concurrent ConcurrentHashMap]))
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/reitit/blob/0bcfda755f139d14cf4eff37e2b294f573215213/modules/reitit-core/src/reitit/impl.cljc#L136
@@ -73,9 +74,11 @@
   [x]
   (or (keyword? x) (symbol? x) (string? x) (int? x)))
 
-(defn- sequence?
+(defn lazy?
   [xs]
-  (or (vector? xs) (list? xs) (set? xs)))
+  (instance? clojure.lang.LazySeq xs))
+
+(def sequence? (some-fn lazy? vector? list?))
 
 (defn- try-resolve
   [sym]
@@ -232,3 +235,191 @@
   [m ks f & args]
   {:pre [(simple-seq? ks)]}
   (do-update-in m (simple-seq ks) f args))
+
+(defn entry-at
+  {:inline
+   (fn [^clojure.lang.IPersistentMap m k]
+     `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
+  [^clojure.lang.IPersistentMap m k]
+  (.entryAt m k))
+
+(defmacro find-some-in
+  [m ks]
+  (let [ks (simple-seq ks)
+        sym (gensym "m__")
+        steps
+        (concat
+         (map (fn [step] `(if (nil? ~sym) nil (when-let [e# (entry-at ~sym ~step)] (val e#))))
+              (butlast ks))
+         (when-let [k (last ks)]
+           (list `(if (nil? ~sym) nil (entry-at ~sym ~k)))))]
+    `(let [~sym ~m
+           ~@(interleave (repeat sym) steps)]
+       ~sym)))
+
+(defmacro memoize-n
+  [n f]
+  (let [args (repeatedly n #(gensym))]
+    `(let [mem# (atom {})]
+       (fn [~@args]
+         (if-let [e# (find-some-in @mem# ~args)]
+           (val e#)
+           (let [ret# (~f ~@args)]
+             (swap! mem# (fn [m# v#] (inline-assoc-in m# [~@args] v#)) ret#)
+             ret#))))))
+
+(defn memoize*
+  [n f]
+  (case n
+    1 (memoize-n 1 f)
+    2 (memoize-n 2 f)
+    3 (memoize-n 3 f)
+    4 (memoize-n 4 f)
+    (memoize f)))
+
+(defn ->chm
+  ([] (ConcurrentHashMap.)))
+
+(defn chm-put!?
+  {:inline
+   (fn [^ConcurrentHashMap m k v]
+     `(do (.putIfAbsent ~(with-meta m {:tag 'ConcurrentHashMap}) ~k ~v)
+          ~m))}
+  [m k v]
+  (.putIfAbsent ^ConcurrentHashMap m k v) m)
+
+(defn chm?
+  {:inline
+   (fn [m] `(instance? ConcurrentHashMap ~m))}
+  [chm]
+  (instance? ConcurrentHashMap chm))
+
+(defn chm-get
+  [m k]
+  {:inline
+   (fn [^ConcurrentHashMap m k]
+     `(.get ~(with-meta m {:tag 'ConcurrentHashMap}) ~k)
+     m)}
+  [m k]
+  (.get ^ConcurrentHashMap m k))
+
+(defn chm-get?
+  [m k]
+  {:inline
+   (fn [^ConcurrentHashMap m k]
+     `(when (chm? ~m)
+        (.get ~(with-meta m {:tag 'ConcurrentHashMap}) ~k))
+     m)}
+  [m k]
+  (when (chm? m)
+    (.get ^ConcurrentHashMap m k)))
+
+(defmacro chm-get-in?
+  [m ks]
+  (let [ks (simple-seq ks)
+        sym (gensym "m__")
+        steps
+        (map (fn [step] `(if (nil? ~sym) nil (chm-get? ~sym ~step)))
+             ks)]
+    `(let [~sym ~m
+           ~@(interleave (repeat sym) steps)]
+       ~sym)))
+
+(defmacro chm-put-in!
+  [m ks v]
+  (let [me {:tag 'ConcurrentHashMap}
+        g (with-meta (gensym "m__") me)
+        gs (repeatedly (count ks) #(with-meta (gensym) me))
+        gs+ (list* g gs)
+        bs
+        (into
+         [g m]
+         (mapcat (fn [g- g k]
+                   [g- `(or (chm-get? ~g ~k) (->chm))])
+                 (butlast gs)
+                 gs+
+                 ks))
+        iter
+        (fn iter
+          [[sym & syms] [k & ks] v]
+          (if ks
+            `(chm-put!? ~sym ~k ~(iter syms ks v))
+            `(chm-put!? ~sym ~k ~v)))]
+    `(let ~bs
+       ~(iter gs+ ks v))))
+
+(defmacro memoize-c
+  [n f]
+  (let [args (repeatedly n #(gensym))]
+    `(let [mem# (->chm)]
+       (fn [~@args]
+         (if-let [e# (chm-get-in? mem# ~args)]
+           e#
+           (let [ret# (~f ~@args)]
+             (chm-put-in! mem# [~@args] ret#)
+             ret#))))))
+
+
+(comment
+
+  (do
+    (require '[clj-async-profiler.core :as prof])
+    (require '[criterium.core :as cc])
+    (prof/clear-results)
+    (prof/serve-files 9090))
+
+  (def f (memoize identity))
+
+  (def f' (memoize* 1 identity))
+
+  (f :a)
+
+  (f' :a)
+
+  (prof/profile (dotimes [_ 1e7] (f :a)))
+
+  (prof/profile (dotimes [_ 1e7] (f' :a)))
+
+  (cc/quick-bench (f :a))
+
+  (cc/quick-bench (f' :a))
+
+  (def g (memoize assoc))
+
+  (def g' (memoize* 3 assoc))
+
+  (g {} :a 1)
+
+  (g' {} :a 1)
+
+  (cc/quick-bench (g {} :a 1))
+
+  (cc/quick-bench (g' {} :a 1))
+
+  (prof/profile (dotimes [_ 1e7] (g {} :a 1)))
+
+  (prof/profile (dotimes [_ 1e7] (g' {} :a 1)))
+
+
+  (cc/quick-bench (g {:b 2} :a 1))
+
+  (cc/quick-bench (g' {:b 2} :a 1))
+
+  (prof/profile (dotimes [_ 1e7] (g {:b 2} :a 1)))
+
+  (prof/profile (dotimes [_ 1e7] (g' {:b 2} :a 1)))
+
+
+  (def h (memoize vector))
+
+  (def h' (memoize* 3 vector))
+
+  (cc/quick-bench (h :a :b :c))
+
+  (cc/quick-bench (h' :a :b :c))
+
+  (prof/profile (dotimes [_ 1e7] (h :a :b :c)))
+
+  (prof/profile (dotimes [_ 1e7] (h' :a :b :c)))
+
+  )
