@@ -21,7 +21,8 @@
    {:source-paths
     ["bench" "prof"]
     :dependencies
-    [[criterium "0.4.5"]
+    [[incanter "1.9.3"]
+     [criterium "0.4.5"]
      [org.clojure/test.check "0.9.0"]
      [org.clojure/tools.cli "0.4.2"]
      [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]}

@@ -1,3 +1,51 @@
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Benchmarks Results](#benchmarks-results)
+    - [Test Methods](#test-methods)
+        - [Running tests](#running-tests)
+        - [Benchmarks framework](#benchmarks-framework)
+        - [Profiles](#profiles)
+    - [Tests details](#tests-details)
+        - [assoc](#assoc)
+        - [assoc-in](#assoc-in)
+        - [get](#get)
+        - [merge](#merge)
+            - [Fast map merge](#fast-map-merge)
+            - [Inline Merge](#inline-merge)
+        - [get-in](#get-in)
+        - [select-keys](#select-keys)
+    - [Results Summary](#results-summary)
+        - [assoc](#assoc-1)
+        - [Assoc-in](#assoc-in)
+        - [get](#get-1)
+        - [merge](#merge-1)
+            - [Fast Map merge](#fast-map-merge)
+            - [Inline merge & fast merge](#inline-merge--fast-merge)
+        - [get-in](#get-in-1)
+        - [select-keys](#select-keys-1)
+    - [Detailed Results](#detailed-results)
+        - [get](#get-2)
+        - [assoc](#assoc-2)
+            - [By keys](#by-keys)
+            - [By width](#by-width)
+        - [merge](#merge-2)
+            - [By keys](#by-keys-1)
+            - [By width](#by-width-1)
+        - [get-in](#get-in-2)
+            - [By keys](#by-keys-2)
+            - [By width](#by-width-2)
+        - [assoc-in](#assoc-in-1)
+            - [By keys](#by-keys-3)
+            - [By width](#by-width-3)
+        - [update-in](#update-in)
+            - [By keys](#by-keys-4)
+            - [By width](#by-width-4)
+        - [select-keys](#select-keys-2)
+            - [By keys](#by-keys-5)
+            - [By width](#by-width-5)
+
+<!-- markdown-toc end -->
 # Benchmarks Results
 
 ## Test Methods
@@ -104,6 +152,99 @@ Inline implementation faster by a factor of 4-5.
 
 Inline implementation faster by a factor of 10 or more, depends
 on the number of selected keys.
+
+## Detailed Results
+
+### get
+
+![](images/get_keys_width_1.png)
+
+### assoc
+
+#### By keys
+
+| ![](images/assoc_keys_width_1.png) | ![](images/assoc_keys_width_2.png) |
+| :---:                              | :---:                              |
+| ![](images/assoc_keys_width_3.png) | ![](images/assoc_keys_width_4.png) |
+
+#### By width
+
+| ![](images/assoc_width_keys_1.png) | ![](images/assoc_width_keys_2.png) |
+| :---:                              | :---:                              |
+| ![](images/assoc_width_keys_3.png) | ![](images/assoc_width_keys_4.png) |
+
+### merge
+
+Execution time is presented in logarithmic scale due to the huge differences for different map sizes.
+
+#### By keys
+
+|                                    | ![](images/merge_keys_width_2.png) |
+| :---:                              | :---:                              |
+| ![](images/merge_keys_width_3.png) | ![](images/merge_keys_width_4.png) |
+
+#### By width
+
+| ![](images/merge_width_keys_1.png) | ![](images/merge_width_keys_2.png) |
+| :---:                              | :---:                              |
+| ![](images/merge_width_keys_3.png) | ![](images/merge_width_keys_4.png) |
+
+### get-in
+
+#### By keys
+
+| ![](images/get-in_keys_width_1.png) | ![](images/get-in_keys_width_2.png) |
+| :---:                               | :---:                               |
+| ![](images/get-in_keys_width_3.png) | ![](images/get-in_keys_width_4.png) |
+
+#### By width
+
+| ![](images/get-in_width_keys_1.png) | ![](images/get-in_width_keys_2.png) |
+| :---:                               | :---:                               |
+| ![](images/get-in_width_keys_3.png) | ![](images/get-in_width_keys_4.png) |
+
+### assoc-in
+
+#### By keys
+
+| ![](images/assoc-in_keys_width_1.png) | ![](images/assoc-in_keys_width_2.png) |
+| :---:                                 | :---:                                 |
+| ![](images/assoc-in_keys_width_3.png) | ![](images/assoc-in_keys_width_4.png) |
+
+#### By width
+
+| ![](images/assoc-in_width_keys_1.png) | ![](images/assoc-in_width_keys_2.png)
+| :---:                              | :---:                              |
+| ![](images/assoc-in_width_keys_3.png) | ![](images/assoc-in_width_keys_4.png)
+
+
+### update-in
+
+#### By keys
+
+| ![](images/update-in_keys_width_1.png) | ![](images/update-in_keys_width_2.png)
+| :---:                              | :---:                              |
+| ![](images/update-in_keys_width_3.png) | ![](images/update-in_keys_width_4.png)
+
+#### By width
+
+| ![](images/update-in_width_keys_1.png) | ![](images/update-in_width_keys_2.png)
+| :---:                              | :---:                              |
+| ![](images/update-in_width_keys_3.png) | ![](images/update-in_width_keys_4.png)
+
+### select-keys
+
+#### By keys
+
+| ![](images/select-keys_keys_width_1.png) | ![](images/select-keys_keys_width_2.png)
+| :---:                              | :---:                              |
+| ![](images/select-keys_keys_width_3.png) | ![](images/select-keys_keys_width_4.png)
+
+#### By width
+
+| ![](images/select-keys_width_keys_1.png) | ![](images/select-keys_width_keys_2.png)
+| :---:                              | :---:                              |
+| ![](images/select-keys_width_keys_3.png) | ![](images/select-keys_width_keys_4.png)
 
 | heap  | gc       | test                     | execution time mean |
 |-------|----------|--------------------------|---------------------|

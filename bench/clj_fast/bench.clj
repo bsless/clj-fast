@@ -10,6 +10,8 @@
 
 ;;; JVM utilities
 
+(def ^:dynamic *types* [:int? :keyword? :string?])
+
 (defn get-max-memory
   []
   (float (/ (.maxMemory (java.lang.Runtime/getRuntime)) 1024 1024 1024)))
@@ -58,15 +60,47 @@
   [f m]
   (reduce-kv (fn [m k v] (assoc m k (f v))) {} m))
 
+(defn genn
+  [n spec]
+  (drop 1 (gen/sample (s/gen spec) (inc n))))
+
 (defn randmap
   ([n]
    (randmap keyword? n))
   ([p n]
-   (into {} (drop 1 (gen/sample (s/gen (s/tuple p p)) (inc n))))))
+   (into {} (genn n (s/tuple p p)))))
+
+(def mrandmap (memoize randmap))
+
+(declare mrand-nested-map)
+(defn rand-nested-map
+  [p width depth]
+  (if (= 1 depth)
+    (mrandmap p width)
+    (zipmap (genn width p)
+            (repeat width (mrand-nested-map p width (dec depth))))))
+
+(def mrand-nested-map (memoize rand-nested-map))
+
+(def preds
+  {:int? int?
+   :keyword? keyword?
+   :string? string?})
 
 (defn randkey
   [m]
   (rand-nth (keys m)))
+
+(defn randpath
+  [mm]
+  (letfn
+      [(iter [m ks]
+         (if (map? m)
+           (let [k (randkey m)
+                 v (m k)]
+             (iter v (conj ks k)))
+           ks))]
+    (iter mm [])))
 
 ;; Credit metosin
 (defn title [s]
@@ -84,6 +118,14 @@
 ;;; ASSOC
 
 (defn bench-assoc*
+  [n m [k1 k2 k3 k4]]
+  (case n
+    1 (cc/quick-benchmark (assoc m k1 1) nil)
+    2 (cc/quick-benchmark (assoc m k1 1 k2 2) nil)
+    3 (cc/quick-benchmark (assoc m k1 1 k2 2 k3 3) nil)
+    4 (cc/quick-benchmark (assoc m k1 1 k2 2 k3 3 k4 4) nil)))
+
+(defn bench-assoc-rec*
   [m n]
   (case n
     1 (cc/quick-benchmark (assoc m :x 0) nil)
@@ -91,9 +133,15 @@
     3 (cc/quick-benchmark (assoc m :x 0 :y 1 :z 2) nil)
     4 (cc/quick-benchmark (assoc m :x 0 :y 1 :z 2 :w 3) nil)))
 
-(def bench-assoc-rec* bench-assoc*)
-
 (defn bench-fast-assoc*
+  [n m [k1 k2 k3 k4]]
+  (case n
+    1 (cc/quick-benchmark (sut/fast-assoc* m k1 1) nil)
+    2 (cc/quick-benchmark (sut/fast-assoc* m k1 1 k2 2) nil)
+    3 (cc/quick-benchmark (sut/fast-assoc* m k1 1 k2 2 k3 3) nil)
+    4 (cc/quick-benchmark (sut/fast-assoc* m k1 1 k2 2 k3 3 k4 4) nil)))
+
+(defn bench-fast-assoc-rec*
   [m n]
   (case n
     1 (cc/quick-benchmark (sut/fast-assoc* m :x 0) nil)
@@ -101,30 +149,33 @@
     3 (cc/quick-benchmark (sut/fast-assoc* m :x 0 :y 1 :z 2) nil)
     4 (cc/quick-benchmark (sut/fast-assoc* m :x 0 :y 1 :z 2 :w 3) nil)))
 
-(def bench-fast-assoc-rec* bench-fast-assoc*)
-
 (def assoc-rec-fns
-  {:bench-assoc-rec        bench-assoc-rec*
-   :bench-fast-assoc-rec   bench-fast-assoc-rec*})
+  {:assoc-rec        bench-assoc-rec*
+   :fast-assoc-rec   bench-fast-assoc-rec*})
 
 (def assoc-fns
-  {:bench-assoc            bench-assoc*
-   :bench-fast-assoc       bench-fast-assoc*})
+  {:assoc            bench-assoc*
+   :fast-assoc       bench-fast-assoc*})
 
 (defn bench-assoc-
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
          n (range 1 (inc max-depth))
+         pk *types*
          :let [width (int (Math/pow 10 e))
-               m (mbuild-map width)]
-         k [:bench-assoc :bench-fast-assoc]
-         :let [f (assoc-fns k n)
-               res (f m n)
+               p (preds pk)
+               m (mrandmap p width)
+               ks (genn n p)]
+         k [:assoc :fast-assoc]
+         :let [f (assoc-fns k)
+               _ (println 'BENCH k 'WIDTH 10 'e e '* n 'TYPE pk)
+               res (f n m ks)
                mn (Math/round (/ (mean res) 1e-9))
                ratio (int (/ mn n))]]
      {:bench k
       :mean mn
+      :type pk
       :keys n
       :ratio ratio
       :width e
@@ -136,7 +187,7 @@
   (vec
    (let [m (->Foo 1 2 3 4)]
      (for [n (range 1 (inc max-depth))
-           k [:bench-assoc-rec :bench-fast-assoc-rec]
+           k [:assoc-rec :fast-assoc-rec]
            :let [f (assoc-rec-fns k)
                  res (f m n)
                  mn (Math/round (/ (mean res) 1e-9))
@@ -182,7 +233,10 @@
       :get (cc/quick-benchmark (get m k) nil)
       :keyword (cc/quick-benchmark (k m) nil)
       :invoke (cc/quick-benchmark (m k) nil)
-      :val-at (cc/quick-benchmark (.valAt ^clojure.lang.IPersistentMap m k) nil))))
+      :val-at-i (cc/quick-benchmark (.valAt ^clojure.lang.IPersistentMap m k) nil)
+      :val-at-a (cc/quick-benchmark (.valAt ^clojure.lang.APersistentMap m k) nil)
+      :val-at-c (cc/quick-benchmark (.valAt ^clojure.lang.PersistentHashMap m k) nil)
+      )))
 
 (defn bench-get-rec* [method ^Foo r]
   (let [k :c]
@@ -193,17 +247,12 @@
       :field (cc/quick-benchmark (.c ^Foo r) nil)
       :val-at (cc/quick-benchmark (.valAt ^Foo r k) nil))))
 
-(def preds
-  {:int? int?
-   :keyword? keyword?
-   :string? string?})
-
-(defn bench-get-
+(defn bench-get--
   [max-log-size _]
   (vec
    (for [e (range 1 (inc max-log-size))
-         p [:int? :keyword? :string?]
-         method [:get :keyword :invoke :val-at]
+         p *types*
+         method [:get :keyword :invoke :val-at-i :val-at-a :val-at-c]
          :let [width (int (Math/pow 10 e))
                m (randmap (preds p) width)]
          :when (or
@@ -211,7 +260,8 @@
                 (and
                  (= method :keyword)
                  (= p :keyword?)))
-         :let [res (bench-get* method m)
+         :let [_ (println 'BENCH 'get method 'WIDTH 10 'e e 'TYPE p)
+               res (bench-get* method m)
                mn (->ns (mean res))]]
      {:bench :get
       :method method
@@ -221,12 +271,13 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-get-rec-
+(defn bench-get-rec--
   [_ _]
   (let [r (->Foo 1 2 3 4)]
     (vec
      (for [method [:get :dotget :keyword :field :val-at]
-           :let [res (bench-get-rec* method r)
+           :let [_ (println 'BENCH 'get-record method)
+                 res (bench-get-rec* method r)
                  mn (->ns (mean res))]]
        {:bench :get-rec
         :method method
@@ -234,12 +285,12 @@
         :heap @max-memory
         :gc @gcs}))))
 
-(defn bench-get+
+(defn bench-get-
   [max-log-size _]
   (vec
    (concat
-    (bench-get- max-log-size nil)
-    (bench-get-rec- nil nil))))
+    (bench-get-- max-log-size nil)
+    (bench-get-rec-- nil nil))))
 
 (defn bench-get
   []
@@ -341,18 +392,22 @@
   (vec
    (for [e (range 1 (inc max-log-size))
          n (range 1 (inc nmaps))
+         pk *types*
          :let [width (int (Math/pow 10 e))
-               ms (repeatedly n #(randmap width))]
+               p (preds pk)
+               ms (repeatedly n #(randmap p width))]
          k [:merge :inline-merge :inline-fast-map-merge :inline-tmerge]
          :let [f (merge-fns k)
+               _ (println 'BENCH k 'WIDTH 10 'e e '* n 'TYPE pk)
                res (apply f n ms)
                mn (->ns (mean res))
                ratio (int (/ mn n))]]
      {:bench k
       :mean mn
       :width e
+      :type pk
       :ratio ratio
-      :depth n
+      :keys n
       :heap @max-memory
       :gc @gcs})))
 
@@ -443,28 +498,24 @@
 ;;; GET-IN
 
 (defn bench-get-in*
-  [m n]
-  (case n
-    1 (cc/quick-benchmark (get-in m [3]) nil)
-    2 (cc/quick-benchmark (get-in m [3 3]) nil)
-    3 (cc/quick-benchmark (get-in m [3 3 3]) nil)
-    4 (cc/quick-benchmark (get-in m [3 3 3 3]) nil)))
+  [_ m ks]
+  (cc/quick-benchmark (get-in m ks) nil))
 
 (defn bench-inline-get-in*
-  [m n]
+  [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-get-in m [3]) nil)
-    2 (cc/quick-benchmark (sut/inline-get-in m [3 3]) nil)
-    3 (cc/quick-benchmark (sut/inline-get-in m [3 3 3]) nil)
-    4 (cc/quick-benchmark (sut/inline-get-in m [3 3 3 3]) nil)))
+    1 (cc/quick-benchmark (sut/inline-get-in m [k1]) nil)
+    2 (cc/quick-benchmark (sut/inline-get-in m [k1 k2]) nil)
+    3 (cc/quick-benchmark (sut/inline-get-in m [k1 k2 k3]) nil)
+    4 (cc/quick-benchmark (sut/inline-get-in m [k1 k2 k3 k4]) nil)))
 
 (defn bench-inline-get-some-in*
-  [m n]
+  [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-get-some-in m [3]) nil)
-    2 (cc/quick-benchmark (sut/inline-get-some-in m [3 3]) nil)
-    3 (cc/quick-benchmark (sut/inline-get-some-in m [3 3 3]) nil)
-    4 (cc/quick-benchmark (sut/inline-get-some-in m [3 3 3 3]) nil)))
+    1 (cc/quick-benchmark (sut/inline-get-some-in m [k1]) nil)
+    2 (cc/quick-benchmark (sut/inline-get-some-in m [k1 k2]) nil)
+    3 (cc/quick-benchmark (sut/inline-get-some-in m [k1 k2 k3]) nil)
+    4 (cc/quick-benchmark (sut/inline-get-some-in m [k1 k2 k3 k4]) nil)))
 
 (def get-in-bench-fns
   {:get-in bench-get-in*
@@ -476,18 +527,23 @@
   (vec
    (for [e (range 1 (inc max-log-size))
          depth (range 1 (inc max-depth))
+         pk *types*
          :let [width (int (Math/pow 10 e))
-               m (mbuild-nested-map width depth)]
+               p (preds pk)
+               m (mrand-nested-map p width depth)
+               ks (randpath m)]
          k [:get-in :inline-get-in :inline-get-some-in]
          :let [f (get-in-bench-fns k)
-               res (f m depth)
+               _ (println 'BENCH k 'WIDTH 10 'e e '* depth 'TYPE pk)
+               res (f depth m ks)
                mn (->ns (mean res))
                ratio (int (/ mn depth))]]
      {:bench k
       :mean mn
       :width e
+      :type pk
       :ratio ratio
-      :depth depth
+      :keys depth
       :heap @max-memory
       :gc @gcs})))
 
@@ -560,20 +616,16 @@
 ;;; SELECT-KEYS
 
 (defn bench-select-keys*
-  [m n]
-  (case n
-    1 (cc/quick-benchmark (select-keys m [3]) nil)
-    2 (cc/quick-benchmark (select-keys m [3 4]) nil)
-    3 (cc/quick-benchmark (select-keys m [3 4 5]) nil)
-    4 (cc/quick-benchmark (select-keys m [3 4 5 6]) nil)))
+  [_ m ks]
+  (cc/quick-benchmark (select-keys m ks) nil))
 
 (defn bench-inline-select-keys*
-  [m n]
+  [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-select-keys m [3]) nil)
-    2 (cc/quick-benchmark (sut/inline-select-keys m [3 4]) nil)
-    3 (cc/quick-benchmark (sut/inline-select-keys m [3 4 5]) nil)
-    4 (cc/quick-benchmark (sut/inline-select-keys m [3 4 5 6]) nil)))
+    1 (cc/quick-benchmark (sut/inline-select-keys m [k1]) nil)
+    2 (cc/quick-benchmark (sut/inline-select-keys m [k1 k2]) nil)
+    3 (cc/quick-benchmark (sut/inline-select-keys m [k1 k2 k3]) nil)
+    4 (cc/quick-benchmark (sut/inline-select-keys m [k1 k2 k3 k4]) nil)))
 
 (def select-keys-bench-fns
   {:select-keys bench-select-keys*
@@ -584,16 +636,21 @@
   (vec
    (for [e (range 1 (inc max-log-size))
          n (range 1 (inc max-width))
+         pk *types*
          :let [width (int (Math/pow 10 e))
-               m (mbuild-map width)]
+               p (preds pk)
+               m (mrandmap p width)
+               ks (eduction (comp (distinct) (take n)) (repeatedly #(randkey m)))]
          k [:select-keys :inline-select-keys]
          :let [f (select-keys-bench-fns k)
-               res (f m n)
+               _ (println 'BENCH k 'WIDTH 10 'e e '* n 'TYPE pk)
+               res (f n m ks)
                mn (Math/round (/ (mean res) 1e-9))
                ratio (int (/ mn n))]]
      {:bench k
       :mean mn
       :keys n
+      :type pk
       :ratio ratio
       :width e
       :heap @max-memory
@@ -649,20 +706,16 @@
 ;;; ASSOC-IN
 
 (defn bench-assoc-in*
-  [m n]
-  (case n
-    1 (cc/quick-benchmark (assoc-in m [3] 0) nil)
-    2 (cc/quick-benchmark (assoc-in m [3 4] 0) nil)
-    3 (cc/quick-benchmark (assoc-in m [3 4 5] 0) nil)
-    4 (cc/quick-benchmark (assoc-in m [3 4 5 6] 0) nil)))
+  [_ m ks]
+  (cc/quick-benchmark (assoc-in m ks 0) nil))
 
 (defn bench-inline-assoc-in*
-  [m n]
+  [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-assoc-in m [3] 0) nil)
-    2 (cc/quick-benchmark (sut/inline-assoc-in m [3 4] 0) nil)
-    3 (cc/quick-benchmark (sut/inline-assoc-in m [3 4 5] 0) nil)
-    4 (cc/quick-benchmark (sut/inline-assoc-in m [3 4 5 6] 0) nil)))
+    1 (cc/quick-benchmark (sut/inline-assoc-in m [k1] 0) nil)
+    2 (cc/quick-benchmark (sut/inline-assoc-in m [k1 k2] 0) nil)
+    3 (cc/quick-benchmark (sut/inline-assoc-in m [k1 k2 k3] 0) nil)
+    4 (cc/quick-benchmark (sut/inline-assoc-in m [k1 k2 k3 k4] 0) nil)))
 
 (def assoc-in-bench-fns
   {:assoc-in bench-assoc-in*
@@ -673,16 +726,21 @@
   (vec
    (for [e (range 1 (inc max-log-size))
          depth (range 1 (inc max-depth))
+         pk *types*
          :let [width (int (Math/pow 10 e))
-               m (mbuild-nested-map width depth)]
+               p (preds pk)
+               m (mbuild-nested-map width depth)
+               ks (genn depth p)]
          k [:assoc-in :inline-assoc-in]
          :let [f (assoc-in-bench-fns k)
-               res (f m depth)
+               _ (println 'BENCH k 'WIDTH 10 'e e '* depth 'TYPE pk)
+               res (f depth m ks)
                mn (->ns (mean res))
                ratio (int (/ mn depth))]]
      {:bench k
       :mean mn
-      :depth depth
+      :keys depth
+      :type pk
       :ratio ratio
       :width e
       :heap @max-memory
@@ -717,20 +775,16 @@
 ;;; UPDATE-IN
 
 (defn bench-update-in*
-  [m n]
-  (case n
-    1 (cc/quick-benchmark (update-in m [3] identity) nil)
-    2 (cc/quick-benchmark (update-in m [3 4] identity) nil)
-    3 (cc/quick-benchmark (update-in m [3 4 5] identity) nil)
-    4 (cc/quick-benchmark (update-in m [3 4 5 6] identity) nil)))
+  [_ m ks]
+  (cc/quick-benchmark (update-in m ks identity) nil))
 
 (defn bench-inline-update-in*
-  [m n]
+  [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-update-in m [3] identity) nil)
-    2 (cc/quick-benchmark (sut/inline-update-in m [3 4] identity) nil)
-    3 (cc/quick-benchmark (sut/inline-update-in m [3 4 5] identity) nil)
-    4 (cc/quick-benchmark (sut/inline-update-in m [3 4 5 6] identity) nil)))
+    1 (cc/quick-benchmark (sut/inline-update-in m [k1] identity) nil)
+    2 (cc/quick-benchmark (sut/inline-update-in m [k1 k2] identity) nil)
+    3 (cc/quick-benchmark (sut/inline-update-in m [k1 k2 k3] identity) nil)
+    4 (cc/quick-benchmark (sut/inline-update-in m [k1 k2 k3 k4] identity) nil)))
 
 (def update-in-bench-fns
   {:update-in bench-update-in*
@@ -741,16 +795,21 @@
   (vec
    (for [e (range 1 (inc max-log-size))
          depth (range 1 (inc max-depth))
+         pk *types*
          :let [width (int (Math/pow 10 e))
-               m (mbuild-nested-map width depth)]
+               p (preds pk)
+               m (mrand-nested-map p width depth)
+               ks (randpath m)]
          k [:update-in :inline-update-in]
          :let [f (update-in-bench-fns k)
-               res (f m depth)
+               _ (println 'BENCH k 'WIDTH 10 'e e '* depth 'TYPE pk)
+               res (f depth m ks)
                mn (->ns (mean res))
                ratio (int (/ mn depth))]]
      {:bench k
       :mean mn
-      :depth depth
+      :keys depth
+      :type pk
       :ratio ratio
       :width e
       :heap @max-memory
@@ -787,6 +846,10 @@
 
   )
 
+(defn- parse-types
+  [s]
+  (mapv keyword (clojure.string/split s #" ")))
+
 (def cli-options
   [["-n" "--name NAME" "Benchmarks nickname"
     :default ""]
@@ -800,14 +863,23 @@
     :default 4
     :parse-fn #(Integer/parseInt %)
     :validate [#(<= 1 % 4) "Please Keep max width up to 4"]]
+   ["-t" "--types TYPES" "Predicates to generate maps from"
+    :default []
+    :parse-fn parse-types
+    :validate [#(clojure.set/subset?
+                 (set %)
+                #{:keyword? :string? :int?})
+               "Type must be one of: keyword? string? int?"]]
    ["-h" "--help"]])
 
 (def benches
   {
+   :get bench-get--
+   :get-rec bench-get-rec--
    :get-in bench-get-in-
    :assoc bench-assoc-
    :assoc-rec bench-assoc-rec-
-   :merge :bench-merge-
+   :merge bench-merge-
    :select-keys bench-select-keys-
    :assoc-in bench-assoc-in-
    :update-in bench-update-in-
@@ -832,37 +904,28 @@
 
 (defn -main
   [& args]
-  (let [{:keys [arguments options]}
+  (let [{:keys [arguments options summary]}
         (cli/parse-opts args cli-options)
-        {:keys [out-path max-width max-depth name]} options
+        {:keys [types help out-path max-width max-depth name]} options
         ks (map keyword arguments)
         now
-        (clojure.string/replace
-         (str (java.time.LocalDateTime/now)) #":" "-")
-        parts (remove nil? [name "clj-fast" now "bench.edn"])
+        (str (java.time.LocalDateTime/now))
+        parts (remove clojure.string/blank? [name "clj-fast" "bench.edn"])
         output
         (clojure.string/join
          "/"
          [out-path
           (clojure.string/join "-" parts)])]
+    (when help
+      (println summary)
+      (System/exit 0))
     (validate-args ks)
     (validate-out out-path)
-    (println "Producing report to" output)
-    (let [results
-          (reduce
-           (fn [m k]
-             (println 'INFO 'benching k)
-             (assoc m k ((benches k) max-width max-depth))) {} ks)]
-      (spit output results)))
-  #_#_
-  (bench-assoc)
-  (bench-assoc-in)
-  #_
-  (bench-update-in)
-  #_#_
-  (bench-get)
-  (bench-merge)
-  #_#_
-  (bench-get-in)
-  (bench-select-keys)
-  )
+    (println "Producing report to" output "at" now)
+    (binding [*types* types]
+      (let [results
+            (reduce
+             (fn [m k]
+               (println 'INFO 'benching k)
+               (assoc m k ((benches k) max-width max-depth))) {} ks)]
+        (spit output results)))))
