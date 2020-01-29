@@ -183,10 +183,10 @@
       :gc @gcs})))
 
 (defn bench-assoc-rec-
-  [_ max-depth]
+  [_ _]
   (vec
    (let [m (->Foo 1 2 3 4)]
-     (for [n (range 1 (inc max-depth))
+     (for [n [1]
            k [:assoc-rec :fast-assoc-rec]
            :let [f (assoc-rec-fns k)
                  res (f m n)
