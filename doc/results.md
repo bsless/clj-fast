@@ -113,7 +113,8 @@ Moreover, different get methods were tested:
 - map on keyword > keyword on map > get from map (ordered by speed)
 - field from record > keyword on record > .get from record > get from record.
 
-![](images/get_keys_width_1.png)
+| ![](images/get_keys_width_1.png) | ![](images/get-rec_keys_width_1.png) |
+| :---:                            | :---:                                |
 
 ### assoc
 
@@ -123,7 +124,7 @@ Assoc and fast assoc performance are tested with maps and records.
 
 #### Results
 
-- `assoc` to record ~twice as fast as `assoc`ing to map.
+- `assoc` to record is as fast as `assoc`ing to map.
 - `fast-assoc` ~ 5.7% faster than `assoc`. (Metosin)
 
 #### By keys
@@ -146,11 +147,14 @@ Assoc and fast assoc performance are tested with maps and records.
 
 fast map merge was implemented by Metosin and uses `kv-reduce` to assoc
 one map into another.
-Was compared vs. regular merge.
+Compare to regular merge for the keys=2 case.
 
 ##### Inline Merge
 
-Two different implementations of inlining merge were tested, one based on the core implementation of merge, and one on Metosin's.
+Several inline implementations were compared:
+- `inline-merge`: uses `conj` directly on all input maps instead of reducing.
+- `inline-fast-map-merge`: inline merges maps using Metosin's `fast-map-merge`.
+- `inline-tmerge`: Uses transients to merge the maps. Basic implementation by Joinr.
 
 #### Results
 
@@ -210,7 +214,7 @@ assoc, all core functions.
 #### Results
 
 - the inlined implementation is always faster and exhibits compounding returns 
-for deeper maps.
+for deeper maps, about ~25ns/key.
 
 #### By keys
 
