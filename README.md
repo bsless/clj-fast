@@ -52,10 +52,11 @@ Like regular core functions but sequence arguments must be written explicitly or
 (fast/inline-merge m1 m2 m3)
 ```
 
+## Results
+
+See [results.md](doc/results.md) for experiments' detailed benchmark results.
 
 ## Experimental implementations
-
-See [results.md](doc/results.md) for experiments' benchmark results.
 
 ### Assoc
 
