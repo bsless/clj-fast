@@ -166,12 +166,15 @@ Several inline implementations were compared:
 
 ##### Fast Map merge
 
-Distinctly faster than regular merge, by about 30%, but differences might depend on map sizes, so more benchmarks are required.
+fast-map-merge is faster than regular merge, especially for smaller
+maps, with diminishing returns as maps get bigger.
 
 ##### Inline merge & fast merge
 
-Sees diminishing returns on the benefit of merging more maps, but the speedup
-is measurable.
+Sees diminishing returns on the benefit of merging more maps, but some
+speedup is measurable. tmerge is slower for small maps but for larger
+maps is faster than regular merge. The speedup by fast-map-merge is
+about 15-25%, width diminishing returns the bigger maps get.
 
 
 Execution time is presented in logarithmic scale due to the huge differences for different map sizes.

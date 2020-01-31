@@ -106,12 +106,12 @@
     (clojure.string/join "_" (conj (mapv name [run dim other-dim]) num))))
 
 (defn set-log-axis!
-  [chart]
+  [chart e]
   (let [axis (new org.jfree.chart.axis.LogAxis)
         plot (.getCategoryPlot chart)
         current-axis (.getRangeAxis plot)
         label (.getLabel current-axis)]
-    (.setSmallestValue axis 1000)
+    (.setSmallestValue axis (int (Math/pow 10 e)))
     (.setLabel axis label)
     (.setRangeAxis plot axis)))
 
@@ -128,7 +128,7 @@
   (let [xs (vals (get-in raw-data [k :width]))
         ys (vals (get-in raw-data [k :keys]))]
     (doseq [chart (concat xs ys)]
-      (set-log-axis! chart))))
+      (set-log-axis! chart 3))))
 
 (comment
 
@@ -146,6 +146,9 @@
      (chart-assoc-rec raw-data)))
 
   (logify :merge all-charts)
+  (map (fn [e c] (set-log-axis! c e))
+       [3 4 5 6 7]
+       (vals (get-in all-charts [:merge :width])))
 
   (write-charts all-charts)
 
