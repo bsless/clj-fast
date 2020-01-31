@@ -179,17 +179,17 @@ about 15-25%, width diminishing returns the bigger maps get.
 
 Execution time is presented in logarithmic scale due to the huge differences for different map sizes.
 
-#### By keys
-
-|                                    | ![](images/merge_keys_width_2.png) |
-| :---:                              | :---:                              |
-| ![](images/merge_keys_width_3.png) | ![](images/merge_keys_width_4.png) |
-
 #### By width
 
 | ![](images/merge_width_keys_1.png) | ![](images/merge_width_keys_2.png) |
 | :---:                              | :---:                              |
 | ![](images/merge_width_keys_3.png) | ![](images/merge_width_keys_4.png) |
+
+#### By keys
+
+|                                    | ![](images/merge_keys_width_2.png) |
+| :---:                              | :---:                              |
+| ![](images/merge_keys_width_3.png) | ![](images/merge_keys_width_4.png) |
 
 ### get-in
 
