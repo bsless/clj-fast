@@ -63,6 +63,8 @@ java -Xmx8G -Xms8G -XX:+UseG1GC \
 
 ### Generating results
 
+Load `analysis.clj` and:
+
 ```clojure
 (ns clj-fast.analysis)
 (def raw-data
