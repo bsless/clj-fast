@@ -233,6 +233,8 @@
       :get (cc/quick-benchmark (get m k) nil)
       :keyword (cc/quick-benchmark (k m) nil)
       :invoke (cc/quick-benchmark (m k) nil)
+      :hashmap (let [m (sut/fast-map m)]
+                 (cc/quick-benchmark (sut/fast-get m k) nil))
       :val-at-i (cc/quick-benchmark (.valAt ^clojure.lang.IPersistentMap m k) nil)
       :val-at-a (cc/quick-benchmark (.valAt ^clojure.lang.APersistentMap m k) nil)
       :val-at-c (cc/quick-benchmark (.valAt ^clojure.lang.PersistentHashMap m k) nil)
@@ -247,12 +249,12 @@
       :field (cc/quick-benchmark (.c ^Foo r) nil)
       :val-at (cc/quick-benchmark (.valAt ^Foo r k) nil))))
 
-(defn bench-get--
+(defn bench-get-
   [max-log-size _]
   (vec
    (for [e (range 1 (inc max-log-size))
          p *types*
-         method [:get :keyword :invoke :val-at-i :val-at-a :val-at-c]
+         method [:get :keyword :invoke :hashmap :val-at-i :val-at-a :val-at-c]
          :let [width (int (Math/pow 10 e))
                m (randmap (preds p) width)]
          :when (or
@@ -271,7 +273,7 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-get-rec--
+(defn bench-get-rec-
   [_ _]
   (let [r (->Foo 1 2 3 4)]
     (vec
@@ -284,13 +286,6 @@
         :mean mn
         :heap @max-memory
         :gc @gcs}))))
-
-(defn bench-get-
-  [max-log-size _]
-  (vec
-   (concat
-    (bench-get-- max-log-size nil)
-    (bench-get-rec-- nil nil))))
 
 (defn bench-get
   []
@@ -874,8 +869,8 @@
 
 (def benches
   {
-   :get bench-get--
-   :get-rec bench-get-rec--
+   :get bench-get-
+   :get-rec bench-get-rec-
    :get-in bench-get-in-
    :assoc bench-assoc-
    :assoc-rec bench-assoc-rec-
