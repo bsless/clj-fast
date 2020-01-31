@@ -76,6 +76,7 @@ See [results.md](doc/results.md) for experiments' detailed benchmark results.
 - `fast-map-merge`: Metosin's implementation. Uses `kv-reduce` to `fast-assoc` all of one map into another.
 - `inline-merge`: inlines core's `merge` reduction over a sequence of maps with `conj` to a nested `conj` of all maps.
 - `inline-fast-map-merge`: same but with Metosin's `fast-map-merge`.
+- `inline-tmerge`: same but with Joinr's transient merge.
 
 ### Get in
 
