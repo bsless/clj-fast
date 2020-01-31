@@ -1,5 +1,16 @@
 # Change Log
 
+## [Unreleased] - 2020-01-31
+
+### Major changes
+
+- Complete rewrite of benchmark suit.
+- Complete rewrite of results details.
+
+### Add
+
+- transient implementation for merge (Joinr)
+
 ## [0.0.2-alpha] - 2020-01-01
 
 ### Add

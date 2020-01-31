@@ -1,10 +1,18 @@
 # clj-fast
 
-Library for playing around with low level Clojure code for performance reasons
-given some assumptions.
-Inspired by [Naked Performance (with Clojure) – Tommi Reiman](https://www.youtube.com/watch?v=3SSHjKT3ZmA).
+Library for playing around with low level Clojure code for performance
+reasons given some assumptions. Inspired by [Naked Performance (with
+Clojure) – Tommi Reiman](https://www.youtube.com/watch?v=3SSHjKT3ZmA).
 
 Some of the code is based on implementations in metosin's projects. Credit in code.
+
+## Purpose
+
+This repo provides a dual purpose:
+- Providing faster implementations of Clojure's core functions as
+  macros.
+- Reference guide on the performance characteristics of different ways
+  of using Clojure's data structures.
 
 ## Usage
 
@@ -26,13 +34,16 @@ And require:
 
 #### Fast(er) Functions
 
-- `fast-assoc`: Used like `assoc` but doesn't take variable key-values, only one pair.
+- `fast-assoc`: Used like `assoc` but doesn't take variable key-values,
+  only one pair.
 - `fast-map` & `fast-get`: Wrappers for `java.util.HashMap`.
-- `fast-map-merge`: Slightly faster version for `merge`, takes only 2 maps.
+- `fast-map-merge`: Slightly faster version for `merge`, takes only 2
+  maps.
 
 #### Inline Macros
 
-Like regular core functions but sequence arguments must be written explicitly or `def`ed in advance:
+Like regular core functions but sequence arguments must be written
+explicitly or `def`ed in advance:
 
 ```clojure
 (def ks [:a :b])
@@ -52,10 +63,11 @@ Like regular core functions but sequence arguments must be written explicitly or
 (fast/inline-merge m1 m2 m3)
 ```
 
+## Results
+
+See [results.md](doc/results.md) for experiments' detailed benchmark results.
 
 ## Experimental implementations
-
-See [results.md](doc/results.md) for experiments' benchmark results.
 
 ### Assoc
 
@@ -72,14 +84,19 @@ See [results.md](doc/results.md) for experiments' benchmark results.
 
 ### Merge
 
-- `fast-map-merge`: Metosin's implementation. Uses `kv-reduce` to `fast-assoc` all of one map into another.
-- `inline-merge`: inlines core's `merge` reduction over a sequence of maps with `conj` to a nested `conj` of all maps.
+- `fast-map-merge`: Metosin's implementation. Uses `kv-reduce` to
+  `fast-assoc` all of one map into another.
+- `inline-merge`: inlines core's `merge` reduction over a sequence of
+  maps with `conj` to a nested `conj` of all maps.
 - `inline-fast-map-merge`: same but with Metosin's `fast-map-merge`.
+- `inline-tmerge`: same but with Joinr's transient merge.
 
 ### Get in
 
-- `inline-get-in`: given that all keys are written as explicit arguments and not a sequence, `get-in` can be expanded into a series of `get`s.
-- `inline-get-some-in`: same as above, but maps can be invoked on the keys. nil checks every iteration.
+- `inline-get-in`: given that all keys are written as explicit arguments
+  and not a sequence, `get-in` can be expanded into a series of `get`s.
+- `inline-get-some-in`: same as above, but maps can be invoked on the
+  keys. nil checks every iteration.
 
 ### Assoc in
 
