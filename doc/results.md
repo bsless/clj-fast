@@ -109,12 +109,18 @@ Moreover, different get methods were tested:
 #### Results
 
 - `get` from record ~50% slower than from map.
-- `fast-get` from `fast-map` ~ 8.4% faster than `get`ting from regular map. (Metosin)
-- map on keyword > keyword on map > get from map (ordered by speed)
-- field from record > keyword on record > .get from record > get from record.
+- `fast-get` from `fast-map` ~ 2x faster than `get`ting from regular
+  map, with gains increasing as the map becomes larger. (Metosin)
+- invoking a map, calling a keyword on a map, accessing `valAt` all have
+  approximately the same performance, however, there are more levels of
+  indirection when calling a keyword, less than when invoking a map, and
+  zero when calling `valAt`.
+- All other methods besides `get` are faster 
+- The fastest way to get a field from a record is a field accessor.
 
-| ![](images/get_keys_width_1.png) | ![](images/get-rec_keys_width_1.png) |
+| get from map                     | get from record                      |
 | :---:                            | :---:                                |
+| ![](images/get_keys_width_1.png) | ![](images/get-rec_keys_width_1.png) |
 
 ### assoc
 
