@@ -1,6 +1,12 @@
 # Change Log
 
-## [Unreleased] - 2020-01-31
+## [Unrealeased] - 2020-02-01
+
+### Add
+
+- memoize implementations and benchmarks
+
+## [0.0.3-alpha] - 2020-01-31
 
 ### Major changes
 
