@@ -61,6 +61,8 @@ explicitly or `def`ed in advance:
 (fast/inline-select-keys m [:a :b :c])
 
 (fast/inline-merge m1 m2 m3)
+
+(def assoc* (fast/memoize-c 3 assoc))
 ```
 
 ## Results
