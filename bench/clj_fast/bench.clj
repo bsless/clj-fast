@@ -85,7 +85,8 @@
 (def preds
   {:int? int?
    :keyword? keyword?
-   :string? string?})
+   :string? string?
+   :map? map?})
 
 (defn randkey
   [m]
@@ -841,6 +842,73 @@
 
   )
 
+;;; memoize
+
+(defn bench-memoize
+  [n [a1 a2 a3 a4]]
+  (let [f (memoize vector)]
+    (case n
+      1 (cc/quick-benchmark (f a1) nil)
+      2 (cc/quick-benchmark (f a1 a2) nil)
+      3 (cc/quick-benchmark (f a1 a2 a3) nil)
+      4 (cc/quick-benchmark (f a1 a2 a3 a4) nil)
+      )))
+
+(defn bench-memoize-n
+  [n [a1 a2 a3 a4]]
+  (case n
+    1 (let [f (sut/memoize* 1 vector)]
+      (cc/quick-benchmark (f a1) nil))
+    2 (let [f (sut/memoize* 2 vector)]
+        (cc/quick-benchmark (f a1 a2) nil))
+    3 (let [f (sut/memoize* 3 vector)]
+        (cc/quick-benchmark (f a1 a2 a3) nil))
+    4 (let [f (sut/memoize* 4 vector)]
+        (cc/quick-benchmark (f a1 a2 a3 a4) nil))
+    ))
+
+(defn bench-memoize-c
+  [n [a1 a2 a3 a4]]
+  (case n
+    1 (let [f (sut/memoize-c* 1 vector)]
+        (cc/quick-benchmark (f a1) nil))
+    2 (let [f (sut/memoize-c* 2 vector)]
+        (cc/quick-benchmark (f a1 a2) nil))
+    3 (let [f (sut/memoize-c* 3 vector)]
+        (cc/quick-benchmark (f a1 a2 a3) nil))
+    4 (let [f (sut/memoize-c* 4 vector)]
+        (cc/quick-benchmark (f a1 a2 a3 a4) nil))
+    ))
+
+(def memoize-benches
+  {:memoize bench-memoize
+   :memoize-n bench-memoize-n
+   :memoize-c bench-memoize-c})
+
+(defn bench-memoize-
+  [_ max-depth]
+  (vec
+   (for [depth (range 1 (inc max-depth))
+         pk [:map? :keyword? :int?]
+         :let [p (preds pk)
+               ms (genn depth p)]
+         k [:memoize :memoize-n :memoize-c]
+         :let [f (memoize-benches k)
+               _ (println 'BENCH k 'WIDTH 10 '* depth 'TYPE pk)
+               res (f depth ms)
+               mn (->ns (mean res))
+               ratio (int (/ mn depth))]]
+     {:bench k
+      :mean mn
+      :keys depth
+      :type pk
+      :ratio ratio
+      :width 1
+      :heap @max-memory
+      :gc @gcs})))
+
+;;; Executable
+
 (defn- parse-types
   [s]
   (mapv keyword (clojure.string/split s #" ")))
@@ -878,6 +946,7 @@
    :select-keys bench-select-keys-
    :assoc-in bench-assoc-in-
    :update-in bench-update-in-
+   :memoize bench-memoize-
    })
 
 (defn validate-args

@@ -4,6 +4,7 @@
 - [Benchmarks Results](#benchmarks-results)
     - [Test Methods](#test-methods)
         - [Running tests](#running-tests)
+        - [Generating results](#generating-results)
         - [Benchmarks framework](#benchmarks-framework)
         - [Profiles](#profiles)
     - [Results](#results)
@@ -22,24 +23,29 @@
             - [Results](#results-3)
                 - [Fast Map merge](#fast-map-merge)
                 - [Inline merge & fast merge](#inline-merge--fast-merge)
-            - [By keys](#by-keys-1)
             - [By width](#by-width-1)
+            - [By keys](#by-keys-1)
         - [get-in](#get-in)
             - [Test details](#test-details)
             - [Results](#results-4)
             - [By keys](#by-keys-2)
             - [By width](#by-width-2)
-        - [assoc-in](#assoc-in)
+        - [memoize](#memoize)
             - [Test details](#test-details-1)
             - [Results](#results-5)
+            - [By number of arguments](#by-number-of-arguments)
+            - [By type of arguments](#by-type-of-arguments)
+        - [assoc-in](#assoc-in)
+            - [Test details](#test-details-2)
+            - [Results](#results-6)
             - [By keys](#by-keys-3)
             - [By width](#by-width-3)
         - [update-in](#update-in)
             - [By keys](#by-keys-4)
             - [By width](#by-width-4)
         - [select-keys](#select-keys)
-            - [Test details](#test-details-2)
-            - [Results](#results-6)
+            - [Test details](#test-details-3)
+            - [Results](#results-7)
             - [By keys](#by-keys-5)
             - [By width](#by-width-5)
 
@@ -214,6 +220,34 @@ Inline implementation faster by a factor of 4-5.
 | ![](images/get-in_width_keys_1.png) | ![](images/get-in_width_keys_2.png) |
 | :---:                               | :---:                               |
 | ![](images/get-in_width_keys_3.png) | ![](images/get-in_width_keys_4.png) |
+
+### memoize
+
+Closely related to get-in
+
+#### Test details
+
+memoize was tested against an inlining implementation using a clojure atom
+(`memoize-n`) and one using a concurrent-hash-map (`memoize-c`)
+
+#### Results
+
+Different implementation are faster depending on the type of the memoized
+arguments:
+- `memoize-n` is better when all arguments are keywords or symbols.
+- `memoize-c` is better for any other case.
+
+#### By number of arguments
+
+| ![](images/memoize_keys_width_1.png) | ![](images/memoize_keys_width_2.png) |
+| :---:                               | :---:                               |
+| ![](images/memoize_keys_width_3.png) | ![](images/memoize_keys_width_4.png) |
+
+#### By type of arguments
+
+| ![](images/memoize_type_keys_int-p.png) | ![](images/memoize_type_keys_keyword-p.png) |
+| :---:                               | :---:                               |
+| ![](images/memoize_type_keys_map-p.png) |  |
 
 ### assoc-in
 
