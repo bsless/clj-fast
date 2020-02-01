@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unrealeased] - 2020-02-01
+## [0.0.4-alpha] - 2020-02-01
 
 ### Add
 

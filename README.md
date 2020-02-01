@@ -21,7 +21,7 @@ This repo provides a dual purpose:
 Add in your `project.clj`:
 
 ```clojure
-[bsless/clj-fast "0.0.3-alpha"]
+[bsless/clj-fast "0.0.4-alpha"]
 ```
 
 And require:
