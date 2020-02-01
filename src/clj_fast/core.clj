@@ -182,7 +182,7 @@
 
 (defn- do-assoc-in
   [m ks v]
-  (let [me {:tag clojure.lang.Associative}
+  (let [me {:tag 'clojure.lang.Associative}
         g (with-meta (gensym "m__") me)
         gs (repeatedly (count ks) #(with-meta (gensym) me))
         gs+ (list* g gs)
@@ -210,7 +210,7 @@
 
 (defn- do-update-in
   [m ks f args]
-  (let [me {:tag clojure.lang.Associative}
+  (let [me {:tag 'clojure.lang.Associative}
         g (with-meta (gensym "m__") me)
         gs (repeatedly (count ks) #(with-meta (gensym) me))
         gs+ (list* g gs)
@@ -238,10 +238,10 @@
 
 (defn entry-at
   {:inline
-   (fn [^clojure.lang.IPersistentMap m k]
+   (fn [m k]
      `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
   [^clojure.lang.IPersistentMap m k]
-  (.entryAt m k))
+  (.entryAt ^clojure.lang.IPersistentMap m k))
 
 (defmacro find-some-in
   [m ks]
@@ -282,10 +282,10 @@
 
 (defn chm-put!?
   {:inline
-   (fn [^ConcurrentHashMap m k v]
+   (fn [m k v]
      `(do (.putIfAbsent ~(with-meta m {:tag 'ConcurrentHashMap}) ~k ~v)
           ~m))}
-  [m k v]
+  [^ConcurrentHashMap m k v]
   (.putIfAbsent ^ConcurrentHashMap m k v) m)
 
 (defn chm?
@@ -297,16 +297,16 @@
 (defn chm-get
   [m k]
   {:inline
-   (fn [^ConcurrentHashMap m k]
+   (fn [m k]
      `(.get ~(with-meta m {:tag 'ConcurrentHashMap}) ~k)
      m)}
-  [m k]
+  [^ConcurrentHashMap m k]
   (.get ^ConcurrentHashMap m k))
 
 (defn chm-get?
   [m k]
   {:inline
-   (fn [^ConcurrentHashMap m k]
+   (fn [m k]
      `(when (chm? ~m)
         (.get ~(with-meta m {:tag 'ConcurrentHashMap}) ~k))
      m)}
