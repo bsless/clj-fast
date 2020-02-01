@@ -268,14 +268,21 @@
              (swap! mem# (fn [m# v#] (inline-assoc-in m# [~@args] v#)) ret#)
              ret#))))))
 
-(defn memoize*
-  [n f]
-  (case n
-    1 (memoize-n 1 f)
-    2 (memoize-n 2 f)
-    3 (memoize-n 3 f)
-    4 (memoize-n 4 f)
-    (memoize f)))
+(defmacro ^:private def-memoize*
+  "Define a function which dispatches to the memoizing macro `memo`
+  up to m, otherwise defaults to core/memoize"
+  [name memo m]
+  (let [cases
+        (mapcat (fn [n] `(~n (~memo ~n ~'f))) (range m))
+        ]
+    `(defn ~name
+       [~'n ~'f]
+       (case ~'n
+         ~@cases
+         (memoize ~'f)))))
+
+(declare memoize*)
+(def-memoize* memoize* memoize-n 8)
 
 (defn ->chm
   ([] (ConcurrentHashMap.)))
@@ -359,6 +366,8 @@
              (chm-put-in! mem# [~@args] ret#)
              ret#))))))
 
+(declare memoize-c*)
+(def-memoize* memoize-c* memoize-c 8)
 
 (comment
 
