@@ -215,6 +215,34 @@ Inline implementation faster by a factor of 4-5.
 | :---:                               | :---:                               |
 | ![](images/get-in_width_keys_3.png) | ![](images/get-in_width_keys_4.png) |
 
+### memoize
+
+Closely related to get-in
+
+#### Test details
+
+memoize was tested against an inlining implementation using a clojure atom
+(`memoize-n`) and one using a concurrent-hash-map (`memoize-c`)
+
+#### Results
+
+Different implementation are faster depending on the type of the memoized
+arguments:
+- `memoize-n` is better when all arguments are keywords or symbols.
+- `memoize-c` is better for any other case.
+
+#### By number of arguments
+
+| ![](images/memoize_keys_width_1.png) | ![](images/memoize_keys_width_2.png) |
+| :---:                               | :---:                               |
+| ![](images/memoize_keys_width_3.png) | ![](images/memoize_keys_width_4.png) |
+
+#### By type of arguments
+
+| ![](images/memoize_type_keys_int-p.png) | ![](images/memoize_type_keys_keyword-p.png) |
+| :---:                               | :---:                               |
+| ![](images/memoize_type_keys_map-p.png) |  |
+
 ### assoc-in
 
 #### Test details
