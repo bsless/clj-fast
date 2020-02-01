@@ -98,6 +98,14 @@ See [results.md](doc/results.md) for experiments' detailed benchmark results.
 - `inline-get-some-in`: same as above, but maps can be invoked on the
   keys. nil checks every iteration.
 
+### Memoize
+
+ - `memoize-n` / `memoize-c`: Both implemented the same but on differing
+ underlying data structures, nested map in an atom and a nested concurrent
+ hash map, respectively. The main difference from core memoize is a
+ requirement that the arity to be memoized be specified at call time.
+ This allows inlining and better results.
+
 ### Assoc in
 
 - `inline-assoc-in`: same as `inline-get-in` but with `assoc-in`.
