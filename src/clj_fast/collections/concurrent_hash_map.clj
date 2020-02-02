@@ -6,16 +6,18 @@
   (:import
    [java.util.concurrent ConcurrentHashMap]))
 
+(def ^:const t {:tag 'java.util.concurrent.ConcurrentHashMap})
+
 (defn ->concurrent-hash-map
   ([] (ConcurrentHashMap.)))
 
 (defn put!?
   {:inline
    (fn [m k v]
-     `(do (.putIfAbsent ~(with-meta m {:tag 'ConcurrentHashMap}) ~k ~v)
+     `(do (.putIfAbsent ~(with-meta m t) ~k ~v)
           ~m))}
-  [^ConcurrentHashMap m k v]
-  (.putIfAbsent ^ConcurrentHashMap m k v) m)
+  [^java.util.concurrent.ConcurrentHashMap m k v]
+  (.putIfAbsent ^java.util.concurrent.ConcurrentHashMap m k v) m)
 
 (defn concurrent-hash-map?
   {:inline
@@ -27,21 +29,21 @@
   [m k]
   {:inline
    (fn [m k]
-     `(.get ~(with-meta m {:tag 'ConcurrentHashMap}) ~k)
+     `(.get ~(with-meta m t) ~k)
      m)}
-  [^ConcurrentHashMap m k]
-  (.get ^ConcurrentHashMap m k))
+  [^java.util.concurrent.ConcurrentHashMap m k]
+  (.get ^java.util.concurrent.ConcurrentHashMap m k))
 
 (defn get?
   [m k]
   {:inline
    (fn [m k]
      `(when (concurrent-hash-map? ~m)
-        (.get ~(with-meta m {:tag 'ConcurrentHashMap}) ~k))
+        (.get ~(with-meta m t) ~k))
      m)}
   [m k]
   (when (concurrent-hash-map? m)
-    (.get ^ConcurrentHashMap m k)))
+    (.get ^java.util.concurrent.ConcurrentHashMap m k)))
 
 (defmacro get-in?
   [m ks]
