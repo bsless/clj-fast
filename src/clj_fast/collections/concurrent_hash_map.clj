@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [get])
   (:require
    [clj-fast
-    [util :as u]])
+    [util :as u]
+    [lens :as lens]])
   (:import
    [java.util.concurrent ConcurrentHashMap]))
 
@@ -47,37 +48,16 @@
 
 (defmacro get-in?
   [m ks]
-  (let [ks (u/simple-seq ks)
-        sym (gensym "m__")
-        steps
-        (map (fn [step] `(if (nil? ~sym) nil (get? ~sym ~step)))
-             ks)]
-    `(let [~sym ~m
-           ~@(interleave (repeat sym) steps)]
-       ~sym)))
+  (lens/get-some
+   (fn [m k] `(get? ~m ~k))
+   m ks))
 
 (defmacro put-in!
   [m ks v]
-  (let [me {:tag 'ConcurrentHashMap}
-        g (with-meta (gensym "m__") me)
-        gs (repeatedly (count ks) #(with-meta (gensym) me))
-        gs+ (list* g gs)
-        bs
-        (into
-         [g m]
-         (mapcat (fn [g- g k]
-                   [g- `(or (get? ~g ~k) (->concurrent-hash-map))])
-                 (butlast gs)
-                 gs+
-                 ks))
-        iter
-        (fn iter
-          [[sym & syms] [k & ks] v]
-          (if ks
-            `(put!? ~sym ~k ~(iter syms ks v))
-            `(put!? ~sym ~k ~v)))]
-    `(let ~bs
-       ~(iter gs+ ks v))))
+  (lens/put
+   (fn [m k v] `(put!? ~m ~k ~v))
+   (fn [m k] `(or (get? ~m ~k) (->concurrent-hash-map)))
+   m (u/simple-seq ks) v))
 
 (defmacro memoize-c
   [n f]
