@@ -1,5 +1,12 @@
 (ns clj-fast.core)
 
+(defn val-at
+  {:inline
+   (fn [m k]
+     `(.valAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
+  [^clojure.lang.IPersistentMap m k]
+  (.valAt ^clojure.lang.IPersistentMap m k))
+
 ;;; Credit Metosin
 ;;; https://github.com/metosin/reitit/blob/0bcfda755f139d14cf4eff37e2b294f573215213/modules/reitit-core/src/reitit/impl.cljc#L136
 (defn fast-assoc
