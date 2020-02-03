@@ -152,7 +152,7 @@
         (update :merge #(remove (comp #{1} :keys) %))))
 
   (def all-charts
-    (conj
+    (merge
      (common-charts raw-data)
      (chart-get :get raw-data)
      (chart-get :get-rec raw-data)
