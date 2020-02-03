@@ -1,5 +1,12 @@
 (ns clj-fast.core)
 
+(defn entry-at
+  {:inline
+   (fn [m k]
+     `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
+  [^clojure.lang.IPersistentMap m k]
+  (.entryAt ^clojure.lang.IPersistentMap m k))
+
 (defn val-at
   {:inline
    (fn [m k]
@@ -35,10 +42,3 @@
        (.assoc acc k v)
        acc))
    r))
-
-(defn entry-at
-  {:inline
-   (fn [m k]
-     `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
-  [^clojure.lang.IPersistentMap m k]
-  (.entryAt ^clojure.lang.IPersistentMap m k))
