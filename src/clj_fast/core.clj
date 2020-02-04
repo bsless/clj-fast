@@ -19,7 +19,7 @@
 (defn fast-assoc
   {:inline
    (fn [a k v]
-     `(.assoc ~(with-meta a {:tag 'clojure.lang.Assciative}) ~k ~v))}
+     `(.assoc ~(with-meta a {:tag 'clojure.lang.Associative}) ~k ~v))}
   [^clojure.lang.Associative a k v]
   (.assoc ^clojure.lang.Associative a k v))
 
