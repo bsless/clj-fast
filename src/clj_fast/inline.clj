@@ -1,5 +1,6 @@
 (ns clj-fast.inline
-  (:refer-clojure :exclude [merge get-in assoc-in update-in select-keys])
+  (:refer-clojure
+   :exclude [assoc merge get-in assoc-in update-in select-keys])
   (:require
    [clojure.core :as c]
    [clj-fast.util :as u]
@@ -7,9 +8,18 @@
    [clj-fast.lens :as lens]
    [clj-fast.collections.concurrent-hash-map :as chm]))
 
-(defmacro fast-assoc*
+(defmacro assoc
+  "Like core/assoc but inlines the association to all the arguments."
   [m & kvs]
-  {:pre [(even? (count kvs))]}
+  {:pre [(sequential? kvs) (even? (count kvs))]}
+  (let [chain#
+        (map (fn [[k v]] `(c/assoc ~k ~v)) (partition 2 kvs))]
+    `(-> ~m ~@chain#)))
+
+(defmacro fast-assoc
+  "Like assoc but uses fast-assoc instead."
+  [m & kvs]
+  {:pre [(sequential? kvs) (even? (count kvs))]}
   (let [chain#
         (map (fn [[k v]] `(f/fast-assoc ~k ~v)) (partition 2 kvs))]
     `(-> ~m ~@chain#)))

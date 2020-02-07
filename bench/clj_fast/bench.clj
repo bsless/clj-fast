@@ -127,6 +127,14 @@
     3 (cc/quick-benchmark (assoc m k1 1 k2 2 k3 3) nil)
     4 (cc/quick-benchmark (assoc m k1 1 k2 2 k3 3 k4 4) nil)))
 
+(defn bench-inline-assoc*
+  [n m [k1 k2 k3 k4]]
+  (case n
+    1 (cc/quick-benchmark (inline/assoc m k1 1) nil)
+    2 (cc/quick-benchmark (inline/assoc m k1 1 k2 2) nil)
+    3 (cc/quick-benchmark (inline/assoc m k1 1 k2 2 k3 3) nil)
+    4 (cc/quick-benchmark (inline/assoc m k1 1 k2 2 k3 3 k4 4) nil)))
+
 (defn bench-assoc-rec*
   [m n]
   (case n
@@ -138,18 +146,18 @@
 (defn bench-fast-assoc*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (inline/fast-assoc* m k1 1) nil)
-    2 (cc/quick-benchmark (inline/fast-assoc* m k1 1 k2 2) nil)
-    3 (cc/quick-benchmark (inline/fast-assoc* m k1 1 k2 2 k3 3) nil)
-    4 (cc/quick-benchmark (inline/fast-assoc* m k1 1 k2 2 k3 3 k4 4) nil)))
+    1 (cc/quick-benchmark (inline/fast-assoc m k1 1) nil)
+    2 (cc/quick-benchmark (inline/fast-assoc m k1 1 k2 2) nil)
+    3 (cc/quick-benchmark (inline/fast-assoc m k1 1 k2 2 k3 3) nil)
+    4 (cc/quick-benchmark (inline/fast-assoc m k1 1 k2 2 k3 3 k4 4) nil)))
 
 (defn bench-fast-assoc-rec*
   [m n]
   (case n
-    1 (cc/quick-benchmark (inline/fast-assoc* m :x 0) nil)
-    2 (cc/quick-benchmark (inline/fast-assoc* m :x 0 :y 1) nil)
-    3 (cc/quick-benchmark (inline/fast-assoc* m :x 0 :y 1 :z 2) nil)
-    4 (cc/quick-benchmark (inline/fast-assoc* m :x 0 :y 1 :z 2 :w 3) nil)))
+    1 (cc/quick-benchmark (inline/fast-assoc m :x 0) nil)
+    2 (cc/quick-benchmark (inline/fast-assoc m :x 0 :y 1) nil)
+    3 (cc/quick-benchmark (inline/fast-assoc m :x 0 :y 1 :z 2) nil)
+    4 (cc/quick-benchmark (inline/fast-assoc m :x 0 :y 1 :z 2 :w 3) nil)))
 
 (def assoc-rec-fns
   {:assoc-rec        bench-assoc-rec*
