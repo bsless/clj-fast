@@ -24,45 +24,79 @@ Add in your `project.clj`:
 [bsless/clj-fast "0.0.4-alpha"]
 ```
 
-And require:
+### Functions and Macros
+
+#### Fast(er) Functions
 
 ```clojure
 (require '[clj-fast.core :as fast])
 ```
 
-### Functions and Macros
-
-#### Fast(er) Functions
-
+- `entry-at`: used like `find` but doesn't dispatch and has inline
+  definition. Works for `IPersistentMap`.
+- `val-at`: used like `get` but doesn't dispatch and has inline
+  definition. Works for `IPersistentMap`.
 - `fast-assoc`: Used like `assoc` but doesn't take variable key-values,
-  only one pair.
-- `fast-map` & `fast-get`: Wrappers for `java.util.HashMap`.
+  only one pair and has inline definition. Works on `Associative`.
 - `fast-map-merge`: Slightly faster version for `merge`, takes only 2
   maps.
+- `rmerge!`: merges a map into a transient map.
+
+#### Collections
+
+##### HashMap
+
+```clojure
+(require '[clj-fast.collections.hash-map :as hm])
+```
+
+- `->hashmap`: wraps `HashMap`'s constructor.
+- `get`: wraps method call for `HashMap`'s `get`. Has inline definition.
+- `put`: wraps method call for `HashMap`'s `put`. Has inline definition.
+
+##### ConcurrentHashMap
+
+```clojure
+(require '[clj-fast.collections.concurrent-hash-map :as chm])
+```
+
+- `->concurrent-hash-map`: constructor.
+- `concurrent-hash-map?`: instance check.
+- `put!?`: `putIfAbsent`.
+- `get`
+- `get?`: get if is a concurrent hash map.
+- `get-in?`: like clojure core's get-in but for nested concurrent hash maps.
+- `put-in!`: like clojure core's assoc-in but for nested concurrent hash maps.
 
 #### Inline Macros
 
+```clojure
+(require '[clj-fast.inline :as inline])
+```
+
 Like regular core functions but sequence arguments must be written
-explicitly or `def`ed in advance:
+explicitly for static analysis or `def`ed in advance (i.e. `resolve`-able).
+
+Examples:
 
 ```clojure
 (def ks [:a :b])
 
-(fast/inline-get-in m ks)
+(inline/get-in m ks)
 
-(fast/inline-get-in m [:c :d])
+(inline/get-in m [:c :d])
 
-(fast/inline-get-some-in m [:c :d])
+(inline/get-some-in m [:c :d])
 
-(fast/inline-assoc-in m [:c :d] foo)
+(inline/assoc-in m [:c :d] foo)
 
-(fast/inline-update-in m [:c :d] inc)
+(inline/update-in m [:c :d] inc)
 
-(fast/inline-select-keys m [:a :b :c])
+(inline/select-keys m [:a :b :c])
 
-(fast/inline-merge m1 m2 m3)
+(inline/merge m1 m2 m3)
 
-(def assoc* (fast/memoize-c 3 assoc))
+(def assoc* (inline/memoize-c 3 assoc))
 ```
 
 ## Results
