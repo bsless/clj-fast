@@ -42,31 +42,6 @@ Add in your `project.clj`:
   maps.
 - `rmerge!`: merges a map into a transient map.
 
-#### Collections
-
-##### HashMap
-
-```clojure
-(require '[clj-fast.collections.hash-map :as hm])
-```
-
-- `->hashmap`: wraps `HashMap`'s constructor.
-- `get`: wraps method call for `HashMap`'s `get`. Has inline definition.
-- `put`: wraps method call for `HashMap`'s `put`. Has inline definition.
-
-##### ConcurrentHashMap
-
-```clojure
-(require '[clj-fast.collections.concurrent-hash-map :as chm])
-```
-
-- `->concurrent-hash-map`: constructor.
-- `concurrent-hash-map?`: instance check.
-- `put!?`: `putIfAbsent`.
-- `get`
-- `get?`: get if is a concurrent hash map.
-- `get-in?`: like clojure core's get-in but for nested concurrent hash maps.
-- `put-in!`: like clojure core's assoc-in but for nested concurrent hash maps.
 
 #### Inline Macros
 
@@ -98,6 +73,32 @@ Examples:
 
 (def assoc* (inline/memoize-c 3 assoc))
 ```
+
+#### Collections
+
+##### HashMap
+
+```clojure
+(require '[clj-fast.collections.hash-map :as hm])
+```
+
+- `->hashmap`: wraps `HashMap`'s constructor.
+- `get`: wraps method call for `HashMap`'s `get`. Has inline definition.
+- `put`: wraps method call for `HashMap`'s `put`. Has inline definition.
+
+##### ConcurrentHashMap
+
+```clojure
+(require '[clj-fast.collections.concurrent-hash-map :as chm])
+```
+
+- `->concurrent-hash-map`: constructor.
+- `concurrent-hash-map?`: instance check.
+- `put!?`: `putIfAbsent`.
+- `get`
+- `get?`: get if is a concurrent hash map.
+- `get-in?`: like clojure core's get-in but for nested concurrent hash maps.
+- `put-in!`: like clojure core's assoc-in but for nested concurrent hash maps.
 
 ## Results
 
