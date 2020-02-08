@@ -15,6 +15,19 @@ This repo serves a dual purpose:
 - Reference guide on the performance characteristics of different ways
   of using Clojure's data structures.
 
+What makes it possible?
+
+Plenty of Clojure's core functions are implemented to be generic (good)
+and to accept a variable number of arguments (also very good). The
+problem is that we pay for this in performance. Wherever we iterate over
+a sequence of input arguments or dispatch on the class, we lose on
+performance, especially when iterating on arguments and calling `next`,
+`more` or `rest` repeatedly.
+
+Plenty of these behaviors are just forms of flow-control, and like `and`
+and `or`, other forms of flow control can too be statically analyzed,
+under certain constraints, and replaced by faster code.
+
 ## Usage
 
 ### Requirements
