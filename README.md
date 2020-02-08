@@ -8,7 +8,8 @@ Some of the code is based on implementations in metosin's projects. Credit in co
 
 ## Purpose
 
-This repo provides a dual purpose:
+This repo serves a dual purpose:
+
 - Providing faster implementations of Clojure's core functions as
   macros.
 - Reference guide on the performance characteristics of different ways
