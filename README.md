@@ -101,6 +101,45 @@ Examples:
 - `get-in?`: like clojure core's get-in but for nested concurrent hash maps.
 - `put-in!`: like clojure core's assoc-in but for nested concurrent hash maps.
 
+#### Lenses
+
+```clojure
+(require '[clj-fast.lens :as lens])
+```
+
+In typed functional programming, lenses are a generic way of getting
+and setting nested data structures (records).
+
+In this context, the `lens` namespace implements the basic code structure
+underlying Clojure's `get-in`, `some->`, `assoc-in` and `update-in`.
+They can be used in macros to expand to real code provided an appropriate
+1-depth `get` and/or `put` transformer, which takes arguments and returns
+an expression.
+
+For example, the `get-some` lens is used to define `inline/get-some-in`:
+
+```clojure
+(defmacro get-some-in
+  [m ks]
+  (lens/get-some (fn [m k] `(~m ~k)) m ks))
+```
+
+Similarly, for `assoc-in`:
+
+```clojure
+(defmacro assoc-in
+  [m ks v]
+  (lens/put
+   (fn [m k v] `(c/assoc ~m ~k ~v))
+   (fn [m k] `(c/get ~m ~k))
+   m
+   (u/simple-seq ks)
+   v))
+```
+
+So be careful, these are not functional programming lenses, but
+metaprogramming lenses used for code generation.
+
 ## Results
 
 See [results.md](doc/results.md) for experiments' detailed benchmark results.
