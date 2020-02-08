@@ -174,7 +174,7 @@
 
   (def charts
     (common-charts
-     raw-data :type :keys))
+     (select-keys raw-data [:memoize]) :type :keys))
 
   (write-charts charts)
 
