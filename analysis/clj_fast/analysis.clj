@@ -158,14 +158,19 @@
      (chart-get :get-rec raw-data)
      (chart-assoc-rec raw-data)))
 
-  (logify :merge all-charts)
-
   ;;; Format merge nicely because the results vary widely
   (map (fn [e c] (set-log-axis! c e))
        [3 4 5 6 7]
        (vals (get-in all-charts [:merge :width])))
 
+  (map (fn [e c] (set-log-axis! c e))
+       [3 3 3 3 3]
+       (vals (get-in all-charts [:merge :keys])))
+
+  (logify :merge all-charts)
+
   (write-charts all-charts)
+  (write-charts (select-keys all-charts [:merge]))
 
   ;;; memoize results
   (def raw-data
