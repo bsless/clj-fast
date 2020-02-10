@@ -399,72 +399,6 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-get-in
-  []
-  (title "get-in")
-
-  (title "get-in 1")
-  (let [m {:d 1}]
-    (cc/quick-bench
-     (get-in m [:d])))
-
-  (title "fast get-in 1")
-  (let [m {:d 1}]
-    (cc/quick-bench
-     (inline/get-in m [:d])))
-
-  (title "get some in 1")
-  (let [m {:a 1}]
-    (cc/quick-bench
-     (inline/get-some-in m [:a])))
-
-  (title "get-in 2")
-  (let [m {:c {:d 1}}]
-    (cc/quick-bench
-     (get-in m [:c :d])))
-
-  (title "fast get-in 2")
-  (let [m {:c {:d 1}}]
-    (cc/quick-bench
-     (inline/get-in m [:c :d])))
-
-  (title "get some in 2")
-  (let [m {:a {:b 1}}]
-    (cc/quick-bench
-     (inline/get-some-in m [:a :b])))
-
-  (title "get-in 3")
-  (let [m {:b {:c {:d 1}}}]
-    (cc/quick-bench
-     (get-in m [:b :c :d])))
-
-  (title "fast get-in 3")
-  (let [m {:b {:c {:d 1}}}]
-    (cc/quick-bench
-     (inline/get-in m [:b :c :d])))
-
-  (title "get some in 3")
-  (let [m {:a {:b {:c 1}}}]
-    (cc/quick-bench
-     (inline/get-some-in m [:a :b :c])))
-
-  (title "get-in 4")
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (cc/quick-bench
-     (get-in m [:a :b :c :d]))) ;; 195.077302 ns
-
-  (title "fast get-in 4")
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (cc/quick-bench
-     (inline/get-in m [:a :b :c :d]))) ;; 37.911144 ns
-
-  (title "get some in 4")
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (cc/quick-bench
-     (inline/get-some-in m [:a :b :c :d])))
-
-  )
-
 ;;; SELECT-KEYS
 
 (defn bench-select-keys*
@@ -507,53 +441,6 @@
       :width e
       :heap @max-memory
       :gc @gcs})))
-
-(defn bench-select-keys
-  []
-
-  (title "select keys")
-
-  (title "select 1/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a])))
-
-  (title "fast select 1/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (inline/select-keys m [:a])))
-
-  (title "select 2/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a :b])))
-
-  (title "fast select 2/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (inline/select-keys m [:a :b])))
-
-  (title "select 3/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a :b :c])))
-
-  (title "fast select 3/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (inline/select-keys m [:a :b :c])))
-
-  (title "select 4/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a :b :c :d])))
-
-  (title "fast select 4/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (inline/select-keys m [:a :b :c :d])))
-
-  )
 
 ;;; ASSOC-IN
 
@@ -598,31 +485,6 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-assoc-in
-  []
-
-  (title "Assoc In")
-
-  (title "assoc-in 1")
-  (cc/quick-bench (assoc-in {} [1] 2))
-  (title "assoc-in 2")
-  (cc/quick-bench (assoc-in {} [1 2] 3))
-  (title "assoc-in 3")
-  (cc/quick-bench (assoc-in {} [1 2 3] 4))
-  (title "assoc-in 4")
-  (cc/quick-bench (assoc-in {} [1 2 3 4] 5))
-
-
-  (title "inline-assoc-in 1")
-  (criterium.core/quick-bench (inline/assoc-in {} [1] 2))
-  (title "inline-assoc-in 2")
-  (criterium.core/quick-bench (inline/assoc-in {} [1 2] 3))
-  (title "inline-assoc-in 3")
-  (criterium.core/quick-bench (inline/assoc-in {} [1 2 3] 4))
-  (title "inline-assoc-in 4")
-  (criterium.core/quick-bench (inline/assoc-in {} [1 2 3 4] 5))
-
-  )
 
 ;;; UPDATE-IN
 
@@ -666,37 +528,6 @@
       :width e
       :heap @max-memory
       :gc @gcs})))
-
-(defn bench-update-in
-  []
-
-  (title "Update In")
-
-  (let [m {:a 1}]
-    (title "update-in 1")
-    (cc/quick-bench (update-in m [:a] identity))
-    (title "inline-update-in 1")
-    (cc/quick-bench (inline/update-in m [:a] identity)))
-
-  (let [m {:a {:b 1}}]
-    (title "update-in 2")
-    (cc/quick-bench (update-in m [:a :b] identity))
-    (title "inline-update-in 2")
-    (cc/quick-bench (inline/update-in m [:a :b] identity)))
-
-  (let [m {:a {:b {:c 1}}}]
-    (title "update-in 3")
-    (cc/quick-bench (update-in m [:a :b :c] identity))
-    (title "inline-update-in 3")
-    (cc/quick-bench (inline/update-in m [:a :b :c] identity)))
-
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (title "update-in 4")
-    (cc/quick-bench (update-in m [:a :b :c :d] identity))
-    (title "inline-update-in 4")
-    (cc/quick-bench (inline/update-in m [:a :b :c :d] identity)))
-
-  )
 
 ;;; memoize
 
