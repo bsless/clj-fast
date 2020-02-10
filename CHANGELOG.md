@@ -1,5 +1,21 @@
 # Change Log
 
+## Unreleased - 2020-02-10
+
+### Major changes
+
+- Reorganize namespaces and file structure:
+  - clj-fast
+    - core: low level functions operating directly on Clojure data
+      structures and Metosin functions
+    - inline: inline implementations of core Clojure functions
+    - lens: macro implementations of lenses
+    - util: utility functions used as by macros.
+    - collections
+      - hash-map: functions to operate directly on hash maps
+      - concurrent-hash-map: functions to operate directly on concurrent hash map
+- Add slow benchmarking option to benchmarks namespaces.
+
 ## [0.0.4-alpha] - 2020-02-01
 
 ### Add
