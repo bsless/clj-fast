@@ -174,7 +174,7 @@
   {:assoc            bench-assoc*
    :fast-assoc       bench-fast-assoc*})
 
-(defn bench-assoc-
+(defn bench-assoc
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -199,7 +199,7 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-assoc-rec-
+(defn bench-assoc-rec
   [_ _]
   (vec
    (let [m (->Foo 1 2 3 4)]
@@ -241,7 +241,7 @@
       :field (bench (.c ^Foo r))
       :val-at (bench (.valAt ^Foo r k)))))
 
-(defn bench-get-
+(defn bench-get
   [max-log-size _]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -265,7 +265,7 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-get-rec-
+(defn bench-get-rec
   [_ _]
   (let [r (->Foo 1 2 3 4)]
     (vec
@@ -323,7 +323,7 @@
    :inline-fast-map-merge bench-inline-fast-map-merge*
    :inline-tmerge bench-inline-tmerge*})
 
-(defn bench-merge-
+(defn bench-merge
   [max-log-size nmaps]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -374,7 +374,7 @@
    :inline-get-in bench-inline-get-in*
    :inline-get-some-in bench-inline-get-some-in*})
 
-(defn bench-get-in-
+(defn bench-get-in
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -417,7 +417,7 @@
   {:select-keys bench-select-keys*
    :inline-select-keys bench-inline-select-keys*})
 
-(defn bench-select-keys-
+(defn bench-select-keys
   [max-log-size max-width]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -460,7 +460,7 @@
   {:assoc-in bench-assoc-in*
    :inline-assoc-in bench-inline-assoc-in*})
 
-(defn bench-assoc-in-
+(defn bench-assoc-in
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -504,7 +504,7 @@
   {:update-in bench-update-in*
    :inline-update-in bench-inline-update-in*})
 
-(defn bench-update-in-
+(defn bench-update-in
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -531,7 +531,7 @@
 
 ;;; memoize
 
-(defn bench-memoize
+(defn bench-memoize*
   [n [a1 a2 a3 a4]]
   (let [f (memoize vector)]
     (case n
@@ -568,11 +568,11 @@
     ))
 
 (def memoize-benches
-  {:memoize bench-memoize
+  {:memoize bench-memoize*
    :memoize-n bench-memoize-n
    :memoize-c bench-memoize-c})
 
-(defn bench-memoize-
+(defn bench-memoize
   [_ max-depth]
   (vec
    (for [depth (range 1 (inc max-depth))
@@ -627,16 +627,16 @@
 
 (def benches
   {
-   :get bench-get-
-   :get-rec bench-get-rec-
-   :get-in bench-get-in-
-   :assoc bench-assoc-
-   :assoc-rec bench-assoc-rec-
-   :merge bench-merge-
-   :select-keys bench-select-keys-
-   :assoc-in bench-assoc-in-
-   :update-in bench-update-in-
-   :memoize bench-memoize-
+   :get bench-get
+   :get-rec bench-get-rec
+   :get-in bench-get-in
+   :assoc bench-assoc
+   :assoc-rec bench-assoc-rec
+   :merge bench-merge
+   :select-keys bench-select-keys
+   :assoc-in bench-assoc-in
+   :update-in bench-update-in
+   :memoize bench-memoize
    })
 
 (defn validate-args
