@@ -9,10 +9,10 @@
    [clojure.spec.gen.alpha :as gen])
   (:gen-class))
 
-;;; JVM utilities
-
 (def ^:dynamic *types* [:int? :keyword? :string?])
 (def ^:dynamic *quick* true)
+
+;;; JVM utilities
 
 (defmacro bench
   [expr]
