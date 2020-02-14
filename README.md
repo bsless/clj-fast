@@ -71,6 +71,10 @@ Examples:
 ```clojure
 (def ks [:a :b])
 
+(inline/assoc m :a 1 :b 2)
+
+(inline/fast-assoc m :a 1 :b 2)
+
 (inline/get-in m ks)
 
 (inline/get-in m [:c :d])
@@ -87,6 +91,31 @@ Examples:
 
 (def assoc* (inline/memoize-c 3 assoc))
 ```
+
+##### Differences from core functions
+
+Besides being macros and requiring the keys to be statically defined,
+there are some other differences between the inline macros' and core
+functions' behavior:
+
+- `select-keys`: If a key is absent in the source map, it will contain
+  `nil` in the target map.
+
+##### Additions
+
+- `fast-assoc`: inlines in the same manner of `assoc` but uses
+  `clj-fast.core/fast-assoc` instead.
+- `fast-map-merge`: inlines in the same manner of `merge` but uses
+  `clj-fast.core/fast-map-merge` instead (Metosin).
+- `get-some-in`: Like `get-in` at the expense of working only on callables
+  (objects implementing `clojure.lang.IFn`).
+- `find-some-in`: like `get-some-in` but returns a map-entry in the end,
+  like `find`.
+- `memoize*` & `memoize-c*`: Alternative implementations for memoization
+  using a nested Clojure hash map and a nested Java concurrent hash map
+  respectively. Fall back to `core/memoize` for large arities. Due to
+  the cost of hashing objects in Clojure, it's recommended to use
+  `memoize-c*` for most use cases.
 
 #### Collections
 
