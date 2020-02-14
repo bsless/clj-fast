@@ -152,20 +152,25 @@
         (update :merge #(remove (comp #{1} :keys) %))))
 
   (def all-charts
-    (conj
+    (merge
      (common-charts raw-data)
      (chart-get :get raw-data)
      (chart-get :get-rec raw-data)
      (chart-assoc-rec raw-data)))
-
-  (logify :merge all-charts)
 
   ;;; Format merge nicely because the results vary widely
   (map (fn [e c] (set-log-axis! c e))
        [3 4 5 6 7]
        (vals (get-in all-charts [:merge :width])))
 
+  (map (fn [e c] (set-log-axis! c e))
+       [3 3 3 3 3]
+       (vals (get-in all-charts [:merge :keys])))
+
+  (logify :merge all-charts)
+
   (write-charts all-charts)
+  (write-charts (select-keys all-charts [:merge]))
 
   ;;; memoize results
   (def raw-data
@@ -174,7 +179,7 @@
 
   (def charts
     (common-charts
-     raw-data :type :keys))
+     (select-keys raw-data [:memoize]) :type :keys))
 
   (write-charts charts)
 

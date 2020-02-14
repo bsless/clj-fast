@@ -57,14 +57,16 @@
 ### Running tests
 
 ```bash
-lein uberjar
-java -Xmx8G -Xms8G -XX:+UseG1GC \
-  -jar target/uberjar/clj-fast-0.0.2-alpha-standalone.jar \
-  --max-width 5 \
-  --max-depth 5 \
-  --types "keyword?" \
-  --name all \
-  get get-rec get-in assoc assoc-rec merge select-keys assoc-in update-in
+lein do clean, uberjar
+java -Xmx8G -Xms8G \
+     -XX:+UseG1GC \
+     -jar target/clj-fast-0.0.4-alpha-standalone.jar \
+     --max-width 4 \
+     --max-depth 4 \
+     --quick false \
+     --types "keyword?" \
+     --name new \
+     assoc assoc-in assoc-rec get get-in get-rec memoize merge select-keys update-in
 ```
 
 ### Generating results

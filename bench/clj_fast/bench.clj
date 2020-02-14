@@ -1,16 +1,26 @@
 (ns clj-fast.bench
   (:require
    [clojure.set]
+   [clojure.string]
+   [clojure.java.io]
    [clojure.tools.cli :as cli]
-   [clj-fast.core :as sut]
+   [clj-fast.inline :as inline]
+   [clj-fast.collections.hash-map :as hm]
    [criterium.core :as cc]
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen])
   (:gen-class))
 
+(def ^:dynamic *types* [:int? :keyword? :string?])
+(def ^:dynamic *quick* true)
+
 ;;; JVM utilities
 
-(def ^:dynamic *types* [:int? :keyword? :string?])
+(defmacro bench
+  [expr]
+  `(if *quick*
+     (cc/quick-benchmark ~expr nil)
+     (cc/benchmark ~expr nil)))
 
 (defn get-max-memory
   []
@@ -103,15 +113,6 @@
            ks))]
     (iter mm [])))
 
-;; Credit metosin
-(defn title [s]
-  (println
-   (str "\n\u001B[35m"
-        (apply str (repeat (+ 6 (count s)) "#"))
-        "\n## " s " ##\n"
-        (apply str (repeat (+ 6 (count s)) "#"))
-        "\u001B[0m\n")))
-
 ;;; Benches
 
 (comment)
@@ -121,34 +122,42 @@
 (defn bench-assoc*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (assoc m k1 1) nil)
-    2 (cc/quick-benchmark (assoc m k1 1 k2 2) nil)
-    3 (cc/quick-benchmark (assoc m k1 1 k2 2 k3 3) nil)
-    4 (cc/quick-benchmark (assoc m k1 1 k2 2 k3 3 k4 4) nil)))
+    1 (bench (assoc m k1 1))
+    2 (bench (assoc m k1 1 k2 2))
+    3 (bench (assoc m k1 1 k2 2 k3 3))
+    4 (bench (assoc m k1 1 k2 2 k3 3 k4 4))))
+
+(defn bench-inline-assoc*
+  [n m [k1 k2 k3 k4]]
+  (case n
+    1 (bench (inline/assoc m k1 1))
+    2 (bench (inline/assoc m k1 1 k2 2))
+    3 (bench (inline/assoc m k1 1 k2 2 k3 3))
+    4 (bench (inline/assoc m k1 1 k2 2 k3 3 k4 4))))
 
 (defn bench-assoc-rec*
   [m n]
   (case n
-    1 (cc/quick-benchmark (assoc m :x 0) nil)
-    2 (cc/quick-benchmark (assoc m :x 0 :y 1) nil)
-    3 (cc/quick-benchmark (assoc m :x 0 :y 1 :z 2) nil)
-    4 (cc/quick-benchmark (assoc m :x 0 :y 1 :z 2 :w 3) nil)))
+    1 (bench (assoc m :x 0))
+    2 (bench (assoc m :x 0 :y 1))
+    3 (bench (assoc m :x 0 :y 1 :z 2))
+    4 (bench (assoc m :x 0 :y 1 :z 2 :w 3))))
 
 (defn bench-fast-assoc*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/fast-assoc* m k1 1) nil)
-    2 (cc/quick-benchmark (sut/fast-assoc* m k1 1 k2 2) nil)
-    3 (cc/quick-benchmark (sut/fast-assoc* m k1 1 k2 2 k3 3) nil)
-    4 (cc/quick-benchmark (sut/fast-assoc* m k1 1 k2 2 k3 3 k4 4) nil)))
+    1 (bench (inline/fast-assoc m k1 1))
+    2 (bench (inline/fast-assoc m k1 1 k2 2))
+    3 (bench (inline/fast-assoc m k1 1 k2 2 k3 3))
+    4 (bench (inline/fast-assoc m k1 1 k2 2 k3 3 k4 4))))
 
 (defn bench-fast-assoc-rec*
   [m n]
   (case n
-    1 (cc/quick-benchmark (sut/fast-assoc* m :x 0) nil)
-    2 (cc/quick-benchmark (sut/fast-assoc* m :x 0 :y 1) nil)
-    3 (cc/quick-benchmark (sut/fast-assoc* m :x 0 :y 1 :z 2) nil)
-    4 (cc/quick-benchmark (sut/fast-assoc* m :x 0 :y 1 :z 2 :w 3) nil)))
+    1 (bench (inline/fast-assoc m :x 0))
+    2 (bench (inline/fast-assoc m :x 0 :y 1))
+    3 (bench (inline/fast-assoc m :x 0 :y 1 :z 2))
+    4 (bench (inline/fast-assoc m :x 0 :y 1 :z 2 :w 3))))
 
 (def assoc-rec-fns
   {:assoc-rec        bench-assoc-rec*
@@ -158,7 +167,7 @@
   {:assoc            bench-assoc*
    :fast-assoc       bench-fast-assoc*})
 
-(defn bench-assoc-
+(defn bench-assoc
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -183,7 +192,7 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-assoc-rec-
+(defn bench-assoc-rec
   [_ _]
   (vec
    (let [m (->Foo 1 2 3 4)]
@@ -200,57 +209,32 @@
         :heap @max-memory
         :gc @gcs}))))
 
-(defn bench-assoc
-  []
-  (title "Assoc")
-
-  (title "assoc to map")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (assoc m :x "y"))) ;; 42.187467 ns
-
-  (title "assoc to record")
-  (let [m (->Foo 1 2 3 4)]
-    (cc/quick-bench
-     (assoc m :x "y"))) ;; 121.102786 ns
-
-  (title "fast-assoc to map")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (sut/fast-assoc m :x "y"))) ;; 31.409151 ns
-
-  (title "fast-assoc to record")
-  (let [m (->Foo 1 2 3 4)]
-    (cc/quick-bench
-     (sut/fast-assoc m :x "y"))) ;; 105.788254 ns
-  )
-
 ;;; GET
 
 (defn bench-get*
   [method m]
   (let [k (randkey m)]
     (case method
-      :get (cc/quick-benchmark (get m k) nil)
-      :keyword (cc/quick-benchmark (k m) nil)
-      :invoke (cc/quick-benchmark (m k) nil)
-      :hashmap (let [m (sut/fast-map m)]
-                 (cc/quick-benchmark (sut/fast-get m k) nil))
-      :val-at-i (cc/quick-benchmark (.valAt ^clojure.lang.IPersistentMap m k) nil)
-      :val-at-a (cc/quick-benchmark (.valAt ^clojure.lang.APersistentMap m k) nil)
-      :val-at-c (cc/quick-benchmark (.valAt ^clojure.lang.PersistentHashMap m k) nil)
+      :get (bench (get m k))
+      :keyword (bench (k m))
+      :invoke (bench (m k))
+      :hashmap (let [m (hm/->hashmap m)]
+                 (bench (hm/get m k)))
+      :val-at-i (bench (.valAt ^clojure.lang.IPersistentMap m k))
+      :val-at-a (bench (.valAt ^clojure.lang.APersistentMap m k))
+      :val-at-c (bench (.valAt ^clojure.lang.PersistentHashMap m k))
       )))
 
 (defn bench-get-rec* [method ^Foo r]
   (let [k :c]
     (case method
-      :get (cc/quick-benchmark (get r k) nil)
-      :dotget (cc/quick-benchmark (.get ^Foo r k) nil)
-      :keyword (cc/quick-benchmark (k r) nil)
-      :field (cc/quick-benchmark (.c ^Foo r) nil)
-      :val-at (cc/quick-benchmark (.valAt ^Foo r k) nil))))
+      :get (bench (get r k))
+      :dotget (bench (.get ^Foo r k))
+      :keyword (bench (k r))
+      :field (bench (.c ^Foo r))
+      :val-at (bench (.valAt ^Foo r k)))))
 
-(defn bench-get-
+(defn bench-get
   [max-log-size _]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -274,7 +258,7 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-get-rec-
+(defn bench-get-rec
   [_ _]
   (let [r (->Foo 1 2 3 4)]
     (vec
@@ -288,93 +272,42 @@
         :heap @max-memory
         :gc @gcs}))))
 
-(defn bench-get
-  []
-  (title "get")
-
-  (title "get from map")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (get m :c)))
-
-  (title "map on keyword")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (m :c)))
-
-  (title "keyword on map")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (:c m)))
-
-  (title "get from record")
-  (let [m (->Foo 1 2 3 4)]
-    (cc/quick-bench
-     (get m :c)))
-
-  (title "keyword on record")
-  (let [m (->Foo 1 2 3 4)]
-    (cc/quick-bench
-     (:c m)))
-
-  (title ".get from record")
-  (let [m (->Foo 1 2 3 4)]
-    (cc/quick-bench
-     (.get ^Foo m :c)))
-
-  (title "get field from record")
-  (let [m (->Foo 1 2 3 4)]
-    (cc/quick-bench
-     (.c ^Foo m)))
-
-  (title "get from fast-map")
-  (let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
-    (cc/quick-bench
-     (get m :c))) ;; 38.447998 ns
-
-  (title "fast-get from fast-map")
-  (let [m (sut/fast-map {:a 1 :b 2 :c 3 :d 4})]
-    (cc/quick-bench
-     (sut/fast-get m :c))) ;; 15.341296 ns
-
-  )
-
 ;;; MERGE
 
 (defn bench-merge*
   [n m1 & [m2 m3 m4]]
   (case n
-    1 (cc/quick-benchmark (merge m1) nil)
-    2 (cc/quick-benchmark (merge m1 m2) nil)
-    3 (cc/quick-benchmark (merge m1 m2 m3) nil)
-    4 (cc/quick-benchmark (merge m1 m2 m3 m4) nil)
+    1 (bench (merge m1))
+    2 (bench (merge m1 m2))
+    3 (bench (merge m1 m2 m3))
+    4 (bench (merge m1 m2 m3 m4))
     ))
 
 (defn bench-inline-merge*
   [n m1 & [m2 m3 m4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-merge m1) nil)
-    2 (cc/quick-benchmark (sut/inline-merge m1 m2) nil)
-    3 (cc/quick-benchmark (sut/inline-merge m1 m2 m3) nil)
-    4 (cc/quick-benchmark (sut/inline-merge m1 m2 m3 m4) nil)
+    1 (bench (inline/merge m1))
+    2 (bench (inline/merge m1 m2))
+    3 (bench (inline/merge m1 m2 m3))
+    4 (bench (inline/merge m1 m2 m3 m4))
     ))
 
 (defn bench-inline-fast-map-merge*
   [n m1 & [m2 m3 m4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-fast-map-merge m1) nil)
-    2 (cc/quick-benchmark (sut/inline-fast-map-merge m1 m2) nil)
-    3 (cc/quick-benchmark (sut/inline-fast-map-merge m1 m2 m3) nil)
-    4 (cc/quick-benchmark (sut/inline-fast-map-merge m1 m2 m3 m4) nil)
+    1 (bench (inline/fast-map-merge m1))
+    2 (bench (inline/fast-map-merge m1 m2))
+    3 (bench (inline/fast-map-merge m1 m2 m3))
+    4 (bench (inline/fast-map-merge m1 m2 m3 m4))
     ))
 
 (defn bench-inline-tmerge*
   [n m1 & [m2 m3 m4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-tmerge m1) nil)
-    2 (cc/quick-benchmark (sut/inline-tmerge m1 m2) nil)
-    3 (cc/quick-benchmark (sut/inline-tmerge m1 m2 m3) nil)
-    4 (cc/quick-benchmark (sut/inline-tmerge m1 m2 m3 m4) nil)
+    1 (bench (inline/tmerge m1))
+    2 (bench (inline/tmerge m1 m2))
+    3 (bench (inline/tmerge m1 m2 m3))
+    4 (bench (inline/tmerge m1 m2 m3 m4))
     ))
 
 (def merge-fns
@@ -383,7 +316,7 @@
    :inline-fast-map-merge bench-inline-fast-map-merge*
    :inline-tmerge bench-inline-tmerge*})
 
-(defn bench-merge-
+(defn bench-merge
   [max-log-size nmaps]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -407,118 +340,34 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-merge
-  []
-  (title "merge vs. fast-map-merge")
-
-  (title "merge maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}]
-    (cc/quick-bench
-     (merge m n))) ;; 572.398767 ns
-
-  (title "fast merge maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}]
-    (cc/quick-bench
-     (sut/fast-map-merge m n))) ;; 1.025504 µs
-
-  (title "merge vs. inline merge")
-
-  (title "merge 2 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}]
-    (cc/quick-bench
-     (merge m n)))
-
-  (title "inline merge 2 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}]
-    (cc/quick-bench
-     (sut/inline-merge m n)))
-
-  (title "inline fast merge 2 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}]
-    (cc/quick-bench
-     (sut/inline-fast-map-merge m n)))
-
-  (title "merge 3 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}
-        l {:u 1 :v 2 :w 3 :z 3}]
-    (cc/quick-bench
-     (merge m n l)))
-
-  (title "inline merge 3 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}
-        l {:u 1 :v 2 :w 3 :z 3}]
-    (cc/quick-bench
-     (sut/inline-merge m n l)))
-
-  (title "inline fast merge 3 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}
-        l {:u 1 :v 2 :w 3 :z 3}]
-    (cc/quick-bench
-     (sut/inline-fast-map-merge m n l)))
-
-  (title "merge 4 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}
-        l {:u 1 :v 2 :w 3 :z 3}
-        o {:a 9 :y 8 :z 3 :u 4}]
-    (cc/quick-bench
-     (merge m n l o)))
-
-  (title "inline merge 4 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}
-        l {:u 1 :v 2 :w 3 :z 3}
-        o {:a 9 :y 8 :z 3 :u 4}]
-    (cc/quick-bench
-     (sut/inline-merge m n l o)))
-
-  (title "inline fast merge 4 maps")
-  (let [m {:a 1 :b 2 :c 3 :d 4}
-        n {:x 1 :y 2 :z 3 :u 4}
-        l {:u 1 :v 2 :w 3 :z 3}
-        o {:a 9 :y 8 :z 3 :u 4}]
-    (cc/quick-bench
-     (sut/inline-fast-map-merge m n l o)))
-
-
-  )
-
 ;;; GET-IN
 
 (defn bench-get-in*
   [_ m ks]
-  (cc/quick-benchmark (get-in m ks) nil))
+  (bench (get-in m ks)))
 
 (defn bench-inline-get-in*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-get-in m [k1]) nil)
-    2 (cc/quick-benchmark (sut/inline-get-in m [k1 k2]) nil)
-    3 (cc/quick-benchmark (sut/inline-get-in m [k1 k2 k3]) nil)
-    4 (cc/quick-benchmark (sut/inline-get-in m [k1 k2 k3 k4]) nil)))
+    1 (bench (inline/get-in m [k1]))
+    2 (bench (inline/get-in m [k1 k2]))
+    3 (bench (inline/get-in m [k1 k2 k3]))
+    4 (bench (inline/get-in m [k1 k2 k3 k4]))))
 
 (defn bench-inline-get-some-in*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-get-some-in m [k1]) nil)
-    2 (cc/quick-benchmark (sut/inline-get-some-in m [k1 k2]) nil)
-    3 (cc/quick-benchmark (sut/inline-get-some-in m [k1 k2 k3]) nil)
-    4 (cc/quick-benchmark (sut/inline-get-some-in m [k1 k2 k3 k4]) nil)))
+    1 (bench (inline/get-some-in m [k1]))
+    2 (bench (inline/get-some-in m [k1 k2]))
+    3 (bench (inline/get-some-in m [k1 k2 k3]))
+    4 (bench (inline/get-some-in m [k1 k2 k3 k4]))))
 
 (def get-in-bench-fns
   {:get-in bench-get-in*
    :inline-get-in bench-inline-get-in*
    :inline-get-some-in bench-inline-get-some-in*})
 
-(defn bench-get-in-
+(defn bench-get-in
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -543,91 +392,25 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-get-in
-  []
-  (title "get-in")
-
-  (title "get-in 1")
-  (let [m {:d 1}]
-    (cc/quick-bench
-     (get-in m [:d])))
-
-  (title "fast get-in 1")
-  (let [m {:d 1}]
-    (cc/quick-bench
-     (sut/inline-get-in m [:d])))
-
-  (title "get some in 1")
-  (let [m {:a 1}]
-    (cc/quick-bench
-     (sut/inline-get-some-in m [:a])))
-
-  (title "get-in 2")
-  (let [m {:c {:d 1}}]
-    (cc/quick-bench
-     (get-in m [:c :d])))
-
-  (title "fast get-in 2")
-  (let [m {:c {:d 1}}]
-    (cc/quick-bench
-     (sut/inline-get-in m [:c :d])))
-
-  (title "get some in 2")
-  (let [m {:a {:b 1}}]
-    (cc/quick-bench
-     (sut/inline-get-some-in m [:a :b])))
-
-  (title "get-in 3")
-  (let [m {:b {:c {:d 1}}}]
-    (cc/quick-bench
-     (get-in m [:b :c :d])))
-
-  (title "fast get-in 3")
-  (let [m {:b {:c {:d 1}}}]
-    (cc/quick-bench
-     (sut/inline-get-in m [:b :c :d])))
-
-  (title "get some in 3")
-  (let [m {:a {:b {:c 1}}}]
-    (cc/quick-bench
-     (sut/inline-get-some-in m [:a :b :c])))
-
-  (title "get-in 4")
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (cc/quick-bench
-     (get-in m [:a :b :c :d]))) ;; 195.077302 ns
-
-  (title "fast get-in 4")
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (cc/quick-bench
-     (sut/inline-get-in m [:a :b :c :d]))) ;; 37.911144 ns
-
-  (title "get some in 4")
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (cc/quick-bench
-     (sut/inline-get-some-in m [:a :b :c :d])))
-
-  )
-
 ;;; SELECT-KEYS
 
 (defn bench-select-keys*
   [_ m ks]
-  (cc/quick-benchmark (select-keys m ks) nil))
+  (bench (select-keys m ks)))
 
 (defn bench-inline-select-keys*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-select-keys m [k1]) nil)
-    2 (cc/quick-benchmark (sut/inline-select-keys m [k1 k2]) nil)
-    3 (cc/quick-benchmark (sut/inline-select-keys m [k1 k2 k3]) nil)
-    4 (cc/quick-benchmark (sut/inline-select-keys m [k1 k2 k3 k4]) nil)))
+    1 (bench (inline/select-keys m [k1]))
+    2 (bench (inline/select-keys m [k1 k2]))
+    3 (bench (inline/select-keys m [k1 k2 k3]))
+    4 (bench (inline/select-keys m [k1 k2 k3 k4]))))
 
 (def select-keys-bench-fns
   {:select-keys bench-select-keys*
    :inline-select-keys bench-inline-select-keys*})
 
-(defn bench-select-keys-
+(defn bench-select-keys
   [max-log-size max-width]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -652,72 +435,25 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-select-keys
-  []
-
-  (title "select keys")
-
-  (title "select 1/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a])))
-
-  (title "fast select 1/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (sut/inline-select-keys m [:a])))
-
-  (title "select 2/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a :b])))
-
-  (title "fast select 2/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (sut/inline-select-keys m [:a :b])))
-
-  (title "select 3/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a :b :c])))
-
-  (title "fast select 3/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (sut/inline-select-keys m [:a :b :c])))
-
-  (title "select 4/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (select-keys m [:a :b :c :d])))
-
-  (title "fast select 4/4 keys")
-  (let [m {:a 1 :b 2 :c 3 :d 4}]
-    (cc/quick-bench
-     (sut/inline-select-keys m [:a :b :c :d])))
-
-  )
-
 ;;; ASSOC-IN
 
 (defn bench-assoc-in*
   [_ m ks]
-  (cc/quick-benchmark (assoc-in m ks 0) nil))
+  (bench (assoc-in m ks 0)))
 
 (defn bench-inline-assoc-in*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-assoc-in m [k1] 0) nil)
-    2 (cc/quick-benchmark (sut/inline-assoc-in m [k1 k2] 0) nil)
-    3 (cc/quick-benchmark (sut/inline-assoc-in m [k1 k2 k3] 0) nil)
-    4 (cc/quick-benchmark (sut/inline-assoc-in m [k1 k2 k3 k4] 0) nil)))
+    1 (bench (inline/assoc-in m [k1] 0))
+    2 (bench (inline/assoc-in m [k1 k2] 0))
+    3 (bench (inline/assoc-in m [k1 k2 k3] 0))
+    4 (bench (inline/assoc-in m [k1 k2 k3 k4] 0))))
 
 (def assoc-in-bench-fns
   {:assoc-in bench-assoc-in*
    :inline-assoc-in bench-inline-assoc-in*})
 
-(defn bench-assoc-in-
+(defn bench-assoc-in
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -742,51 +478,26 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-assoc-in
-  []
-
-  (title "Assoc In")
-
-  (title "assoc-in 1")
-  (cc/quick-bench (assoc-in {} [1] 2))
-  (title "assoc-in 2")
-  (cc/quick-bench (assoc-in {} [1 2] 3))
-  (title "assoc-in 3")
-  (cc/quick-bench (assoc-in {} [1 2 3] 4))
-  (title "assoc-in 4")
-  (cc/quick-bench (assoc-in {} [1 2 3 4] 5))
-
-
-  (title "inline-assoc-in 1")
-  (criterium.core/quick-bench (sut/inline-assoc-in {} [1] 2))
-  (title "inline-assoc-in 2")
-  (criterium.core/quick-bench (sut/inline-assoc-in {} [1 2] 3))
-  (title "inline-assoc-in 3")
-  (criterium.core/quick-bench (sut/inline-assoc-in {} [1 2 3] 4))
-  (title "inline-assoc-in 4")
-  (criterium.core/quick-bench (sut/inline-assoc-in {} [1 2 3 4] 5))
-
-  )
 
 ;;; UPDATE-IN
 
 (defn bench-update-in*
   [_ m ks]
-  (cc/quick-benchmark (update-in m ks identity) nil))
+  (bench (update-in m ks identity)))
 
 (defn bench-inline-update-in*
   [n m [k1 k2 k3 k4]]
   (case n
-    1 (cc/quick-benchmark (sut/inline-update-in m [k1] identity) nil)
-    2 (cc/quick-benchmark (sut/inline-update-in m [k1 k2] identity) nil)
-    3 (cc/quick-benchmark (sut/inline-update-in m [k1 k2 k3] identity) nil)
-    4 (cc/quick-benchmark (sut/inline-update-in m [k1 k2 k3 k4] identity) nil)))
+    1 (bench (inline/update-in m [k1] identity))
+    2 (bench (inline/update-in m [k1 k2] identity))
+    3 (bench (inline/update-in m [k1 k2 k3] identity))
+    4 (bench (inline/update-in m [k1 k2 k3 k4] identity))))
 
 (def update-in-bench-fns
   {:update-in bench-update-in*
    :inline-update-in bench-inline-update-in*})
 
-(defn bench-update-in-
+(defn bench-update-in
   [max-log-size max-depth]
   (vec
    (for [e (range 1 (inc max-log-size))
@@ -811,81 +522,50 @@
       :heap @max-memory
       :gc @gcs})))
 
-(defn bench-update-in
-  []
-
-  (title "Update In")
-
-  (let [m {:a 1}]
-    (title "update-in 1")
-    (cc/quick-bench (update-in m [:a] identity))
-    (title "inline-update-in 1")
-    (cc/quick-bench (sut/inline-update-in m [:a] identity)))
-
-  (let [m {:a {:b 1}}]
-    (title "update-in 2")
-    (cc/quick-bench (update-in m [:a :b] identity))
-    (title "inline-update-in 2")
-    (cc/quick-bench (sut/inline-update-in m [:a :b] identity)))
-
-  (let [m {:a {:b {:c 1}}}]
-    (title "update-in 3")
-    (cc/quick-bench (update-in m [:a :b :c] identity))
-    (title "inline-update-in 3")
-    (cc/quick-bench (sut/inline-update-in m [:a :b :c] identity)))
-
-  (let [m {:a {:b {:c {:d 1}}}}]
-    (title "update-in 4")
-    (cc/quick-bench (update-in m [:a :b :c :d] identity))
-    (title "inline-update-in 4")
-    (cc/quick-bench (sut/inline-update-in m [:a :b :c :d] identity)))
-
-  )
-
 ;;; memoize
 
-(defn bench-memoize
+(defn bench-memoize*
   [n [a1 a2 a3 a4]]
   (let [f (memoize vector)]
     (case n
-      1 (cc/quick-benchmark (f a1) nil)
-      2 (cc/quick-benchmark (f a1 a2) nil)
-      3 (cc/quick-benchmark (f a1 a2 a3) nil)
-      4 (cc/quick-benchmark (f a1 a2 a3 a4) nil)
+      1 (bench (f a1))
+      2 (bench (f a1 a2))
+      3 (bench (f a1 a2 a3))
+      4 (bench (f a1 a2 a3 a4))
       )))
 
 (defn bench-memoize-n
   [n [a1 a2 a3 a4]]
   (case n
-    1 (let [f (sut/memoize* 1 vector)]
-      (cc/quick-benchmark (f a1) nil))
-    2 (let [f (sut/memoize* 2 vector)]
-        (cc/quick-benchmark (f a1 a2) nil))
-    3 (let [f (sut/memoize* 3 vector)]
-        (cc/quick-benchmark (f a1 a2 a3) nil))
-    4 (let [f (sut/memoize* 4 vector)]
-        (cc/quick-benchmark (f a1 a2 a3 a4) nil))
+    1 (let [f (inline/memoize* 1 vector)]
+      (bench (f a1)))
+    2 (let [f (inline/memoize* 2 vector)]
+        (bench (f a1 a2)))
+    3 (let [f (inline/memoize* 3 vector)]
+        (bench (f a1 a2 a3)))
+    4 (let [f (inline/memoize* 4 vector)]
+        (bench (f a1 a2 a3 a4)))
     ))
 
 (defn bench-memoize-c
   [n [a1 a2 a3 a4]]
   (case n
-    1 (let [f (sut/memoize-c* 1 vector)]
-        (cc/quick-benchmark (f a1) nil))
-    2 (let [f (sut/memoize-c* 2 vector)]
-        (cc/quick-benchmark (f a1 a2) nil))
-    3 (let [f (sut/memoize-c* 3 vector)]
-        (cc/quick-benchmark (f a1 a2 a3) nil))
-    4 (let [f (sut/memoize-c* 4 vector)]
-        (cc/quick-benchmark (f a1 a2 a3 a4) nil))
+    1 (let [f (inline/memoize-c* 1 vector)]
+        (bench (f a1)))
+    2 (let [f (inline/memoize-c* 2 vector)]
+        (bench (f a1 a2)))
+    3 (let [f (inline/memoize-c* 3 vector)]
+        (bench (f a1 a2 a3)))
+    4 (let [f (inline/memoize-c* 4 vector)]
+        (bench (f a1 a2 a3 a4)))
     ))
 
 (def memoize-benches
-  {:memoize bench-memoize
+  {:memoize bench-memoize*
    :memoize-n bench-memoize-n
    :memoize-c bench-memoize-c})
 
-(defn bench-memoize-
+(defn bench-memoize
   [_ max-depth]
   (vec
    (for [depth (range 1 (inc max-depth))
@@ -918,6 +598,9 @@
     :default ""]
    ["-o" "--out-path" "Output path"
     :default "./benchmarks"]
+   ["-q" "--quick QUICK" "quick"
+    :parse-fn #(Boolean/parseBoolean %)
+    :default true]
    ["-w" "--max-width WIDTH" "Logarithmic maximum width"
     :default 4
     :parse-fn #(Integer/parseInt %)
@@ -937,16 +620,16 @@
 
 (def benches
   {
-   :get bench-get-
-   :get-rec bench-get-rec-
-   :get-in bench-get-in-
-   :assoc bench-assoc-
-   :assoc-rec bench-assoc-rec-
-   :merge bench-merge-
-   :select-keys bench-select-keys-
-   :assoc-in bench-assoc-in-
-   :update-in bench-update-in-
-   :memoize bench-memoize-
+   :get bench-get
+   :get-rec bench-get-rec
+   :get-in bench-get-in
+   :assoc bench-assoc
+   :assoc-rec bench-assoc-rec
+   :merge bench-merge
+   :select-keys bench-select-keys
+   :assoc-in bench-assoc-in
+   :update-in bench-update-in
+   :memoize bench-memoize
    })
 
 (defn validate-args
@@ -970,7 +653,7 @@
   [& args]
   (let [{:keys [arguments options summary]}
         (cli/parse-opts args cli-options)
-        {:keys [types help out-path max-width max-depth name]} options
+        {:keys [types quick help out-path max-width max-depth name]} options
         ks (map keyword arguments)
         now
         (str (java.time.LocalDateTime/now))
@@ -986,7 +669,8 @@
     (validate-args ks)
     (validate-out out-path)
     (println "Producing report to" output "at" now)
-    (binding [*types* types]
+    (binding [*types* types
+              *quick* quick]
       (let [results
             (reduce
              (fn [m k]
