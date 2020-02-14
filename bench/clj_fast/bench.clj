@@ -1,6 +1,8 @@
 (ns clj-fast.bench
   (:require
    [clojure.set]
+   [clojure.string]
+   [clojure.java.io]
    [clojure.tools.cli :as cli]
    [clj-fast.inline :as inline]
    [clj-fast.collections.hash-map :as hm]
