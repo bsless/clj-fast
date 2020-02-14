@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased - 2020-02-10
+## [0.0.5] - 2020-02-10
 
 ### Major changes
 
