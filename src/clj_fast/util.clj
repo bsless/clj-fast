@@ -26,6 +26,10 @@
   (let [xs (try-resolve? xs)]
     (and (sequence? xs) (seq xs))))
 
+(defn bind-seq
+  [xs]
+  (vec (mapcat list (repeatedly gensym) xs)))
+
 (defn destruct-map
   [m ks]
   (let [gmap (gensym "map__")
