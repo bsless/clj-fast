@@ -54,10 +54,7 @@
   `ks` must be either vector, list or set."
   [m ks]
   {:pre [(u/simple-seq? ks)]}
-  (let [ks (u/simple-seq ks)
-        chain#
-        (map (fn [k] `(c/get ~k)) ks)]
-    `(-> ~m ~@chain#)))
+  (lens/get (fn [k] `(c/get ~k)) m ks))
 
 (defmacro get-some-in
   "Like get-in, but nil-checks every intermediate value."
