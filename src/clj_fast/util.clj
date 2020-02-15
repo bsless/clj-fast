@@ -45,3 +45,15 @@
 (defn extract-syms
   [bs]
   (map first (partition 2 bs)))
+
+(defn memoize0
+  [f]
+  (let [sentinel (new Object)
+        mem (atom sentinel)]
+    (fn []
+      (let [e @mem]
+        (if (= e sentinel)
+          (let [ret (f)]
+            (reset! mem ret)
+            ret)
+          e)))))
