@@ -1,14 +1,10 @@
 (ns clj-fast.util)
 
-(defn simple?
-  [x]
-  (or (keyword? x) (symbol? x) (string? x) (int? x)))
-
 (defn lazy?
   [xs]
   (instance? clojure.lang.LazySeq xs))
 
-(def sequence? (some-fn lazy? vector? list?))
+(def sequence? (some-fn lazy? sequential?))
 
 (defn try-resolve
   [sym]
@@ -16,15 +12,19 @@
     (when-let [r (resolve sym)]
       (deref r))))
 
+(defn try-resolve?
+  [sym]
+  (or (try-resolve sym) sym))
+
 (defn simple-seq?
   [xs]
-  (let [xs (or (try-resolve xs) xs)]
-    (and (sequence? xs) (every? simple? xs))))
+  (let [xs (try-resolve? xs)]
+    (sequence? xs)))
 
 (defn simple-seq
   [xs]
-  (let [xs (or (try-resolve xs) xs)]
-    (and (sequence? xs) (every? simple? xs) (seq xs))))
+  (let [xs (try-resolve? xs)]
+    (and (sequence? xs) (seq xs))))
 
 (defn destruct-map
   [m ks]
