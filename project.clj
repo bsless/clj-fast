@@ -7,6 +7,14 @@
   :target-path "target/%s"
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
+  :release-tasks
+  [["vcs" "assert-committed"]
+   ["change" "version" "leiningen.release/bump-version" "release"]
+   ["vcs" "commit"]
+   ["deploy"]
+   ["change" "version" "leiningen.release/bump-version"]
+   ["vcs" "commit"]
+   ["vcs" "push"]]
   :profiles
   {:uberjar
    [:direct :bench :cli
