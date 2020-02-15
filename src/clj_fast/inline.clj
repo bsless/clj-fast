@@ -70,7 +70,7 @@
   {:pre [(u/simple-seq? ks)]}
   (let [ks (u/simple-seq ks)
         bindings (u/destruct-map m ks)
-        syms (u/extract-syms bindings)
+        syms (u/extract-syms (drop 2 bindings))
         form (apply hash-map (interleave ks syms))]
     `(let ~bindings
        ~form)))

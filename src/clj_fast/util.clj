@@ -44,4 +44,4 @@
 
 (defn extract-syms
   [bs]
-  (map first (partition 2 (drop 2 bs))))
+  (map first (partition 2 bs)))
