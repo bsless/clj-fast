@@ -116,14 +116,16 @@
 
 (defmacro ^:private memoize-n
   [n f]
-  (let [args (repeatedly n #(gensym))]
-    `(let [mem# (atom {})]
-       (fn [~@args]
-         (if-let [e# (find-some-in @mem# ~args)]
-           (val e#)
-           (let [ret# (~f ~@args)]
-             (swap! mem# (fn [m# v#] (assoc-in m# [~@args] v#)) ret#)
-             ret#))))))
+  (if (zero? n)
+    `(u/memoize0 ~f)
+    (let [args (repeatedly n #(gensym))]
+      `(let [mem# (atom {})]
+         (fn [~@args]
+           (if-let [e# (find-some-in @mem# ~args)]
+             (val e#)
+             (let [ret# (~f ~@args)]
+               (swap! mem# (fn [m# v#] (assoc-in m# [~@args] v#)) ret#)
+               ret#)))))))
 
 (defmacro ^:private def-memoize*
   "Define a function which dispatches to the memoizing macro `memo`
