@@ -1,5 +1,26 @@
 # Change Log
 
+## [Unreleased] - 2020-02-15
+
+### Add
+
+- basic tests, so we can sleep better.
+
+### Changes and Improvements
+
+- Relax the constraints on the possible values of keys during inline
+  analysis. previously, only strings, keywords, symbols and integers
+  were allowed, now all types are allowed. The only constraint is that
+  the argument is a sequences or resolveable at compile time.
+- Add bindings for arguments which look like sequences around `lens/put`
+  and `lens/update`, as they appear more than once, and if they involve
+  some heavy computation or side effects they should not be run more
+  than once.
+- Change / Fix how memoization worked for nullary functions. Now the
+  result is just cached in an atom. Have to guard against a function
+  returning `nil` with a sentinel value.
+
+
 ## [0.0.5] - 2020-02-10
 
 ### Major changes
