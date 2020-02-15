@@ -28,6 +28,10 @@ Plenty of these behaviors are just forms of flow-control, and like `and`
 and `or`, other forms of flow control can too be statically analyzed,
 under certain constraints, and replaced by faster code.
 
+## Latest Version
+
+[![Clojars Project](http://clojars.org/bsless/clj-fast/latest-version.svg)](http://clojars.org/bsless/clj-fast)
+
 ## Usage
 
 ### Requirements
