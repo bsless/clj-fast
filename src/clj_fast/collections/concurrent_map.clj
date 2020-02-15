@@ -75,11 +75,13 @@
 
 (defmacro memoize-c
   [n f]
-  (let [args (repeatedly n #(gensym))]
-    `(let [mem# (->concurrent-hash-map)]
-       (fn [~@args]
-         (if-let [e# (get-in? mem# ~args)]
-           e#
-           (let [ret# (~f ~@args)]
-             (put-in! mem# [~@args] ret#)
-             ret#))))))
+  (if (zero? n)
+    `(u/memoize0 ~f)
+    (let [args (repeatedly n #(gensym))]
+      `(let [mem# (->concurrent-hash-map)]
+         (fn [~@args]
+           (if-let [e# (get-in? mem# ~args)]
+             e#
+             (let [ret# (~f ~@args)]
+               (put-in! mem# [~@args] ret#)
+               ret#)))))))

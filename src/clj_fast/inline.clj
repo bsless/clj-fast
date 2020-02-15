@@ -54,10 +54,7 @@
   `ks` must be either vector, list or set."
   [m ks]
   {:pre [(u/simple-seq? ks)]}
-  (let [ks (u/simple-seq ks)
-        chain#
-        (map (fn [k] `(c/get ~k)) ks)]
-    `(-> ~m ~@chain#)))
+  (lens/get (fn [k] `(c/get ~k)) m ks))
 
 (defmacro get-some-in
   "Like get-in, but nil-checks every intermediate value."
@@ -73,7 +70,7 @@
   {:pre [(u/simple-seq? ks)]}
   (let [ks (u/simple-seq ks)
         bindings (u/destruct-map m ks)
-        syms (u/extract-syms bindings)
+        syms (u/extract-syms (drop 2 bindings))
         form (apply hash-map (interleave ks syms))]
     `(let ~bindings
        ~form)))
@@ -119,14 +116,16 @@
 
 (defmacro ^:private memoize-n
   [n f]
-  (let [args (repeatedly n #(gensym))]
-    `(let [mem# (atom {})]
-       (fn [~@args]
-         (if-let [e# (find-some-in @mem# ~args)]
-           (val e#)
-           (let [ret# (~f ~@args)]
-             (swap! mem# (fn [m# v#] (assoc-in m# [~@args] v#)) ret#)
-             ret#))))))
+  (if (zero? n)
+    `(u/memoize0 ~f)
+    (let [args (repeatedly n #(gensym))]
+      `(let [mem# (atom {})]
+         (fn [~@args]
+           (if-let [e# (find-some-in @mem# ~args)]
+             (val e#)
+             (let [ret# (~f ~@args)]
+               (swap! mem# (fn [m# v#] (assoc-in m# [~@args] v#)) ret#)
+               ret#)))))))
 
 (defmacro ^:private def-memoize*
   "Define a function which dispatches to the memoizing macro `memo`

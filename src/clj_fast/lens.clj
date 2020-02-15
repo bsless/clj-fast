@@ -44,24 +44,25 @@
   similarly, putter must to the same with assoc."
   [putter getter m ks v]
   (let [g (gensym "m__")
+        ks (u/simple-seq ks)
+        {:keys [bindings syms]} (u/extract-bindings ks)
         gs (repeatedly (count ks) #(gensym))
         gs+ (list* g gs)
         bs
-        (into
-         [g m]
+        (vec
          (mapcat (fn [g- g k]
                    [g- (getter g k)])
                  (butlast gs)
                  gs+
-                 ks))
+                 syms))
         iter
         (fn iter
           [[sym & syms] [k & ks] v]
           (if ks
             (putter sym k (iter syms ks v))
             (putter sym k v)))]
-    `(let ~bs
-       ~(iter gs+ ks v))))
+    `(let [~g ~m ~@bindings ~@bs]
+       ~(iter gs+ syms v))))
 
 (defn update
   "Take two functions, putter and getter, symbol m, sequence ks and
@@ -74,21 +75,22 @@
   similarly, putter must to the same with assoc."
   [putter getter m ks f args]
   (let [g (gensym "m__")
+        ks (u/simple-seq ks)
+        {:keys [bindings syms]} (u/extract-bindings ks)
         gs (repeatedly (count ks) #(gensym))
         gs+ (list* g gs)
         bs
-        (into
-         [g m]
+        (vec
          (mapcat (fn [g- g k]
                    [g- (getter g k)])
                  gs
                  gs+
-                 ks))
+                 syms))
         iter
         (fn iter
           [[sym & syms] [k & ks]]
           (if ks
             (putter sym k (iter syms ks))
             (putter sym k `(~f ~(first syms) ~@args))))]
-    `(let ~bs
-       ~(iter gs+ ks))))
+    `(let [~g ~m ~@bindings ~@bs]
+       ~(iter gs+ syms))))
