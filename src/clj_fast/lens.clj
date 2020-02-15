@@ -45,13 +45,11 @@
   [putter getter m ks v]
   (let [g (gensym "m__")
         ks (u/simple-seq ks)
-        bindings (u/bind-seq ks)
-        syms (u/extract-syms bindings)
+        {:keys [bindings syms]} (u/extract-bindings ks)
         gs (repeatedly (count ks) #(gensym))
         gs+ (list* g gs)
         bs
-        (into
-         [g m]
+        (vec
          (mapcat (fn [g- g k]
                    [g- (getter g k)])
                  (butlast gs)
@@ -63,7 +61,7 @@
           (if ks
             (putter sym k (iter syms ks v))
             (putter sym k v)))]
-    `(let [~@bindings ~@bs]
+    `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms v))))
 
 (defn update
@@ -78,13 +76,11 @@
   [putter getter m ks f args]
   (let [g (gensym "m__")
         ks (u/simple-seq ks)
-        bindings (u/bind-seq ks)
-        syms (u/extract-syms bindings)
+        {:keys [bindings syms]} (u/extract-bindings ks)
         gs (repeatedly (count ks) #(gensym))
         gs+ (list* g gs)
         bs
-        (into
-         [g m]
+        (vec
          (mapcat (fn [g- g k]
                    [g- (getter g k)])
                  gs
@@ -96,5 +92,5 @@
           (if ks
             (putter sym k (iter syms ks))
             (putter sym k `(~f ~(first syms) ~@args))))]
-    `(let [~@bindings ~@bs]
+    `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms))))
