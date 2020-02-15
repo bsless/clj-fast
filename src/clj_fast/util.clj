@@ -30,6 +30,21 @@
   [xs]
   (vec (mapcat list (repeatedly gensym) xs)))
 
+(defn extract-bindings
+  "Analyzes in input sequences of code, xs, and extracts any collection
+  out of it to be replaced by a gensym and its respective binding."
+  [xs]
+  (loop [xs xs
+         bindings []
+         syms []]
+    (if xs
+      (let [x (first xs)]
+        (if (coll? x)
+          (let [sym (gensym)]
+            (recur (next xs) (conj bindings sym x) (conj syms sym)))
+          (recur (next xs) bindings (conj syms x))))
+      {:bindings bindings :syms syms})))
+
 (defn destruct-map
   [m ks]
   (let [gmap (gensym "map__")
