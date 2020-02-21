@@ -6,6 +6,7 @@
    [clojure.tools.cli :as cli]
    [clj-fast.inline :as inline]
    [clj-fast.collections.map :as hm]
+   [clj-fast.collections.concurrent-map :as cm]
    [criterium.core :as cc]
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen])
@@ -96,7 +97,8 @@
   {:int? int?
    :keyword? keyword?
    :string? string?
-   :map? map?})
+   :map? map?
+   :symbol? symbol?})
 
 (defn randkey
   [m]
@@ -560,19 +562,62 @@
         (bench (f a1 a2 a3 a4)))
     ))
 
+(defn bench-cm-memoize
+  [n [a1 a2 a3 a4]]
+  (case n
+    1 (let [f (cm/memoize 1 vector)]
+        (bench (f a1)))
+    2 (let [f (cm/memoize 2 vector)]
+        (bench (f a1 a2)))
+    3 (let [f (cm/memoize 3 vector)]
+        (bench (f a1 a2 a3)))
+    4 (let [f (cm/memoize 4 vector)]
+        (bench (f a1 a2 a3 a4)))
+    ))
+
+(defn bench-memoize-h
+  [n [a1 a2 a3 a4]]
+  (case n
+    1 (let [f (inline/memoize-h* 1 vector)]
+        (bench (f a1)))
+    2 (let [f (inline/memoize-h* 2 vector)]
+        (bench (f a1 a2)))
+    3 (let [f (inline/memoize-h* 3 vector)]
+        (bench (f a1 a2 a3)))
+    4 (let [f (inline/memoize-h* 4 vector)]
+        (bench (f a1 a2 a3 a4)))
+    ))
+
+(defn bench-hm-memoize
+  [n [a1 a2 a3 a4]]
+  (case n
+    1 (let [f (hm/memoize 1 vector)]
+        (bench (f a1)))
+    2 (let [f (hm/memoize 2 vector)]
+        (bench (f a1 a2)))
+    3 (let [f (hm/memoize 3 vector)]
+        (bench (f a1 a2 a3)))
+    4 (let [f (hm/memoize 4 vector)]
+        (bench (f a1 a2 a3 a4)))
+    ))
+
 (def memoize-benches
   {:memoize bench-memoize*
    :memoize-n bench-memoize-n
-   :memoize-c bench-memoize-c})
+   :memoize-c bench-memoize-c
+   :memoize-h bench-memoize-h
+   :hm-memoize bench-hm-memoize
+   :cm-memoize bench-cm-memoize
+   })
 
 (defn bench-memoize
   [_ max-depth]
   (vec
    (for [depth (range 1 (inc max-depth))
-         pk [:map? :keyword? :int?]
+         pk [:map? :keyword? :int? :string? :symbol?]
          :let [p (preds pk)
                ms (genn depth p)]
-         k [:memoize :memoize-n :memoize-c]
+         k [:memoize :memoize-n :memoize-c :hm-memoize :cm-memoize]
          :let [f (memoize-benches k)
                _ (println 'BENCH k 'WIDTH 10 '* depth 'TYPE pk)
                res (f depth ms)
