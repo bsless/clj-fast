@@ -85,7 +85,7 @@
           (put!? mem args ret)
           ret)))))
 
-(defmacro memoize-c
+(defmacro memoize*
   [n f]
   (if (zero? n)
     `(u/memoize0 ~f)

@@ -155,4 +155,5 @@
 (def-memoize* memoize-c*
   "Memoize using memoize-c functions of up to 8 arguments. Falls back on
   core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
-  cm/memoize-c 8)
+  cm/memoize* 8)
+
