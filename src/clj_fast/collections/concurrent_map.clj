@@ -5,6 +5,7 @@
     [util :as u]
     [lens :as lens]])
   (:import
+   [java.util Map]
    [java.util.concurrent
     ConcurrentMap ;; interface
     ConcurrentHashMap
@@ -14,11 +15,11 @@
 
 (defn ->concurrent-hash-map
   ([] (ConcurrentHashMap.))
-  ([m] (ConcurrentHashMap. m)))
+  ([m] (new ConcurrentHashMap ^Map m)))
 
 (defn ->concurrent-skip-list-map
   ([] (ConcurrentSkipListMap.))
-  ([m] (ConcurrentSkipListMap. m)))
+  ([m] (new ConcurrentSkipListMap ^Map m)))
 
 (defn put!?
   "Puts v in k if k is absent from m."
