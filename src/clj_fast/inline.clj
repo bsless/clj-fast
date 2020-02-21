@@ -6,7 +6,8 @@
    [clj-fast.util :as u]
    [clj-fast.core :as f]
    [clj-fast.lens :as lens]
-   [clj-fast.collections.concurrent-map :as cm]))
+   [clj-fast.collections.concurrent-map :as cm]
+   [clj-fast.collections.map :as hm]))
 
 (defmacro assoc
   "Like core/assoc but inlines the association to all the arguments."
@@ -157,3 +158,8 @@
   core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
   cm/memoize* 8)
 
+(declare memoize-h*)
+(def-memoize* memoize-h*
+  "Memoize using memoize-c functions of up to 8 arguments. Falls back on
+  core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
+  hm/memoize* 8)
