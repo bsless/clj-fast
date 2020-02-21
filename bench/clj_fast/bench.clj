@@ -5,7 +5,7 @@
    [clojure.java.io]
    [clojure.tools.cli :as cli]
    [clj-fast.inline :as inline]
-   [clj-fast.collections.hash-map :as hm]
+   [clj-fast.collections.map :as hm]
    [criterium.core :as cc]
    [clojure.spec.alpha :as s]
    [clojure.spec.gen.alpha :as gen])
