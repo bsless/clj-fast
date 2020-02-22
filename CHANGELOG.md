@@ -20,6 +20,11 @@
   result is just cached in an atom. Have to guard against a function
   returning `nil` with a sentinel value.
 
+### Fix
+
+- memoize nil values: Need to use sentinel values in the java maps to
+  indicate nil return values from the invoked function.
+
 
 ## [0.0.5] - 2020-02-10
 
