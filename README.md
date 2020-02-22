@@ -39,7 +39,7 @@ under certain constraints, and replaced by faster code.
 Add in your `project.clj`:
 
 ```clojure
-[bsless/clj-fast "0.0.5"]
+[bsless/clj-fast "0.0.6"]
 ```
 
 ### Functions and Macros
