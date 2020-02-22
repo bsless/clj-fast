@@ -1,4 +1,4 @@
-(defproject bsless/clj-fast "0.0.6"
+(defproject bsless/clj-fast "0.0.7-SNAPSHOT"
   :description "Fast Inline Clojure Core functions"
   :url "https://github.com/bsless/clj-fast"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
