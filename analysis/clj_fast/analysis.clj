@@ -174,7 +174,7 @@
 
   ;;; memoize results
   (def raw-data
-    (-> "./benchmarks/memo-clj-fast-bench.edn"
+    (-> "./benchmarks/more-memo-clj-fast-bench.edn"
         load-results))
 
   (def charts

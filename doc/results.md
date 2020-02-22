@@ -236,8 +236,11 @@ memoize was tested against an inlining implementation using a clojure atom
 
 Different implementation are faster depending on the type of the memoized
 arguments:
-- `memoize-n` is better when all arguments are keywords or symbols.
+- `memoize`: core.memoize, always slower
+- `memoize-n` is better when all arguments are keywords.
 - `memoize-c` is better for any other case.
+- `hm-memoize` is faster than `memoize` but slower than `memoize-c`.
+- `cm-memoize` is faster than `memoize` but slower than `memoize-c`.
 
 #### By number of arguments
 
@@ -247,9 +250,11 @@ arguments:
 
 #### By type of arguments
 
-| ![](images/memoize_type_keys_int-p.png) | ![](images/memoize_type_keys_keyword-p.png) |
-| :---:                               | :---:                               |
-| ![](images/memoize_type_keys_map-p.png) |  |
+| ![](images/memoize_type_keys_int-p.png)    | ![](images/memoize_type_keys_keyword-p.png) |
+| :---:                                      | :---:                                       |
+| ![](images/memoize_type_keys_map-p.png)    | ![](images/memoize_type_keys_string-p.png)  |
+|                                            |                                             |
+| ![](images/memoize_type_keys_symbol-p.png) |                                             |
 
 ### assoc-in
 
