@@ -565,13 +565,13 @@
 (defn bench-cm-memoize
   [n [a1 a2 a3 a4]]
   (case n
-    1 (let [f (cm/memoize 1 vector)]
+    1 (let [f (cm/memoize vector)]
         (bench (f a1)))
-    2 (let [f (cm/memoize 2 vector)]
+    2 (let [f (cm/memoize vector)]
         (bench (f a1 a2)))
-    3 (let [f (cm/memoize 3 vector)]
+    3 (let [f (cm/memoize vector)]
         (bench (f a1 a2 a3)))
-    4 (let [f (cm/memoize 4 vector)]
+    4 (let [f (cm/memoize vector)]
         (bench (f a1 a2 a3 a4)))
     ))
 
@@ -591,13 +591,13 @@
 (defn bench-hm-memoize
   [n [a1 a2 a3 a4]]
   (case n
-    1 (let [f (hm/memoize 1 vector)]
+    1 (let [f (hm/memoize vector)]
         (bench (f a1)))
-    2 (let [f (hm/memoize 2 vector)]
+    2 (let [f (hm/memoize vector)]
         (bench (f a1 a2)))
-    3 (let [f (hm/memoize 3 vector)]
+    3 (let [f (hm/memoize vector)]
         (bench (f a1 a2 a3)))
-    4 (let [f (hm/memoize 4 vector)]
+    4 (let [f (hm/memoize vector)]
         (bench (f a1 a2 a3 a4)))
     ))
 
