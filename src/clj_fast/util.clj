@@ -1,5 +1,12 @@
 (ns clj-fast.util)
 
+(defn eq?
+  {:inline
+   (fn [o1 o2]
+     `(.equals ~(with-meta o1 {:tag 'java.lang.Object}) ~o2))}
+  [^Object o1 o2]
+  (.equals o1 o2))
+
 (defn lazy?
   [xs]
   (instance? clojure.lang.LazySeq xs))

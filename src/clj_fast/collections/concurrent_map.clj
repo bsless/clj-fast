@@ -1,10 +1,11 @@
 (ns clj-fast.collections.concurrent-map
-  (:refer-clojure :exclude [get])
+  (:refer-clojure :exclude [get memoize])
   (:require
    [clj-fast
     [util :as u]
     [lens :as lens]])
   (:import
+   [java.util Map]
    [java.util.concurrent
     ConcurrentMap ;; interface
     ConcurrentHashMap
@@ -14,11 +15,11 @@
 
 (defn ->concurrent-hash-map
   ([] (ConcurrentHashMap.))
-  ([m] (ConcurrentHashMap. m)))
+  ([m] (new ConcurrentHashMap ^Map m)))
 
 (defn ->concurrent-skip-list-map
   ([] (ConcurrentSkipListMap.))
-  ([m] (ConcurrentSkipListMap. m)))
+  ([m] (new ConcurrentSkipListMap ^Map m)))
 
 (defn put!?
   "Puts v in k if k is absent from m."
@@ -73,15 +74,29 @@
    (fn [m k] `(or (get? ~m ~k) (->concurrent-hash-map)))
    m (u/simple-seq ks) v))
 
-(defmacro memoize-c
+(defn memoize
+  [f]
+  (let [mem (->concurrent-hash-map)
+        sentinel (new Object)]
+    (fn [& args]
+      (if-let [e (get mem args)]
+        (if (u/eq? sentinel e) nil e)
+        (let [ret (apply f args)
+              ret (if (nil? ret) sentinel ret)]
+          (put!? mem args ret)
+          ret)))))
+
+(defmacro memoize*
   [n f]
   (if (zero? n)
     `(u/memoize0 ~f)
     (let [args (repeatedly n #(gensym))]
-      `(let [mem# (->concurrent-hash-map)]
+      `(let [mem# (->concurrent-hash-map)
+             sentinel# (new Object)]
          (fn [~@args]
            (if-let [e# (get-in? mem# ~args)]
-             e#
-             (let [ret# (~f ~@args)]
+             (if (u/eq? sentinel# e#) nil e#)
+             (let [ret# (~f ~@args)
+                   ret# (if (nil? ret#) sentinel# ret#)]
                (put-in! mem# [~@args] ret#)
                ret#)))))))
