@@ -2,8 +2,9 @@
   (:refer-clojure :exclude [get find get-in map? memoize])
   (:import
    (java.util HashMap Map))
-  (:require [clj-fast.lens :as lens]
-            [clj-fast.util :as u]))
+  (:require
+   [clj-fast.lens :as lens]
+   [clj-fast.util :as u]))
 
 (def ^:const t {:tag 'java.util.Map})
 
@@ -66,7 +67,7 @@
         sentinel (new Object)]
     (fn [& args]
       (if-let [e (get @mem args)]
-        (if (= sentinel e) nil e)
+        (if (u/eq? sentinel e) nil e)
         (let [ret (apply f args)
               ret (if (nil? ret) sentinel ret)]
           (swap! mem put args ret)
@@ -81,7 +82,7 @@
              sentinel# (new Object)]
          (fn [~@args]
            (if-let [e# (get-in @mem# ~args)]
-             (if (= e# sentinel#) nil e#)
+             (if (u/eq? sentinel# e#) nil e#)
              (let [ret# (~f ~@args)
                    ret# (if (nil? ret#) sentinel# ret#)]
                (swap! mem# (fn [m# v#] (put-in m# [~@args] v#)) ret#)

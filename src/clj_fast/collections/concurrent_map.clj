@@ -80,7 +80,7 @@
         sentinel (new Object)]
     (fn [& args]
       (if-let [e (get mem args)]
-        (if (= e sentinel) nil e)
+        (if (u/eq? sentinel e) nil e)
         (let [ret (apply f args)
               ret (if (nil? ret) sentinel ret)]
           (put!? mem args ret)
@@ -95,7 +95,7 @@
              sentinel# (new Object)]
          (fn [~@args]
            (if-let [e# (get-in? mem# ~args)]
-             (if (= e# sentinel#) nil e#)
+             (if (u/eq? sentinel# e#) nil e#)
              (let [ret# (~f ~@args)
                    ret# (if (nil? ret#) sentinel# ret#)]
                (put-in! mem# [~@args] ret#)
