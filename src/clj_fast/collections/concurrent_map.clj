@@ -15,11 +15,11 @@
 
 (defn ->concurrent-hash-map
   ([] (ConcurrentHashMap.))
-  ([m] (new ConcurrentHashMap ^Map m)))
+  ([^Map m] (new ConcurrentHashMap m)))
 
 (defn ->concurrent-skip-list-map
   ([] (ConcurrentSkipListMap.))
-  ([m] (new ConcurrentSkipListMap ^Map m)))
+  ([^Map m] (new ConcurrentSkipListMap m)))
 
 (defn put!?
   "Puts v in k if k is absent from m."
@@ -28,7 +28,7 @@
      `(do (.putIfAbsent ~(with-meta m t) ~k ~v)
           ~m))}
   [^java.util.concurrent.ConcurrentMap m k v]
-  (.putIfAbsent ^java.util.concurrent.ConcurrentMap m k v) m)
+  (.putIfAbsent m k v) m)
 
 (defn concurrent-hash-map?
   "Checks if m is an instance of a ConcurrentMap"
