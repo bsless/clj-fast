@@ -1,4 +1,6 @@
-(ns clj-fast.core)
+(ns clj-fast.core
+  (:require
+   [clojure.core.protocols :as p]))
 
 (defn entry-at
   "Returns the map-entry mapped to key or nil if key not present."
@@ -47,11 +49,11 @@
   "Returns a transient map that consists of the second of the maps assoc-ed
   onto the first. If a key occurs in more than one map, the mapping from
   te latter (left-to-right) will be the mapping in the result."
-  [^clojure.lang.IKVReduce l  r]
-  (.kvreduce
-   l
-   (fn [^clojure.lang.ITransientAssociative acc k v]
-     (if-not (acc k)
-       (.assoc acc k v)
-       acc))
-   r))
+  [l  r]
+  (let [rf (fn [^clojure.lang.ITransientAssociative acc k v]
+             (if-not (acc k)
+               (.assoc acc k v)
+               acc))]
+    (if (instance? clojure.lang.IKVReduce l)
+      (.kvreduce ^clojure.lang.IKVReduce l rf r)
+      (p/kv-reduce l rf r))))
