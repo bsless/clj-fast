@@ -11,10 +11,13 @@
 (defn val-at
   "Returns the value mapped to key or nil if key not present."
   {:inline
-   (fn [m k]
-     `(.valAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
-  [^clojure.lang.IPersistentMap m k]
-  (.valAt ^clojure.lang.IPersistentMap m k))
+   (fn [m k & nf]
+     `(.valAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k ~@nf))
+   :inline-arities #{2 3}}
+  ([^clojure.lang.IPersistentMap m k]
+   (.valAt ^clojure.lang.IPersistentMap m k))
+  ([^clojure.lang.IPersistentMap m k nf]
+   (.valAt ^clojure.lang.IPersistentMap m k nf)))
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/reitit/blob/0bcfda755f139d14cf4eff37e2b294f573215213/modules/reitit-core/src/reitit/impl.cljc#L136
