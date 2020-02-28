@@ -39,12 +39,16 @@
 
 (defn get
   "Returns the value mapped to key or nil if key not present."
-  [m k]
-  {:inline
-   (fn [m k]
-     `(.get ~(with-meta m t) ~k))}
-  [^java.util.concurrent.ConcurrentMap m k]
-  (.get ^java.util.concurrent.ConcurrentMap m k))
+  {:inline-arities #{2 3}
+   :inline
+   (fn [m k & nf]
+     (if nf
+       `(.getOrDefault ~(with-meta m t) ~k ~@nf)
+       `(.get ~(with-meta m t) ~k)))}
+  ([^java.util.concurrent.ConcurrentMap m k]
+   (.get m k))
+  ([^java.util.concurrent.ConcurrentMap m k nf]
+   (.getOrDefault m k nf)))
 
 (defn get?
   "Returns the value mapped to key or nil if key not present if m is a
