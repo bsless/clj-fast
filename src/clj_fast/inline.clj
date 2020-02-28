@@ -150,16 +150,16 @@
 (def-memoize* memoize*
   "Memoize using memoize-n functions of up to 8 arguments. Falls back on
   core/memoize. Faster for keyword and symbols arguments than core/memoize."
-  memoize-n 8)
+  memoize-n 20)
 
 (declare memoize-c*)
 (def-memoize* memoize-c*
   "Memoize using memoize-c functions of up to 8 arguments. Falls back on
   core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
-  cm/memoize* 8)
+  cm/memoize* 20)
 
 (declare memoize-h*)
 (def-memoize* memoize-h*
   "Memoize using memoize-c functions of up to 8 arguments. Falls back on
   core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
-  hm/memoize* 8)
+  hm/memoize* 20)
