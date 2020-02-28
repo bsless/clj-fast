@@ -18,9 +18,9 @@
         (t/is (= [1] (f2* [] 1)))
         (t/is (= [1] (f2* [] 1)))))
     (t/testing "memoize nested hashmap"
-      (let [f0* (sut/memoize-h 0 f0)
-            f1* (sut/memoize-h 1 f1)
-            f2* (sut/memoize-h 2 f2)]
+      (let [f0* (sut/memoize* 0 f0)
+            f1* (sut/memoize* 1 f1)
+            f2* (sut/memoize* 2 f2)]
         (t/is (= [] (f0*)))
         (t/is (= [] (f0*)))
         (t/is (= 1 (f1* 0)))
