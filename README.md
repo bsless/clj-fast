@@ -140,7 +140,7 @@ functions' behavior:
 ```
 
 - `->concurrent-hash-map`: constructor.
-- `concurrent-hash-map?`: instance check.
+- `concurrent-map?`: instance check.
 - `put!?`: `putIfAbsent`.
 - `get`
 - `get?`: get if is a concurrent hash map.

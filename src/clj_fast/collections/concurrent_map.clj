@@ -30,7 +30,7 @@
   [^java.util.concurrent.ConcurrentMap m k v]
   (.putIfAbsent m k v) m)
 
-(defn concurrent-hash-map?
+(defn concurrent-map?
   "Checks if m is an instance of a ConcurrentMap"
   {:inline
    (fn [m] `(instance? ConcurrentMap ~m))}
@@ -56,11 +56,11 @@
   [m k]
   {:inline
    (fn [m k]
-     `(when (concurrent-hash-map? ~m)
+     `(when (concurrent-map? ~m)
         (.get ~(with-meta m t) ~k))
      m)}
   [m k]
-  (when (concurrent-hash-map? m)
+  (when (concurrent-map? m)
     (.get ^java.util.concurrent.ConcurrentMap m k)))
 
 (defmacro get-in?
