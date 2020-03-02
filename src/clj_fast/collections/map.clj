@@ -34,10 +34,10 @@
    :inline-arities #{2 3}}
   ([^Map m k]
    (when (map? m)
-     (.get ^Map m k)))
+     (.get m k)))
   ([^Map m k o]
    (when (map? m)
-     (.getOrDefault ^Map m k o))))
+     (.getOrDefault m k o))))
 
 (defmacro get-in
   [m ks]
