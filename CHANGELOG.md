@@ -1,5 +1,21 @@
 # Change Log
 
+## [Unreleased]
+
+### Add
+
+- Not found arity to core/val-at
+- Not found arity to concurrent-map/get
+
+### Fix
+
+- Broken test due to name change (memoize-h)
+- rmerge not supporting collections not implementing IKVReduce (https://github.com/bsless/clj-fast/issues/1#issuecomment-582727080)
+
+### Change
+
+- Clean up type hints around collections wrappers.
+
 ## [0.0.6] - 2020-02-22
 
 ### Add
