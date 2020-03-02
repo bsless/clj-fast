@@ -15,6 +15,7 @@
 ### Change
 
 - Clean up type hints around collections wrappers.
+- Rename `concurrent-hash-map?` -> `concurrent-map?`
 
 ## [0.0.6] - 2020-02-22
 
