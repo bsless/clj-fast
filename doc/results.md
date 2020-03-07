@@ -299,7 +299,9 @@ for deeper maps, about ~25ns/key.
 
 #### Test details
 
-`select-keys` was tested against an inlined implementation.
+`select-keys` was tested against two inlined implementations:
+- correct and slower implementation.
+- quicker and dirty implementation.
 
 #### Results
 

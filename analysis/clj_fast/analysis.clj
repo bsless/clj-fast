@@ -183,4 +183,15 @@
 
   (write-charts charts)
 
+  ;;; select-keys results
+  (def raw-data
+    (-> "./benchmarks/more-select-keys-clj-fast-bench.edn"
+        load-results))
+
+  (def charts (common-charts raw-data))
+
+  (i/view (get-in charts [:select-keys :width 1]))
+
+  (write-charts charts)
+
   )
