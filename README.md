@@ -1,3 +1,24 @@
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [clj-fast](#clj-fast)
+    - [Purpose](#purpose)
+    - [Latest Version](#latest-version)
+    - [Results](#results)
+    - [Usage](#usage)
+        - [Requirements](#requirements)
+        - [Functions and Macros](#functions-and-macros)
+            - [Fast(er) Functions](#faster-functions)
+            - [Inline Macros](#inline-macros)
+                - [Additions](#additions)
+            - [Collections](#collections)
+                - [HashMap](#hashmap)
+                - [ConcurrentHashMap](#concurrenthashmap)
+            - [Lenses](#lenses)
+    - [License](#license)
+    - [Credit](#credit)
+
+<!-- markdown-toc end -->
 # clj-fast
 
 Library for playing around with low level Clojure code for performance
