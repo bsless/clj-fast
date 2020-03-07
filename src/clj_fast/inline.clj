@@ -65,6 +65,20 @@
    m ks))
 
 (defmacro select-keys
+  "Returns a map containing only those entries in map whose key is in keys"
+  [m ks]
+  (let [g (gensym "m__")
+        gs (repeatedly (count ks) (partial gensym "f__"))
+        bs (reduce (fn [bs [sym k]]
+                     (conj bs sym `(find ~g ~k)))
+                   [g m]
+                   (map list gs ks))
+        pairs (mapcat (fn [g] `(~g (conj ~g))) gs)]
+    `(let ~bs
+       (cond-> {}
+         ~@pairs))))
+
+(defmacro fast-select-keys
   "Like `select-keys` but faster and uses code generation.
   `ks` must be either vector, list or set."
   [m ks]
