@@ -408,9 +408,18 @@
     3 (bench (inline/select-keys m [k1 k2 k3]))
     4 (bench (inline/select-keys m [k1 k2 k3 k4]))))
 
+(defn bench-inline-fast-select-keys*
+  [n m [k1 k2 k3 k4]]
+  (case n
+    1 (bench (inline/fast-select-keys m [k1]))
+    2 (bench (inline/fast-select-keys m [k1 k2]))
+    3 (bench (inline/fast-select-keys m [k1 k2 k3]))
+    4 (bench (inline/fast-select-keys m [k1 k2 k3 k4]))))
+
 (def select-keys-bench-fns
   {:select-keys bench-select-keys*
-   :inline-select-keys bench-inline-select-keys*})
+   :inline-select-keys bench-inline-select-keys*
+   :inline-fast-select-keys bench-inline-fast-select-keys*})
 
 (defn bench-select-keys
   [max-log-size max-width]
@@ -422,7 +431,7 @@
                p (preds pk)
                m (mrandmap p width)
                ks (eduction (comp (distinct) (take n)) (repeatedly #(randkey m)))]
-         k [:select-keys :inline-select-keys]
+         k [:select-keys :inline-select-keys :inline-fast-select-keys]
          :let [f (select-keys-bench-fns k)
                _ (println 'BENCH k 'WIDTH 10 'e e '* n 'TYPE pk)
                res (f n m ks)
