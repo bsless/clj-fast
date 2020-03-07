@@ -6,6 +6,7 @@
 
 - Not found arity to core/val-at
 - Not found arity to concurrent-map/get
+- Correct inline implementation of `select-keys`.
 
 ### Fix
 
@@ -16,6 +17,7 @@
 
 - Clean up type hints around collections wrappers.
 - Rename `concurrent-hash-map?` -> `concurrent-map?`
+- Rename `select-keys` -> `fast-select-keys`.
 
 ## [0.0.6] - 2020-02-22
 
