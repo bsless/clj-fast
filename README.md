@@ -96,15 +96,6 @@ Examples:
 (def assoc* (inline/memoize-c 3 assoc))
 ```
 
-##### Differences from core functions
-
-Besides being macros and requiring the keys to be statically defined,
-there are some other differences between the inline macros' and core
-functions' behavior:
-
-- `select-keys`: If a key is absent in the source map, it will contain
-  `nil` in the target map.
-
 ##### Additions
 
 - `fast-assoc`: inlines in the same manner of `assoc` but uses
