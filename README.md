@@ -111,6 +111,8 @@ functions' behavior:
   `clj-fast.core/fast-assoc` instead.
 - `fast-map-merge`: inlines in the same manner of `merge` but uses
   `clj-fast.core/fast-map-merge` instead (Metosin).
+- `fast-select-keys`: like `select-keys`, but faster and dirtier, adds
+  nil entries to the results map.
 - `get-some-in`: Like `get-in` at the expense of working only on callables
   (objects implementing `clojure.lang.IFn`).
 - `find-some-in`: like `get-some-in` but returns a map-entry in the end,
