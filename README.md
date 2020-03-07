@@ -32,6 +32,10 @@ under certain constraints, and replaced by faster code.
 
 [![Clojars Project](http://clojars.org/bsless/clj-fast/latest-version.svg)](http://clojars.org/bsless/clj-fast)
 
+## Results
+
+See [results.md](doc/results.md) for experiments' detailed benchmark results.
+
 ## Usage
 
 ### Requirements
@@ -178,10 +182,6 @@ Similarly, for `assoc-in`:
 
 So be careful, these are not functional programming lenses, but
 metaprogramming lenses used for code generation.
-
-## Results
-
-See [results.md](doc/results.md) for experiments' detailed benchmark results.
 
 ## License
 
