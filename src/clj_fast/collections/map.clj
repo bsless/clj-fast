@@ -78,7 +78,7 @@
        ret))))
 
 (defmacro put-in
-  "Like core/assoc-in but for nested ConcurrentMaps."
+  "Like core/assoc-in but for nested Maps."
   [m ks v]
   (lens/put
    (fn [m k v] `(put ~m ~k ~v))
