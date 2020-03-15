@@ -6,7 +6,7 @@
    [clj-fast.lens :as lens]
    [clj-fast.util :as u]))
 
-(def ^:const t {:tag 'java.util.Map})
+(def ^:private t {:tag 'java.util.Map})
 
 (definline map?
   [m]
