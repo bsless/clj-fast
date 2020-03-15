@@ -57,13 +57,25 @@
 
 (defn put
   {:inline
-   (fn [m k v]
-     (let [m* (gensym "m__")]
-       `(let [~m* ~m]
-          (.put ~(with-meta m* {:tag 'java.util.Map}) ~k ~v)
-          ~m*)))}
-  [^Map m k v]
-  (.put m k v) m)
+   (fn [m k v & kvs]
+     (assert
+      (even? (count kvs))
+      "put expects even number of arguments after map, found odd number")
+     (let [puts (map (fn [[k v]] `(.put ~k ~v)) (partition 2 kvs))]
+       `(doto ~(with-meta m t)
+          (.put ~k ~v)
+          ~@puts)))}
+  ([^Map m k v]
+   (doto m
+     (.put k v)))
+  ([^Map m k v & kvs]
+   (let [ret (doto m (.put k v))]
+     (if kvs
+       (if (next kvs)
+         (recur ret (first kvs) (second kvs) (nnext kvs))
+         (throw (IllegalArgumentException.
+                 "put expects even number of arguments after map, found odd number")))
+       ret))))
 
 (defmacro put-in
   "Like core/assoc-in but for nested ConcurrentMaps."
