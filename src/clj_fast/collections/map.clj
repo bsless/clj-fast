@@ -24,6 +24,18 @@
 (defn get
   {:inline
    (fn ([m k]
+       `(.get ~(with-meta m t) ~k))
+     ([m k o]
+      `(.getOrDefault ~(with-meta m t) ~k ~o)))
+   :inline-arities #{2 3}}
+  ([^Map m k]
+   (.get m k))
+  ([^Map m k o]
+   (.getOrDefault m k o)))
+
+(defn get?
+  {:inline
+   (fn ([m k]
        (let [m (with-meta m t)]
          `(if (map? ~m)
             (.get ~m ~k))))
