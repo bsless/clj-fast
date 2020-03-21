@@ -60,7 +60,7 @@
 lein do clean, uberjar
 java -Xmx8G -Xms8G \
      -XX:+UseG1GC \
-     -jar target/clj-fast-0.0.6-standalone.jar \
+     -jar target/uberjar/clj-fast-0.0.8-SNAPSHOT.jar \
      --max-width 4 \
      --max-depth 4 \
      --quick false \
