@@ -15,6 +15,9 @@
                 - [HashMap](#hashmap)
                 - [ConcurrentHashMap](#concurrenthashmap)
             - [Lenses](#lenses)
+    - [Related Projects](#related-projects)
+        - [Structural](#structural)
+        - [Stringer](#stringer)
     - [License](#license)
     - [Credit](#credit)
 
@@ -203,6 +206,21 @@ Similarly, for `assoc-in`:
 
 So be careful, these are not functional programming lenses, but
 metaprogramming lenses used for code generation.
+
+## Related Projects
+
+### Structural
+
+(Structural)[https://github.com/joinr/structural] is a small library by
+joinr (Tom) which provides more efficient destructuring macros with type
+hints.
+
+### Stringer
+
+(Stringer)[https://github.com/kumarshantanu/stringer] is a library by
+Shantanu Kumar for fast string operations. Of interest are the
+capabilities it provides in faster string building and formatting, also
+by "unrolling" the building operations where statically possible.
 
 ## License
 
