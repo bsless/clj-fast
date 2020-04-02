@@ -94,3 +94,30 @@
             (putter sym k `(~f ~(first syms) ~@args))))]
     `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms))))
+
+(defn without
+  [putter getter remover m ks]
+  (if (= 1 (count ks))
+    (remover m (first ks))
+    (let [k' (last ks)
+          ks (butlast ks)
+          g (gensym "m__")
+          ks (u/simple-seq ks)
+          {:keys [bindings syms]} (u/extract-bindings ks)
+          gs (repeatedly (count ks) #(gensym))
+          gs+ (list* g gs)
+          bs
+          (vec
+           (mapcat (fn [g- g k]
+                     [g- (getter g k)])
+                   gs
+                   gs+
+                   syms))
+          iter
+          (fn iter
+            [[sym & syms] [k & ks]]
+            (if ks
+              (putter sym k (iter syms ks))
+              (putter sym k (remover (first syms) k'))))]
+      `(let [~g ~m ~@bindings ~@bs]
+         ~(iter gs+ syms)))))
