@@ -62,6 +62,12 @@
     (t/is (= {:a {:b 1}
               :c {:d true}} (sut/update-in m [:c :d] not)))))
 
+(t/deftest dissoc-in
+  (let [m {:a {:b {:c 1}}}]
+    (t/is (= {} (sut/dissoc-in m [:a])))
+    (t/is (= {:a {}} (sut/dissoc-in m [:a :b])))
+    (t/is (= {:a {:b {}}} (sut/dissoc-in m [:a :b :c])))))
+
 (t/deftest memoize
   (let [f0 conj
         f1 inc

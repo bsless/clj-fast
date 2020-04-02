@@ -110,6 +110,17 @@
    (fn [m k] `(c/get ~m ~k))
    m (u/simple-seq ks) f args))
 
+(defmacro dissoc-in
+  "Like update-in but inlines the calls when a static sequence of keys is
+  provided."
+  [m ks]
+  {:pre [(u/simple-seq? ks)]}
+  (lens/without
+   (fn [m k v] `(c/assoc ~m ~k ~v))
+   (fn [m k] `(c/get ~m ~k))
+   (fn [m k] `(c/dissoc ~m ~k))
+   m (u/simple-seq ks)))
+
 (defmacro find-some-in
   "Like get-some-in but returns a map-entry in the end."
   [m ks]
