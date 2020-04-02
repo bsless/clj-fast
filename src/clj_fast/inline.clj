@@ -1,6 +1,6 @@
 (ns clj-fast.inline
   (:refer-clojure
-   :exclude [assoc merge get-in assoc-in update-in select-keys])
+   :exclude [assoc merge get-in assoc-in update-in select-keys dissoc])
   (:require
    [clojure.core :as c]
    [clj-fast.util :as u]
@@ -17,6 +17,14 @@
         (map (fn [[k v]] `(c/assoc ~k ~v)) (partition 2 kvs))]
     `(-> ~m ~@chain#)))
 
+(defmacro dissoc
+  "Like core/assoc but inlines the association to all the arguments."
+  [m & ks]
+  {:pre [(sequential? ks)]}
+  (let [chain#
+        (map (fn [k] `(c/dissoc ~k)) ks)]
+    `(-> ~m ~@chain#)))
+
 (defmacro fast-assoc
   "Like assoc but uses fast-assoc instead."
   [m & kvs]
@@ -25,12 +33,20 @@
         (map (fn [[k v]] `(f/fast-assoc ~k ~v)) (partition 2 kvs))]
     `(-> ~m ~@chain#)))
 
+;;; Credit joinr for the idea, see #6.
+(defn- static-merge
+  [m]
+  (if (map? m)
+    (let [args (apply concat m)]
+      `(assoc ~@args))
+    `(conj ~m)))
+
 (defmacro merge
   "Like core/merge but inlines the sequence of maps to conj."
   [& [m & ms]]
-  (let [conjs# (map (fn [m] `(conj ~m)) ms)]
+  (let [ops# (map static-merge ms)]
     `(-> (or ~m {})
-         ~@conjs#)))
+         ~@ops#)))
 
 (defmacro fast-map-merge
   "Like merge but uses fast-map-merge instead."

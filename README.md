@@ -105,6 +105,8 @@ Examples:
 
 (inline/assoc m :a 1 :b 2)
 
+(inline/dissoc m :a :b)
+
 (inline/fast-assoc m :a 1 :b 2)
 
 (inline/get-in m ks)
@@ -123,6 +125,10 @@ Examples:
 
 (def assoc* (inline/memoize-c 3 assoc))
 ```
+
+##### Notes
+
+- Merge analysis unrolls inline maps as well.
 
 ##### Additions
 

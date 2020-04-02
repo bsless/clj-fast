@@ -1,7 +1,7 @@
 (ns clj-fast.inline-test
   (:refer-clojure
    :exclude
-   [assoc merge get-in select-keys assoc-in update-in memoize])
+   [assoc dissoc merge get-in select-keys assoc-in update-in memoize])
   (:require
    [clj-fast.inline :as sut]
    [clojure.test :as t]))
@@ -14,12 +14,18 @@
     (t/is (= {:a 1} (sut/fast-assoc {} :a 1)))
     (t/is (= {:a 1 :b 2} (sut/fast-assoc {} :a 1 :b 2)))))
 
+(t/deftest dissoc
+  (t/testing "dissoc"
+    (t/is (= {:a 1} (sut/dissoc {:a 1 :b 2 :c 3} :b :c)))))
+
 (t/deftest merge
   (let [m1 {:a 1} m2 {:b 2} m3 {:a 3}]
     (t/testing "merge"
       (t/is (= m1 (sut/merge m1)))
       (t/is (= {:a 1 :b 2} (sut/merge m1 m2)))
       (t/is (= {:a 3 :b 2} (sut/merge m1 m2 m3))))
+    (t/testing "static merge"
+      (t/is (= {:a 3 :b 2} (sut/merge m1 {:b 2} {:a 3}))))
     (t/testing "fast-map-merge"
       (t/is (= m1 (sut/fast-map-merge m1)))
       (t/is (= {:a 1 :b 2} (sut/fast-map-merge m1 m2)))

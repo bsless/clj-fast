@@ -1,5 +1,14 @@
 # Change Log
 
+## [Unreleased] - 2020-04-02
+
+### Add
+
+- Unrolled inline dissoc fo `& ks`
+- Static merge case. If the map is written explicitly it can be
+  `assoc`ed instead of `conj`ed. Closes
+  [#6](https://github.com/bsless/clj-fast/issues/6)
+
 ## [0.0.7] - 2020-03-21
 
 ### Add
