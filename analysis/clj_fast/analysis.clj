@@ -146,24 +146,49 @@
 (comment
 
   (def raw-data
-    (-> "./benchmarks/all-clj-fast-bench.edn"
+    (-> #_"./benchmarks/all-clj-fast-bench.edn"
+        "./benchmarks/nyaaa-clj-fast-bench.edn"
         load-results
         (update :get-rec #(map (fn [m] (assoc m :width 0)) %))
         (update :merge #(remove (comp #{1} :keys) %))))
 
+  (keys raw-data)
+  (group-by :keys (:memoize raw-data))
+  (keys (group-by :width (:memoize raw-data)))
+
   (def all-charts
     (merge
-     (common-charts raw-data)
+     (common-charts (dissoc raw-data :memoize))
+     (common-charts
+      (select-keys raw-data [:memoize]) :type :keys)
      (chart-get :get raw-data)
      (chart-get :get-rec raw-data)
      (chart-assoc-rec raw-data)))
 
+  ;;; Merge
+
+  (def raw-data
+    (->
+     "./benchmarks/different-merge2-clj-fast-bench.edn"
+     #_"./benchmarks/different-merge-clj-fast-bench.edn"
+     load-results))
+
+  (def all-charts
+    (->
+     raw-data
+     (update :merge #(remove (comp #{1} :keys) %))
+     common-charts))
+
+  (i/view (get-in all-charts [:merge :width 1]))
+  (i/view (get-in all-charts [:merge :width 2]))
+  (i/view (get-in all-charts [:merge :keys 3]))
+
   ;;; Format merge nicely because the results vary widely
-  (map (fn [e c] (set-log-axis! c e))
+  (mapv (fn [e c] (set-log-axis! c e))
        [3 4 5 6 7]
        (vals (get-in all-charts [:merge :width])))
 
-  (map (fn [e c] (set-log-axis! c e))
+  (mapv (fn [e c] (set-log-axis! c e))
        [3 3 3 3 3]
        (vals (get-in all-charts [:merge :keys])))
 
