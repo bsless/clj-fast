@@ -162,4 +162,4 @@
        `(clojure.core/merge ~@maps)))}
   [& maps]
   (when (some identity maps)
-    (#'clojure.core/reduce1 #(conj (or %1 {}) %2) maps)))
+    (reduce #(conj (or %1 {}) %2) maps)))
