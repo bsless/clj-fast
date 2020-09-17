@@ -1,6 +1,8 @@
 (ns clj-fast.analysis
   "Interactive notebook namespace to load, parse and chart benchmark results"
   (:require
+   [clojure.edn]
+   [clojure.string]
    [incanter
     [core :as i]
     [charts :as charts]]))
@@ -81,6 +83,20 @@
         :x-label "width"
         :y-label "mean (ns)")}}}))
 
+(defn chart-get-rec
+  [k raw-data]
+  (when-let [data (get raw-data k)]
+    {k
+     {:keys
+      {1
+       (charts/bar-chart
+        :method :mean
+        :group-by :method
+        :data (i/dataset data)
+        :legend true
+        :x-label "width"
+        :y-label "mean (ns)")}}}))
+
 (defn chart-assoc-rec
   [raw-data]
   (when-let [data (get raw-data :assoc-rec)]
@@ -146,38 +162,41 @@
 (comment
 
   (def raw-data
-    (-> #_"./benchmarks/all-clj-fast-bench.edn"
-        "./benchmarks/nyaaa-clj-fast-bench.edn"
+    (-> "./benchmarks/nyaaa-clj-fast-bench.edn"
         load-results
-        (update :get-rec #(map (fn [m] (assoc m :width 0)) %))
-        (update :merge #(remove (comp #{1} :keys) %))))
+        (dissoc :get-rec)
+        (dissoc :merge)))
+
+  (def get-rec-raw-data
+    (->
+     "./benchmarks/get-rec-clj-fast-bench.edn"
+     load-results))
 
   (keys raw-data)
   (group-by :keys (:memoize raw-data))
   (keys (group-by :width (:memoize raw-data)))
+  ;;; Merge
+
+  (def merge-raw-data
+    (->
+     "./benchmarks/different-merge2-clj-fast-bench.edn"
+     load-results))
+
+  (def merge-charts
+    (->
+     merge-raw-data
+     (update :merge #(remove (comp #{1} :keys) %))
+     common-charts))
 
   (def all-charts
     (merge
+     merge-charts
      (common-charts (dissoc raw-data :memoize))
      (common-charts
       (select-keys raw-data [:memoize]) :type :keys)
      (chart-get :get raw-data)
-     (chart-get :get-rec raw-data)
+     (chart-get-rec :get-rec get-rec-raw-data)
      (chart-assoc-rec raw-data)))
-
-  ;;; Merge
-
-  (def raw-data
-    (->
-     "./benchmarks/different-merge2-clj-fast-bench.edn"
-     #_"./benchmarks/different-merge-clj-fast-bench.edn"
-     load-results))
-
-  (def all-charts
-    (->
-     raw-data
-     (update :merge #(remove (comp #{1} :keys) %))
-     common-charts))
 
   (i/view (get-in all-charts [:merge :width 1]))
   (i/view (get-in all-charts [:merge :width 2]))
