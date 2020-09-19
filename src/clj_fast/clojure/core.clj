@@ -275,11 +275,12 @@
                                      ret))))
                              pmap
                              (core/fn [bvec b v]
-                               (core/let [gmap (with-meta (gensym "map__") {:tag 'clojure.lang.IPersistentMap})
+                               (core/let [t (:tag (meta v))
+                                          gmap (with-meta (gensym "map__") {:tag (or t 'clojure.lang.IPersistentMap)})
                                           gmapseq (with-meta gmap {:tag 'clojure.lang.ISeq})
                                           defaults (:or b)]
                                  (core/loop [ret (-> bvec (conj gmap) (conj v)
-                                                     (conj gmap) (conj `(if (seq? ~gmap) (clojure.lang.PersistentHashMap/create (seq ~gmapseq)) ~gmap))
+                                                     (conj gmap) (conj `(if (seq? ~(with-meta gmap {})) (clojure.lang.PersistentHashMap/create (seq ~gmapseq)) ~gmap))
                                                      ((core/fn [ret]
                                                         (if (:as b)
                                                           (conj ret (:as b) gmap)
