@@ -161,42 +161,27 @@
 
 (comment
 
+
   (def raw-data
-    (-> "./benchmarks/nyaaa-clj-fast-bench.edn"
+    (-> "./benchmarks/2020-sep-17-java8-g1-clj-fast-bench.edn"
         load-results
-        (dissoc :get-rec)
-        (dissoc :merge)))
+        (update :merge #(remove (comp #{1} :keys) %))
+        ))
 
   (def get-rec-raw-data
     (->
      "./benchmarks/get-rec-clj-fast-bench.edn"
      load-results))
 
-  (keys raw-data)
-  (group-by :keys (:memoize raw-data))
-  (keys (group-by :width (:memoize raw-data)))
-  ;;; Merge
-
-  (def merge-raw-data
-    (->
-     "./benchmarks/different-merge2-clj-fast-bench.edn"
-     load-results))
-
-  (def merge-charts
-    (->
-     merge-raw-data
-     (update :merge #(remove (comp #{1} :keys) %))
-     common-charts))
-
   (def all-charts
     (merge
-     merge-charts
+     (chart-get-rec :get-rec get-rec-raw-data)
      (common-charts (dissoc raw-data :memoize))
      (common-charts
       (select-keys raw-data [:memoize]) :type :keys)
-     (chart-get :get raw-data)
-     (chart-get-rec :get-rec get-rec-raw-data)
-     (chart-assoc-rec raw-data)))
+     (chart-get :get raw-data)))
+
+  (keys all-charts)
 
   (i/view (get-in all-charts [:merge :width 1]))
   (i/view (get-in all-charts [:merge :width 2]))
@@ -211,31 +196,7 @@
        [3 3 3 3 3]
        (vals (get-in all-charts [:merge :keys])))
 
-  (logify :merge all-charts)
-
   (write-charts all-charts)
   (write-charts (select-keys all-charts [:merge]))
-
-  ;;; memoize results
-  (def raw-data
-    (-> "./benchmarks/more-memo-clj-fast-bench.edn"
-        load-results))
-
-  (def charts
-    (common-charts
-     (select-keys raw-data [:memoize]) :type :keys))
-
-  (write-charts charts)
-
-  ;;; select-keys results
-  (def raw-data
-    (-> "./benchmarks/more-select-keys-clj-fast-bench.edn"
-        load-results))
-
-  (def charts (common-charts raw-data))
-
-  (i/view (get-in charts [:select-keys :width 1]))
-
-  (write-charts charts)
 
   )
