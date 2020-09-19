@@ -104,13 +104,13 @@
    :added "1.0"
    :static true
    :inline
-   (fn [m & kvs]
+   (core/fn [m & kvs]
      (if (u/simple-seq? kvs)
        `(inline/assoc ~m ~@kvs)
-       `(clojure.core/assoc ~m ~@kvs)))}
+       `(core/assoc ~m ~@kvs)))}
   ([map key val] (clojure.lang.RT/assoc map key val))
   ([map key val & kvs]
-   (let [ret (clojure.lang.RT/assoc map key val)]
+   (core/let [ret (clojure.lang.RT/assoc map key val)]
      (if kvs
        (if (next kvs)
          (recur ret (first kvs) (second kvs) (nnext kvs))
@@ -118,23 +118,23 @@
                  "assoc expects even number of arguments after map/vector, found odd number")))
        ret))))
 
-(defn assoc-in
+(core/defn assoc-in
   "Associates a value in a nested associative structure, where ks is a
   sequence of keys and v is the new value and returns a new nested structure.
   If any levels do not exist, hash-maps will be created."
   {:added "1.0"
    :static true
    :inline
-   (fn [m ks v]
+   (core/fn [m ks v]
      (if (u/simple-seq? ks)
        `(inline/assoc-in ~m ~ks ~v)
-       `(clojure.core/assoc-in ~m ~ks ~v)))}
+       `(core/assoc-in ~m ~ks ~v)))}
   [m [k & ks] v]
   (if ks
-    (clojure.core/assoc m k (assoc-in (clojure.core/get m k) ks v))
-    (clojure.core/assoc m k v)))
+    (core/assoc m k (assoc-in (core/get m k) ks v))
+    (core/assoc m k v)))
 
-(defn update-in
+(core/defn update-in
   "'Updates' a value in a nested associative structure, where ks is a
   sequence of keys and f is a function that will take the old value
   and any supplied args and return the new value, and returns a new
@@ -143,19 +143,19 @@
   {:added "1.0"
    :static true
    :inline
-   (fn [m ks f & args]
+   (core/fn [m ks f & args]
      (if (u/simple-seq? ks)
        `(inline/update-in ~m ~ks ~f ~@args)
-       `(clojure.core/update-in ~m ~ks ~f ~@args)))}
+       `(core/update-in ~m ~ks ~f ~@args)))}
   ([m ks f & args]
-   (let [up (fn up [m ks f args]
-              (let [[k & ks] ks]
-                (if ks
-                  (clojure.core/assoc m k (up (clojure.core/get m k) ks f args))
-                  (clojure.core/assoc m k (apply f (clojure.core/get m k) args)))))]
+   (core/let [up (core/fn up [m ks f args]
+                   (core/let [[k & ks] ks]
+                     (if ks
+                       (core/assoc m k (up (core/get m k) ks f args))
+                       (core/assoc m k (apply f (core/get m k) args)))))]
      (up m ks f args))))
 
-(defn get-in
+(core/defn get-in
   "Returns the value in a nested associative structure,
   where ks is a sequence of keys. Returns nil if the key
   is not present, or the not-found value if supplied."
@@ -163,38 +163,38 @@
    :static true
    :inline-arities #{2}
    :inline
-   (fn [m ks]
+   (core/fn [m ks]
      (if (u/simple-seq? ks)
        `(inline/get-in ~m ~ks)
-       `(clojure.core/get-in ~m ~ks)))}
+       `(core/get-in ~m ~ks)))}
   ([m ks]
-   (#'clojure.core/reduce1 clojure.core/get m ks))
+   (reduce core/get m ks))
   ([m ks not-found]
-   (loop [sentinel (Object.)
-          m m
-          ks (seq ks)]
+   (core/loop [sentinel (Object.)
+               m m
+               ks (seq ks)]
      (if ks
-       (let [m (clojure.core/get m (first ks) sentinel)]
+       (core/let [m (core/get m (first ks) sentinel)]
          (if (identical? sentinel m)
            not-found
            (recur sentinel m (next ks))))
        m))))
 
-(defn select-keys
+(core/defn select-keys
   "Returns a map containing all the values of the selected keys when a
   resolvable sequence is supplied, otherwise, a containing only those
   entries in map whose key is in keys"
   {:added "1.0"
    :static true
    :inline
-   (fn [m ks]
+   (core/fn [m ks]
      (if (u/simple-seq? ks)
        `(inline/select-keys ~m ~ks)
-       `(clojure.core/select-keys ~m ~ks)))}
+       `(core/select-keys ~m ~ks)))}
   [map keyseq]
-  (loop [ret {} keys (seq keyseq)]
+  (core/loop [ret {} keys (seq keyseq)]
     (if keys
-      (let [entry (. clojure.lang.RT (find map (first keys)))]
+      (core/let [entry (. clojure.lang.RT (find map (first keys)))]
         (recur
          (if entry
            (conj ret entry)
@@ -202,17 +202,17 @@
          (next keys)))
       (with-meta ret (meta map)))))
 
-(defn merge
+(core/defn merge
   "Returns a map that consists of the rest of the maps conj-ed onto
   the first.  If a key occurs in more than one map, the mapping from
   the latter (left-to-right) will be the mapping in the result."
   {:added "1.0"
    :static true
    :inline
-   (fn [& maps]
+   (core/fn [& maps]
      (if (u/simple-seq? maps)
        `(inline/merge ~@maps)
-       `(clojure.core/merge ~@maps)))}
+       `(core/merge ~@maps)))}
   [& maps]
   (when (some identity maps)
     (reduce #(conj (or %1 {}) %2) maps)))
