@@ -1,4 +1,6 @@
-(ns clj-fast.util)
+(ns clj-fast.util
+  (:require
+   [clojure.string]))
 
 (defn eq?
   {:inline
@@ -79,3 +81,16 @@
             (reset! mem ret)
             ret)
           e)))))
+
+(defn record-fields*
+  [clazz]
+  (into
+   #{}
+   (comp
+    (map #(.getName %))
+    (remove #(clojure.string/starts-with? % "__"))
+    (remove #(clojure.string/starts-with? % "const__"))
+    (map keyword))
+   (.getFields clazz)))
+
+(def record-fields (memoize record-fields*))
