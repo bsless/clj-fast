@@ -24,19 +24,26 @@
 
 (core/defn- get-inline
   [m k & nf]
-  (case (:tag (meta m))
-    (IPersistentMap
-     clojure.lang.IPersistentMap
-     PersistentArrayMap
-     clojure.lang.PersistentArrayMap
-     PersistentHashMap
-     clojure.lang.PersistentHashMap)
-    `(c/val-at ~m ~k ~@nf)
-    (PersistentVector clojure.lang.PersistentVector clojure.lang.Indexed)
-    `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
-    (Map HashMap java.util.Map java.util.HashMap)
-    `(m/get ~m ~k ~@nf)
-    `(. clojure.lang.RT (get ~m ~k ~@nf))))
+  (core/let [t (:tag (meta m))
+        c (when-let [c (resolve t)] c)]
+    (if (and c (.isAssignableFrom clojure.lang.IRecord c))
+      (core/let [fields (u/record-fields c)]
+        (if (and (nil? (first nf)) (fields k))
+          `(. ~m ~(symbol k))
+          `(.valAt ~m ~k ~@nf)))
+      (case t
+        (IPersistentMap
+         clojure.lang.IPersistentMap
+         PersistentArrayMap
+         clojure.lang.PersistentArrayMap
+         PersistentHashMap
+         clojure.lang.PersistentHashMap)
+        `(c/val-at ~m ~k ~@nf)
+        (PersistentVector clojure.lang.PersistentVector clojure.lang.Indexed Indexed)
+        `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
+        (Map HashMap java.util.Map java.util.HashMap)
+        `(m/get ~m ~k ~@nf)
+        `(. clojure.lang.RT (get ~m ~k ~@nf))))))
 
 (core/defn get
   "Returns the value mapped to key, not-found or nil if key not present."
