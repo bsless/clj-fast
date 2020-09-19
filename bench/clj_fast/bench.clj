@@ -9,6 +9,7 @@
    [clj-fast.collections.concurrent-map :as cm]
    [criterium.core :as cc]
    [clojure.spec.alpha :as s]
+   [clojure.test.check.generators]
    [clojure.spec.gen.alpha :as gen])
   (:gen-class))
 
@@ -71,17 +72,52 @@
   [f m]
   (reduce-kv (fn [m k v] (assoc m k (f v))) {} m))
 
-(defn genn
+(defonce -s "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+(defonce -strs (for [a -s b -s c -s d -s e -s] (str a b c d e)))
+(defonce -kws (map keyword -strs))
+(defonce -syms (map symbol -strs))
+(defonce r (range))
+
+(def gens
+  {:keyword? (fn [n] (take n -kws))
+   :map? (fn [n] (drop 1 (gen/sample (s/gen map?) (inc n))))
+   :string? (fn [n] (take n -strs))
+   :int? (fn [n] (take n r))
+   :integer? (fn [n] (take n r))
+   :symbol? (fn [n] (take n -syms))})
+
+#_(defn genn!
   [n spec]
-  (drop 1 (gen/sample (s/gen spec) (inc n))))
+  (drop 1 (gen/sample- (s/gen spec) (inc n))))
+
+(defn genn!
+  [n spec]
+  (sequence
+   (comp
+    (drop 1)
+    (distinct)
+    (take n))
+   (clojure.test.check.generators/sample-seq (s/gen spec))))
+
+(defn genn
+  [n p]
+  ((gens p) n))
+
+(defn randmap!
+  ([n]
+   (randmap! keyword? n))
+  ([p n]
+   (let [s (genn! n p)]
+     (zipmap s s))))
 
 (defn randmap
-  ([n]
+  #_([n]
    (randmap keyword? n))
   ([p n]
-   (into {} (genn n (s/tuple p p)))))
+   (let [coll (genn n p)]
+     (zipmap coll coll))))
 
-(def mrandmap (memoize randmap))
+(defonce mrandmap (memoize randmap))
 
 (declare mrand-nested-map)
 (defn rand-nested-map
@@ -90,10 +126,17 @@
     (mrandmap p width)
     (zipmap (genn width p)
             (repeat width (mrand-nested-map p width (dec depth))))))
+#_(defn rand-nested-map
+  [p width depth]
+  (if (= 1 depth)
+    (mrandmap p width)
+    (zipmap (genn width p)
+            (repeat width (mrand-nested-map p width (dec depth))))))
 
-(def mrand-nested-map (memoize rand-nested-map))
+(defonce mrand-nested-map (memoize rand-nested-map))
 
-(def preds
+(def preds identity)
+(def preds!
   {:int? int?
    :keyword? keyword?
    :string? string?
@@ -167,6 +210,7 @@
 
 (def assoc-fns
   {:assoc            bench-assoc*
+   :inline-assoc     bench-inline-assoc*
    :fast-assoc       bench-fast-assoc*})
 
 (defn bench-assoc
@@ -179,7 +223,7 @@
                p (preds pk)
                m (mrandmap p width)
                ks (genn n p)]
-         k [:assoc :fast-assoc]
+         k [:assoc :inline-assoc :fast-assoc]
          :let [f (assoc-fns k)
                _ (println 'BENCH k 'WIDTH 10 'e e '* n 'TYPE pk)
                res (f n m ks)
@@ -325,8 +369,8 @@
          n (range 1 (inc nmaps))
          pk *types*
          :let [width (int (Math/pow 10 e))
-               p (preds pk)
-               ms (repeatedly n #(randmap p width))]
+               p (preds! pk)
+               ms (repeatedly n #(randmap! p width))]
          k [:merge :inline-merge :inline-fast-map-merge :inline-tmerge]
          :let [f (merge-fns k)
                _ (println 'BENCH k 'WIDTH 10 'e e '* n 'TYPE pk)
@@ -623,9 +667,10 @@
   [_ max-depth]
   (vec
    (for [depth (range 1 (inc max-depth))
+         ;; pk [:keyword? :int? :string? :symbol?]
          pk [:map? :keyword? :int? :string? :symbol?]
-         :let [p (preds pk)
-               ms (genn depth p)]
+         :let [p (preds! pk)
+               ms (genn! depth p)]
          k [:memoize :memoize-n :memoize-c :hm-memoize :cm-memoize]
          :let [f (memoize-benches k)
                _ (println 'BENCH k 'WIDTH 10 '* depth 'TYPE pk)

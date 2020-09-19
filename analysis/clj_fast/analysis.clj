@@ -1,6 +1,8 @@
 (ns clj-fast.analysis
   "Interactive notebook namespace to load, parse and chart benchmark results"
   (:require
+   [clojure.edn]
+   [clojure.string]
    [incanter
     [core :as i]
     [charts :as charts]]))
@@ -81,6 +83,20 @@
         :x-label "width"
         :y-label "mean (ns)")}}}))
 
+(defn chart-get-rec
+  [k raw-data]
+  (when-let [data (get raw-data k)]
+    {k
+     {:keys
+      {1
+       (charts/bar-chart
+        :method :mean
+        :group-by :method
+        :data (i/dataset data)
+        :legend true
+        :x-label "width"
+        :y-label "mean (ns)")}}}))
+
 (defn chart-assoc-rec
   [raw-data]
   (when-let [data (get raw-data :assoc-rec)]
@@ -145,53 +161,42 @@
 
 (comment
 
+
   (def raw-data
-    (-> "./benchmarks/all-clj-fast-bench.edn"
+    (-> "./benchmarks/2020-sep-17-java8-g1-clj-fast-bench.edn"
         load-results
-        (update :get-rec #(map (fn [m] (assoc m :width 0)) %))
-        (update :merge #(remove (comp #{1} :keys) %))))
+        (update :merge #(remove (comp #{1} :keys) %))
+        ))
+
+  (def get-rec-raw-data
+    (->
+     "./benchmarks/get-rec-clj-fast-bench.edn"
+     load-results))
 
   (def all-charts
     (merge
-     (common-charts raw-data)
-     (chart-get :get raw-data)
-     (chart-get :get-rec raw-data)
-     (chart-assoc-rec raw-data)))
+     (chart-get-rec :get-rec get-rec-raw-data)
+     (common-charts (dissoc raw-data :memoize))
+     (common-charts
+      (select-keys raw-data [:memoize]) :type :keys)
+     (chart-get :get raw-data)))
+
+  (keys all-charts)
+
+  (i/view (get-in all-charts [:merge :width 1]))
+  (i/view (get-in all-charts [:merge :width 2]))
+  (i/view (get-in all-charts [:merge :keys 3]))
 
   ;;; Format merge nicely because the results vary widely
-  (map (fn [e c] (set-log-axis! c e))
+  (mapv (fn [e c] (set-log-axis! c e))
        [3 4 5 6 7]
        (vals (get-in all-charts [:merge :width])))
 
-  (map (fn [e c] (set-log-axis! c e))
+  (mapv (fn [e c] (set-log-axis! c e))
        [3 3 3 3 3]
        (vals (get-in all-charts [:merge :keys])))
 
-  (logify :merge all-charts)
-
   (write-charts all-charts)
   (write-charts (select-keys all-charts [:merge]))
-
-  ;;; memoize results
-  (def raw-data
-    (-> "./benchmarks/more-memo-clj-fast-bench.edn"
-        load-results))
-
-  (def charts
-    (common-charts
-     (select-keys raw-data [:memoize]) :type :keys))
-
-  (write-charts charts)
-
-  ;;; select-keys results
-  (def raw-data
-    (-> "./benchmarks/more-select-keys-clj-fast-bench.edn"
-        load-results))
-
-  (def charts (common-charts raw-data))
-
-  (i/view (get-in charts [:select-keys :width 1]))
-
-  (write-charts charts)
 
   )
