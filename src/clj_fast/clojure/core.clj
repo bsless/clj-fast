@@ -22,20 +22,27 @@
 ;; Avoid wrapping as it defeats the purpose of this exercise.
 ;; Can't `alter-meta!` as it'll recur infinitely when macro-expanding
 
-(defn get
+(core/defn- get-inline
+  [m k & nf]
+  (case (:tag (meta m))
+    (IPersistentMap
+     clojure.lang.IPersistentMap
+     PersistentArrayMap
+     clojure.lang.PersistentArrayMap
+     PersistentHashMap
+     clojure.lang.PersistentHashMap)
+    `(c/val-at ~m ~k ~@nf)
+    (PersistentVector clojure.lang.PersistentVector clojure.lang.Indexed)
+    `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
+    (Map HashMap java.util.Map java.util.HashMap)
+    `(m/get ~m ~k ~@nf)
+    `(. clojure.lang.RT (get ~m ~k ~@nf))))
+
+(core/defn get
   "Returns the value mapped to key, not-found or nil if key not present."
   {:inline
-   (fn [m k & nf]
-     (case (:tag (meta m))
-       (IPersistentMap clojure.lang.IPersistentMap
-        PersistentArrayMap clojure.lang.PersistentArrayMap
-        PersistentHashMap clojure.lang.PersistentHashMap)
-       `(c/val-at ~m ~k ~@nf)
-       (PersistentVector clojure.lang.PersistentVector)
-       `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
-       (Map HashMap java.util.Map java.util.HashMap)
-       `(m/get ~m ~k ~@nf)
-       `(. clojure.lang.RT (get ~m ~k ~@nf))))
+   (core/fn [m k & nf]
+     (apply get-inline m k nf))
    :inline-arities #{2 3}
    :added "1.0"}
   ([map key]
