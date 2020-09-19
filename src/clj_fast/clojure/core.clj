@@ -9,8 +9,9 @@
 (ns clj-fast.clojure.core
   (:refer-clojure
    :exclude
-   [get assoc get-in merge assoc-in update-in select-keys memoize])
+   [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-])
   (:require
+   [clojure.core :as core]
    [clj-fast.core :as c]
    [clj-fast.util :as u]
    [clj-fast.inline :as inline]
