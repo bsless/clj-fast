@@ -50,7 +50,52 @@
   ([map key not-found]
    (. clojure.lang.RT (get map key not-found))))
 
-(defn assoc
+(core/defn- nth2-inline
+  [c i]
+  (case (:tag (meta c))
+    (java.lang.CharSequence java.lang.String String CharSequence)
+    `(.charAt ~c ~i)
+    (booleans bytes chars doubles floats ints longs shorts)
+    `(aget ~c ~i)
+    (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+    `(.nth ~c ~i)
+    `(. clojure.lang.RT (nth ~c ~i))))
+
+(core/defn- nth3-inline
+  [c i nf]
+  (core/let [i' (gensym "i__")]
+    (case (:tag (meta c))
+      (java.lang.CharSequence java.lang.String String CharSequence)
+      `(core/let [~i' ~i]
+         (if (< ~i' (.length ~c))
+           (.charAt ~c ~i')
+           ~nf))
+      (booleans bytes chars doubles floats ints longs shorts)
+      `(core/let [~i' ~i]
+         (if (< ~i' (alength ~c))
+           (aget ~c ~i)
+           ~nf))
+      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+      `(.nth ~c ~i ~nf)
+      `(. clojure.lang.RT (nth ~c ~i ~nf)))))
+
+(core/defn nth
+  "Returns the value at the index. get returns nil if index out of
+  bounds, nth throws an exception unless not-found is supplied.  nth
+  also works for strings, Java arrays, regex Matchers and Lists, and,
+  in O(n) time, for sequences."
+  {:inline
+   (core/fn
+     ([c i]
+      (nth2-inline c i))
+     ([c i nf]
+      (nth3-inline c i nf)))
+   :inline-arities #{2 3}
+   :added "1.0"}
+  ([coll index] (. clojure.lang.RT (nth coll index)))
+  ([coll index not-found] (. clojure.lang.RT (nth coll index not-found))))
+
+(core/defn assoc
   "assoc[iate]. When applied to a map, returns a new map of the
     same (hashed/sorted) type, that contains the mapping of key(s) to
     val(s). When applied to a vector, returns a new vector that
