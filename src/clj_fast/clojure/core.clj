@@ -59,19 +59,23 @@
 
 (core/defn- nth2-inline
   [c i]
-  (case (:tag (meta c))
-    (java.lang.CharSequence java.lang.String String CharSequence)
-    `(.charAt ~c ~i)
-    (booleans bytes chars doubles floats ints longs shorts)
-    `(aget ~c ~i)
-    (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
-    `(.nth ~c ~i)
-    `(. clojure.lang.RT (nth ~c ~i))))
+  (let [t (:tag (meta c))]
+    (case t
+      (java.lang.CharSequence java.lang.String String CharSequence)
+      `(.charAt ~c ~i)
+      (booleans bytes chars doubles floats ints longs shorts)
+      `(aget ~c ~i)
+      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+      `(.nth ~c ~i)
+      (if (try (.isArray (Class/forName t)) (catch Throwable _))
+        `(aget ~c ~i)
+        `(. clojure.lang.RT (nth ~c ~i))))))
 
 (core/defn- nth3-inline
   [c i nf]
-  (core/let [i' (gensym "i__")]
-    (case (:tag (meta c))
+  (core/let [t (:tag (meta c))
+             i' (gensym "i__")]
+    (case t
       (java.lang.CharSequence java.lang.String String CharSequence)
       `(core/let [~i' ~i]
          (if (< ~i' (.length ~c))
@@ -80,11 +84,16 @@
       (booleans bytes chars doubles floats ints longs shorts)
       `(core/let [~i' ~i]
          (if (< ~i' (alength ~c))
-           (aget ~c ~i)
+           (aget ~c ~i')
            ~nf))
       (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
       `(.nth ~c ~i ~nf)
-      `(. clojure.lang.RT (nth ~c ~i ~nf)))))
+      (if (try (.isArray (Class/forName t)) (catch Throwable _))
+        `(core/let [~i' ~i]
+           (if (< ~i' (alength ~c))
+             (aget ~c ~i')
+             ~nf))
+        `(. clojure.lang.RT (nth ~c ~i ~nf))))))
 
 (core/defn nth
   "Returns the value at the index. get returns nil if index out of
