@@ -213,6 +213,28 @@ Similarly, for `assoc-in`:
 So be careful, these are not functional programming lenses, but
 metaprogramming lenses used for code generation.
 
+## Rewriting Core Functions And Macros
+
+The namespace `clj-fast.clojure.core` contains drop-in replacement
+functions and macros for Clojure's core.
+
+It opportunistically replaces functions by their inlined
+implementations. It also includes binding macros (let, fn, loop, defn)
+which will use inlining versions of `get` and `nth` when possible. (i.e.
+when type-hinted).
+
+### Usage
+
+```clojure
+(ns com.my.app
+  (:refer-clojure
+   :exclude
+   [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-])
+  (:require
+   [clojure.core :as c]
+   [clj-fast.clojure.core :refer [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-]]))
+```
+
 ## Related Projects
 
 ### Structural
