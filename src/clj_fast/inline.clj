@@ -127,16 +127,16 @@
 (defmacro merge
   "Like core/merge but inlines the sequence of maps to conj."
   [& [m & ms]]
-  (let [ops# (map static-merge ms)]
-    `(-> (or ~m {})
-         ~@ops#)))
+  (let [ops# (map static-merge ms)
+        m0 (if (map? m) m `(or ~m {}))]
+    `(-> ~m0 ~@ops#)))
 
 (defmacro fast-map-merge
   "Like merge but uses fast-map-merge instead."
   [& [m & ms]]
-  (let [conjs# (map (fn [m] `(f/fast-map-merge ~m)) ms)]
-    `(-> (or ~m {})
-         ~@conjs#)))
+  (let [conjs# (map (fn [m] `(f/fast-map-merge ~m)) ms)
+        m0 (if (map? m) m `(or ~m {}))]
+    `(-> ~m0 ~@conjs#)))
 
 (defmacro tmerge
   "Like merge but uses rmerge! and an intermediate transient map."
