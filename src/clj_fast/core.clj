@@ -8,7 +8,7 @@
    (fn [m k]
      `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
   [^clojure.lang.IPersistentMap m k]
-  (.entryAt ^clojure.lang.IPersistentMap m k))
+  (.entryAt m k))
 
 (defn val-at
   "Returns the value mapped to key or nil if key not present."
@@ -17,9 +17,9 @@
      `(.valAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k ~@nf))
    :inline-arities #{2 3}}
   ([^clojure.lang.IPersistentMap m k]
-   (.valAt ^clojure.lang.IPersistentMap m k))
+   (.valAt m k))
   ([^clojure.lang.IPersistentMap m k nf]
-   (.valAt ^clojure.lang.IPersistentMap m k nf)))
+   (.valAt m k nf)))
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/reitit/blob/0bcfda755f139d14cf4eff37e2b294f573215213/modules/reitit-core/src/reitit/impl.cljc#L136
@@ -29,7 +29,7 @@
    (fn [a k v]
      `(.assoc ~(with-meta a {:tag 'clojure.lang.Associative}) ~k ~v))}
   [^clojure.lang.Associative a k v]
-  (.assoc ^clojure.lang.Associative a k v))
+  (.assoc a k v))
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/compojure-api/blob/master/src/compojure/api/common.clj#L46
