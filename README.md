@@ -71,7 +71,7 @@ See [results.md](doc/results.md) for experiments' detailed benchmark results.
 Add in your `project.clj`:
 
 ```clojure
-[bsless/clj-fast "0.0.7"]
+[bsless/clj-fast "0.0.8"]
 ```
 
 ### Functions and Macros

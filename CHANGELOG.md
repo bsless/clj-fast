@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased] - 2020-04-02
+## [0.0.8] - 2020-09-28
 
 ### Add
 
@@ -9,6 +9,8 @@
   `assoc`ed instead of `conj`ed. Closes
   [#6](https://github.com/bsless/clj-fast/issues/6)
 - `dissoc-in`.
+- `get` and `nth` macros.
+- inline Clojure core implementations as drop in replacements.
 
 ## [0.0.7] - 2020-03-21
 
