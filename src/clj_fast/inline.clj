@@ -52,7 +52,7 @@
       (booleans bytes chars doubles floats ints longs shorts)
       `(aget ~c ~i)
       (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
-      `(.nth ~c ~i)
+      `(.nth ~(with-meta c {:tag 'clojure.lang.Indexed}) ~i)
       (if (try (.isArray (Class/forName t)) (catch Throwable _))
         `(aget ~c ~i)
         `(. clojure.lang.RT (~'nth ~c ~i))))))
@@ -73,7 +73,7 @@
            (aget ~c ~i')
            ~nf))
       (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
-      `(.nth ~c ~i ~nf)
+      `(.nth ~(with-meta c {:tag 'clojure.lang.Indexed}) ~i ~nf)
       (if (try (.isArray (Class/forName t)) (catch Throwable _))
         `(let [~i' ~i]
            (if (< ~i' (alength ~c))
