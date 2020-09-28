@@ -33,11 +33,11 @@
           (let [k (or (u/try-resolve k) k)]
             (if (keyword? k)
               `(~k ~m ~@nf)
-              `(. clojure.lang.RT (~'get ~m ~k ~@nf)))))))
+              `(clojure.lang.RT/get ~m ~k ~@nf))))))
     (let [k (or (u/try-resolve k) k)]
       (if (keyword? k)
         `(~k ~m ~@nf)
-        `(. clojure.lang.RT (~'get ~m ~k ~@nf))))))
+        `(clojure.lang.RT/get ~m ~k ~@nf)))))
 
 (defmacro get
   [m k & nf]
@@ -55,7 +55,7 @@
       `(.nth ~(with-meta c {:tag 'clojure.lang.Indexed}) ~i)
       (if (try (.isArray (Class/forName t)) (catch Throwable _))
         `(aget ~c ~i)
-        `(. clojure.lang.RT (~'nth ~c ~i))))))
+        `(clojure.lang.RT/nth ~c ~i)))))
 
 (defn -nth3
   [c i nf]
@@ -79,7 +79,7 @@
            (if (< ~i' (alength ~c))
              (aget ~c ~i')
              ~nf))
-        `(. clojure.lang.RT (~'nth ~c ~i ~nf))))))
+        `(clojure.lang.RT/nth ~c ~i ~nf)))))
 
 (defmacro nth
   ([c i]
