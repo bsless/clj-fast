@@ -148,6 +148,20 @@ Examples:
   the cost of hashing objects in Clojure, it's recommended to use
   `memoize-c*` for most use cases.
 
+#### Bypass dynamic dispatch with type hints
+
+The `get` and `nth` macros operate similarly to their respective
+functions with one notable difference: When provided with an appropriate
+type hint, they will dispatch to the underlying method at compile time
+instead of run time.
+
+```clojure
+(def arr (long-array [1 2 3]))
+(nth ^longs arr 0)
+(def m (doto (java.util.HashMap.) (.put :a 1)))
+(get ^Map m :a)
+```
+
 #### Collections
 
 ##### HashMap
