@@ -1,13 +1,91 @@
 (ns clj-fast.inline
   (:refer-clojure
-   :exclude [assoc merge get-in assoc-in update-in select-keys dissoc])
+   :exclude [get nth assoc merge get-in assoc-in update-in select-keys dissoc])
   (:require
    [clojure.core :as c]
    [clj-fast.util :as u]
    [clj-fast.core :as f]
    [clj-fast.lens :as lens]
    [clj-fast.collections.concurrent-map :as cm]
-   [clj-fast.collections.map :as hm]))
+   [clj-fast.collections.map :as m]))
+
+(defn -get
+  [m k & nf]
+  (if-let [t (:tag (meta m))]
+    (let [c (when-let [c (resolve t)] c)]
+      (if (and c (.isAssignableFrom clojure.lang.IRecord c))
+        (let [fields (u/record-fields c)]
+          (if (and (nil? (first nf)) (fields k))
+            `(. ~m ~(symbol k))
+            `(.valAt ~m ~k ~@nf)))
+        (case t
+          (IPersistentMap
+           clojure.lang.IPersistentMap
+           PersistentArrayMap
+           clojure.lang.PersistentArrayMap
+           PersistentHashMap
+           clojure.lang.PersistentHashMap)
+          `(f/val-at ~m ~k ~@nf)
+          (PersistentVector clojure.lang.PersistentVector clojure.lang.Indexed Indexed)
+          `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
+          (Map HashMap java.util.Map java.util.HashMap)
+          `(m/get ~m ~k ~@nf)
+          (let [k (or (u/try-resolve k) k)]
+            (if (keyword? k)
+              `(~k ~m ~@nf)
+              `(. clojure.lang.RT (~'get ~m ~k ~@nf)))))))
+    (let [k (or (u/try-resolve k) k)]
+      (if (keyword? k)
+        `(~k ~m ~@nf)
+        `(. clojure.lang.RT (~'get ~m ~k ~@nf))))))
+
+(defmacro get
+  [m k & nf]
+  (apply -get m k nf))
+
+(defn -nth2
+  [c i]
+  (let [t (:tag (meta c))]
+    (case t
+      (java.lang.CharSequence java.lang.String String CharSequence)
+      `(.charAt ~c ~i)
+      (booleans bytes chars doubles floats ints longs shorts)
+      `(aget ~c ~i)
+      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+      `(.nth ~c ~i)
+      (if (try (.isArray (Class/forName t)) (catch Throwable _))
+        `(aget ~c ~i)
+        `(. clojure.lang.RT (~'nth ~c ~i))))))
+
+(defn -nth3
+  [c i nf]
+  (let [t (:tag (meta c))
+             i' (gensym "i__")]
+    (case t
+      (java.lang.CharSequence java.lang.String String CharSequence)
+      `(let [~i' ~i]
+         (if (< ~i' (.length ~c))
+           (.charAt ~c ~i')
+           ~nf))
+      (booleans bytes chars doubles floats ints longs shorts)
+      `(let [~i' ~i]
+         (if (< ~i' (alength ~c))
+           (aget ~c ~i')
+           ~nf))
+      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+      `(.nth ~c ~i ~nf)
+      (if (try (.isArray (Class/forName t)) (catch Throwable _))
+        `(let [~i' ~i]
+           (if (< ~i' (alength ~c))
+             (aget ~c ~i')
+             ~nf))
+        `(. clojure.lang.RT (~'nth ~c ~i ~nf))))))
+
+(defmacro nth
+  ([c i]
+   (-nth2 c i))
+  ([c i nf]
+   (-nth3 c i nf)))
 
 (defmacro assoc
   "Like core/assoc but inlines the association to all the arguments."
@@ -203,4 +281,4 @@
 (def-memoize* memoize-h*
   "Memoize using memoize-c functions of up to 8 arguments. Falls back on
   core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
-  hm/memoize* 20)
+  m/memoize* 20)

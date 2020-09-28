@@ -22,78 +22,17 @@
 ;; Avoid wrapping as it defeats the purpose of this exercise.
 ;; Can't `alter-meta!` as it'll recur infinitely when macro-expanding
 
-(core/defn- get-inline
-  [m k & nf]
-  (core/let [t (:tag (meta m))
-        c (when-let [c (resolve t)] c)]
-    (if (and c (.isAssignableFrom clojure.lang.IRecord c))
-      (core/let [fields (u/record-fields c)]
-        (if (and (nil? (first nf)) (fields k))
-          `(. ~m ~(symbol k))
-          `(.valAt ~m ~k ~@nf)))
-      (case t
-        (IPersistentMap
-         clojure.lang.IPersistentMap
-         PersistentArrayMap
-         clojure.lang.PersistentArrayMap
-         PersistentHashMap
-         clojure.lang.PersistentHashMap)
-        `(c/val-at ~m ~k ~@nf)
-        (PersistentVector clojure.lang.PersistentVector clojure.lang.Indexed Indexed)
-        `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
-        (Map HashMap java.util.Map java.util.HashMap)
-        `(m/get ~m ~k ~@nf)
-        `(. clojure.lang.RT (get ~m ~k ~@nf))))))
-
 (core/defn get
   "Returns the value mapped to key, not-found or nil if key not present."
   {:inline
    (core/fn [m k & nf]
-     (apply get-inline m k nf))
+     (apply inline/-get m k nf))
    :inline-arities #{2 3}
    :added "1.0"}
   ([map key]
    (. clojure.lang.RT (get map key)))
   ([map key not-found]
    (. clojure.lang.RT (get map key not-found))))
-
-(core/defn- nth2-inline
-  [c i]
-  (let [t (:tag (meta c))]
-    (case t
-      (java.lang.CharSequence java.lang.String String CharSequence)
-      `(.charAt ~c ~i)
-      (booleans bytes chars doubles floats ints longs shorts)
-      `(aget ~c ~i)
-      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
-      `(.nth ~c ~i)
-      (if (try (.isArray (Class/forName t)) (catch Throwable _))
-        `(aget ~c ~i)
-        `(. clojure.lang.RT (nth ~c ~i))))))
-
-(core/defn- nth3-inline
-  [c i nf]
-  (core/let [t (:tag (meta c))
-             i' (gensym "i__")]
-    (case t
-      (java.lang.CharSequence java.lang.String String CharSequence)
-      `(core/let [~i' ~i]
-         (if (< ~i' (.length ~c))
-           (.charAt ~c ~i')
-           ~nf))
-      (booleans bytes chars doubles floats ints longs shorts)
-      `(core/let [~i' ~i]
-         (if (< ~i' (alength ~c))
-           (aget ~c ~i')
-           ~nf))
-      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
-      `(.nth ~c ~i ~nf)
-      (if (try (.isArray (Class/forName t)) (catch Throwable _))
-        `(core/let [~i' ~i]
-           (if (< ~i' (alength ~c))
-             (aget ~c ~i')
-             ~nf))
-        `(. clojure.lang.RT (nth ~c ~i ~nf))))))
 
 (core/defn nth
   "Returns the value at the index. get returns nil if index out of
@@ -103,9 +42,9 @@
   {:inline
    (core/fn
      ([c i]
-      (nth2-inline c i))
+      (inline/-nth2 c i))
      ([c i nf]
-      (nth3-inline c i nf)))
+      (inline/-nth3 c i nf)))
    :inline-arities #{2 3}
    :added "1.0"}
   ([coll index] (. clojure.lang.RT (nth coll index)))
