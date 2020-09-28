@@ -57,28 +57,33 @@
         `(aget ~c ~i)
         `(clojure.lang.RT/nth ~c ~i)))))
 
+(defn- emit-array-nth
+  [c i i' nf]
+  (let [arr (with-meta (gensym "arr__") (meta c))]
+    `(let [~i' ~i
+           ~arr ~c]
+       (if (< ~i' (alength ~arr))
+         (aget ~arr ~i')
+         ~nf))))
+
 (defn -nth3
   [c i nf]
   (let [t (:tag (meta c))
         i' (gensym "i__")]
     (case t
       (java.lang.CharSequence java.lang.String String CharSequence)
-      `(let [~i' ~i]
-         (if (< ~i' (.length ~c))
-           (.charAt ~c ~i')
-           ~nf))
+      (let [cs (with-meta (gensym "cs__") (meta c))]
+        `(let [~i' ~i
+               ~cs ~c]
+           (if (< ~i' (.length ~cs))
+             (.charAt ~cs ~i')
+             ~nf)))
       (booleans bytes chars doubles floats ints longs shorts)
-      `(let [~i' ~i]
-         (if (< ~i' (alength ~c))
-           (aget ~c ~i')
-           ~nf))
+      (emit-array-nth c i i' nf)
       (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
       `(.nth ~(with-meta c {:tag 'clojure.lang.Indexed}) ~i ~nf)
       (if (try (.isArray (Class/forName t)) (catch Throwable _))
-        `(let [~i' ~i]
-           (if (< ~i' (alength ~c))
-             (aget ~c ~i')
-             ~nf))
+       (emit-array-nth c i i' nf)
         `(clojure.lang.RT/nth ~c ~i ~nf)))))
 
 (defmacro nth
