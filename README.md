@@ -10,11 +10,15 @@
         - [Functions and Macros](#functions-and-macros)
             - [Fast(er) Functions](#faster-functions)
             - [Inline Macros](#inline-macros)
+                - [Notes](#notes)
                 - [Additions](#additions)
+            - [Bypass dynamic dispatch with type hints](#bypass-dynamic-dispatch-with-type-hints)
             - [Collections](#collections)
                 - [HashMap](#hashmap)
                 - [ConcurrentHashMap](#concurrenthashmap)
             - [Lenses](#lenses)
+    - [Rewriting Core Functions And Macros](#rewriting-core-functions-and-macros)
+        - [Usage](#usage-1)
     - [Related Projects](#related-projects)
         - [Structural](#structural)
         - [Stringer](#stringer)
@@ -148,6 +152,20 @@ Examples:
   the cost of hashing objects in Clojure, it's recommended to use
   `memoize-c*` for most use cases.
 
+#### Bypass dynamic dispatch with type hints
+
+The `get` and `nth` macros operate similarly to their respective
+functions with one notable difference: When provided with an appropriate
+type hint, they will dispatch to the underlying method at compile time
+instead of run time.
+
+```clojure
+(def arr (long-array [1 2 3]))
+(nth ^longs arr 0)
+(def m (doto (java.util.HashMap.) (.put :a 1)))
+(get ^Map m :a)
+```
+
 #### Collections
 
 ##### HashMap
@@ -213,6 +231,28 @@ Similarly, for `assoc-in`:
 So be careful, these are not functional programming lenses, but
 metaprogramming lenses used for code generation.
 
+## Rewriting Core Functions And Macros
+
+The namespace `clj-fast.clojure.core` contains drop-in replacement
+functions and macros for Clojure's core.
+
+It opportunistically replaces functions by their inlined
+implementations. It also includes binding macros (let, fn, loop, defn)
+which will use inlining versions of `get` and `nth` when possible. (i.e.
+when type-hinted).
+
+### Usage
+
+```clojure
+(ns com.my.app
+  (:refer-clojure
+   :exclude
+   [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-])
+  (:require
+   [clojure.core :as c]
+   [clj-fast.clojure.core :refer [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-]]))
+```
+
 ## Related Projects
 
 ### Structural
@@ -230,7 +270,9 @@ by "unrolling" the building operations where statically possible.
 
 ## License
 
-Copyright © 2019 ben.sless@gmail.com
+Copyright © 2019-2020 ben.sless@gmail.com
+
+Copyright © Rich Hickey for the implementation in `clj-fast.clojure.core`.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
@@ -246,3 +288,5 @@ at https://www.gnu.org/software/classpath/license.html.
 ## Credit
 
 Credit to Metosin wherever noted in the code.
+
+Rich Hickey for clojure.core ns.

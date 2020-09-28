@@ -1,13 +1,96 @@
 (ns clj-fast.inline
   (:refer-clojure
-   :exclude [assoc merge get-in assoc-in update-in select-keys dissoc])
+   :exclude [get nth assoc merge get-in assoc-in update-in select-keys dissoc])
   (:require
    [clojure.core :as c]
    [clj-fast.util :as u]
    [clj-fast.core :as f]
    [clj-fast.lens :as lens]
    [clj-fast.collections.concurrent-map :as cm]
-   [clj-fast.collections.map :as hm]))
+   [clj-fast.collections.map :as m]))
+
+(defn -get
+  [m k & nf]
+  (if-let [t (:tag (meta m))]
+    (let [c (when-let [c (resolve t)] c)]
+      (if (and c (.isAssignableFrom clojure.lang.IRecord c))
+        (let [fields (u/record-fields c)]
+          (if (and (nil? (first nf)) (fields k))
+            `(. ~m ~(symbol k))
+            `(.valAt ~m ~k ~@nf)))
+        (case t
+          (IPersistentMap
+           clojure.lang.IPersistentMap
+           PersistentArrayMap
+           clojure.lang.PersistentArrayMap
+           PersistentHashMap
+           clojure.lang.PersistentHashMap)
+          `(f/val-at ~m ~k ~@nf)
+          (PersistentVector clojure.lang.PersistentVector clojure.lang.Indexed Indexed)
+          `(.nth ~(with-meta m {:tag clojure.lang.PersistentVector}) ~k ~@nf)
+          (Map HashMap java.util.Map java.util.HashMap)
+          `(m/get ~m ~k ~@nf)
+          (let [k (or (u/try-resolve k) k)]
+            (if (keyword? k)
+              `(~k ~m ~@nf)
+              `(clojure.lang.RT/get ~m ~k ~@nf))))))
+    (let [k (or (u/try-resolve k) k)]
+      (if (keyword? k)
+        `(~k ~m ~@nf)
+        `(clojure.lang.RT/get ~m ~k ~@nf)))))
+
+(defmacro get
+  [m k & nf]
+  (apply -get m k nf))
+
+(defn -nth2
+  [c i]
+  (let [t (:tag (meta c))]
+    (case t
+      (java.lang.CharSequence java.lang.String String CharSequence)
+      `(.charAt ~c ~i)
+      (booleans bytes chars doubles floats ints longs shorts)
+      `(aget ~c ~i)
+      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+      `(.nth ~(with-meta c {:tag 'clojure.lang.Indexed}) ~i)
+      (if (try (.isArray (Class/forName t)) (catch Throwable _))
+        `(aget ~c ~i)
+        `(clojure.lang.RT/nth ~c ~i)))))
+
+(defn- emit-array-nth
+  [c i i' nf]
+  (let [arr (with-meta (gensym "arr__") (meta c))]
+    `(let [~i' ~i
+           ~arr ~c]
+       (if (< ~i' (alength ~arr))
+         (aget ~arr ~i')
+         ~nf))))
+
+(defn -nth3
+  [c i nf]
+  (let [t (:tag (meta c))
+        i' (gensym "i__")]
+    (case t
+      (java.lang.CharSequence java.lang.String String CharSequence)
+      (let [cs (with-meta (gensym "cs__") (meta c))]
+        `(let [~i' ~i
+               ~cs ~c]
+           (if (< ~i' (.length ~cs))
+             (.charAt ~cs ~i')
+             ~nf)))
+      (booleans bytes chars doubles floats ints longs shorts)
+      (emit-array-nth c i i' nf)
+      (clojure.lang.Indexed Indexed clojure.lang.PersistentVector PersistentVector)
+      `(.nth ~(with-meta c {:tag 'clojure.lang.Indexed}) ~i ~nf)
+      (if (try (.isArray (Class/forName t)) (catch Throwable _))
+       (emit-array-nth c i i' nf)
+        `(clojure.lang.RT/nth ~c ~i ~nf)))))
+
+(defmacro nth
+  ([c i]
+   (-nth2 c i))
+  ([c i nf]
+   (-nth3 c i nf)))
 
 (defmacro assoc
   "Like core/assoc but inlines the association to all the arguments."
@@ -44,16 +127,16 @@
 (defmacro merge
   "Like core/merge but inlines the sequence of maps to conj."
   [& [m & ms]]
-  (let [ops# (map static-merge ms)]
-    `(-> (or ~m {})
-         ~@ops#)))
+  (let [ops# (map static-merge ms)
+        m0 (if (map? m) m `(or ~m {}))]
+    `(-> ~m0 ~@ops#)))
 
 (defmacro fast-map-merge
   "Like merge but uses fast-map-merge instead."
   [& [m & ms]]
-  (let [conjs# (map (fn [m] `(f/fast-map-merge ~m)) ms)]
-    `(-> (or ~m {})
-         ~@conjs#)))
+  (let [conjs# (map (fn [m] `(f/fast-map-merge ~m)) ms)
+        m0 (if (map? m) m `(or ~m {}))]
+    `(-> ~m0 ~@conjs#)))
 
 (defmacro tmerge
   "Like merge but uses rmerge! and an intermediate transient map."
@@ -183,7 +266,7 @@
      `(defn ~name
         ~doc
         [~'n ~'f]
-        (case ~'n
+        (case (int ~'n)
           ~@cases
           (memoize ~'f))))))
 
@@ -203,4 +286,4 @@
 (def-memoize* memoize-h*
   "Memoize using memoize-c functions of up to 8 arguments. Falls back on
   core/memoize. Faster than core memoize. Uses a concurrent-hash-map."
-  hm/memoize* 20)
+  m/memoize* 20)

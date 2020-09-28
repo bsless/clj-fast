@@ -54,7 +54,15 @@
       (t/is (= {} (sut/select-keys m [])))
       (t/is (= {:a 1} (sut/select-keys m [:a])))
       (t/is (= {:a 1 :b 2} (sut/select-keys m [:a :b])))
-      (t/is (= {:a 1 :c nil} (sut/select-keys m [:a :c]))))))
+      (t/is (= {:a 1} (sut/select-keys m [:a :c]))))))
+
+(t/deftest fast-select-keys
+  (let [m {:a 1 :b 2}]
+    (t/testing "select-keys"
+      (t/is (= {} (sut/fast-select-keys m [])))
+      (t/is (= {:a 1} (sut/fast-select-keys m [:a])))
+      (t/is (= {:a 1 :b 2} (sut/fast-select-keys m [:a :b])))
+      (t/is (= {:a 1 :c nil} (sut/fast-select-keys m [:a :c]))))))
 
 (t/deftest assoc-in
   (let [m {:a {:b 1}}]
