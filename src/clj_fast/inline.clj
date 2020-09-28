@@ -261,7 +261,7 @@
      `(defn ~name
         ~doc
         [~'n ~'f]
-        (case ~'n
+        (case (int ~'n)
           ~@cases
           (memoize ~'f))))))
 
