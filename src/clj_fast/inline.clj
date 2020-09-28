@@ -60,7 +60,7 @@
 (defn -nth3
   [c i nf]
   (let [t (:tag (meta c))
-             i' (gensym "i__")]
+        i' (gensym "i__")]
     (case t
       (java.lang.CharSequence java.lang.String String CharSequence)
       `(let [~i' ~i]
