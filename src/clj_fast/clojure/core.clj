@@ -12,10 +12,8 @@
    [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-])
   (:require
    [clojure.core :as core]
-   [clj-fast.core :as c]
    [clj-fast.util :as u]
-   [clj-fast.inline :as inline]
-   [clj-fast.collections.map :as m]))
+   [clj-fast.inline :as inline]))
 
 ;;; redefine clojure.core functions
 ;;; NOTE: The functions have to be either redefined or wrapped.
