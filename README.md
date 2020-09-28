@@ -266,7 +266,9 @@ by "unrolling" the building operations where statically possible.
 
 ## License
 
-Copyright © 2019 ben.sless@gmail.com
+Copyright © 2019-2020 ben.sless@gmail.com
+
+Copyright © Rich Hickey for the implementation in `clj-fast.clojure.core`.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
@@ -282,3 +284,5 @@ at https://www.gnu.org/software/classpath/license.html.
 ## Credit
 
 Credit to Metosin wherever noted in the code.
+
+Rich Hickey for clojure.core ns.
