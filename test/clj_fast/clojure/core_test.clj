@@ -121,3 +121,10 @@
         {:a 3} (sut/update-in m ks + 1 1)
         {:a 4} (sut/update-in m ks + 1 1 1)
         {:a 5} (sut/update-in m ks + 1 1 1 1)))))
+
+(t/deftest test-subseq
+  (let [s1 (range 100)
+        s2 (into (sorted-set) s1)]
+    (doseq [i (range 100)]
+      (t/is (= s1 (concat (sut/subseq s2 < i) (sut/subseq s2 >= i))))
+      (t/is (= (reverse s1) (concat (sut/rsubseq s2 >= i) (sut/rsubseq s2 < i)))))))

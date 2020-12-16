@@ -10,6 +10,8 @@
 - Not found arity to inline/get-in
 - Tests from Clojure's test suit to catch some edge cases
 - Faster update-in which takes advantage of variadic arities, but introduces ugly code duplication
+- Faster versions of subseq/rsubseq which don't use sets for checking
+  test functions identity.
 
 ### Fix
 
