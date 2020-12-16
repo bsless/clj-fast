@@ -449,3 +449,44 @@
   {:added "1.0"}
   [name & decls]
   (list* `defn (with-meta name (assoc (meta name) :private true)) decls))
+
+(core/defn- <mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc key]
+  (core/fn [e]
+    (< ^long (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- <=mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc key]
+  (core/fn [e]
+    (<= ^long (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc test key]
+  (core/fn [e]
+    (test ^long (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- seek
+  [include ^clojure.lang.Sorted  sc key]
+  (core/when-let [s (. sc seqFrom key false)]
+    (core/let [e (.first ^clojure.lang.ISeq s)]
+      (if (include e) s (next s)))))
+
+(core/defn rsubseq
+  ([^clojure.lang.Sorted sc test key]
+   (cond
+     (core/identical? < test)
+     (core/let [include (<mk-bound-fn sc key)]
+       (seek include sc key))
+     (core/identical? <= test)
+     (core/let [include (<=mk-bound-fn sc key)]
+       (seek include sc key))
+     true
+     (core/let [include (mk-bound-fn sc test key)]
+       (take-while include (. sc seq false)))))
+  ([^clojure.lang.Sorted sc start-test start-key end-test end-key]
+   (core/when-let [[e :as s] (. sc seqFrom end-key false)]
+     (take-while (mk-bound-fn sc start-test start-key)
+                 (if ((mk-bound-fn sc end-test end-key) e) s (next s))))))
