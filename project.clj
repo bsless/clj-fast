@@ -6,19 +6,11 @@
   :dependencies [[org.clojure/clojure "1.10.1"]]
   :target-path "target/%s"
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
-                                    :username :gpg
-                                    :password :gpg
+                                    :username :env/clojars_user
+                                    :password :env/clojars_token
                                     :sign-releases false}]
                         ["releases" :clojars]
                         ["snapshots" :clojars]]
-  :release-tasks
-  [["vcs" "assert-committed"]
-   ["change" "version" "leiningen.release/bump-version" "release"]
-   ["vcs" "commit"]
-   ["deploy" "clojars"]
-   ["change" "version" "leiningen.release/bump-version"]
-   ["vcs" "commit"]
-   ["vcs" "push"]]
   :profiles
   {:test-build {:main clj-fast.bench
                 :aot :all}
