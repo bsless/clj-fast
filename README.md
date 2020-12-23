@@ -1,3 +1,7 @@
+[![Clojars Project](https://img.shields.io/clojars/v/bsless/clj-fast.svg)](https://clojars.org/bsless/clj-fast)
+[![cljdoc badge](https://cljdoc.org/badge/bsless/clj-fast)](https://cljdoc.org/d/bsless/clj-fast/CURRENT)
+[![CircleCI](https://circleci.com/gh/bsless/clj-fast/tree/master.svg?style=shield)](https://circleci.com/gh/bsless/clj-fast/tree/master)
+
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
