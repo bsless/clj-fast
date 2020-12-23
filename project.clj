@@ -26,13 +26,13 @@
    [:bench :prof :cli
     {:source-paths ["analysis"]
      :dependencies
-     [[incanter "1.9.3" :scope "provided"]]}]
-   :cli {:dependencies [[org.clojure/tools.cli "0.4.2" :scope "provided"]]}
+     [[incanter "1.9.3"]]}]
+   :cli {:dependencies [[org.clojure/tools.cli "0.4.2"]]}
    :bench {:source-paths ["bench"]
-           :dependencies [[criterium "0.4.5" :scope "provided"]
-                          [org.clojure/test.check "0.9.0" :scope "provided"]]}
+           :dependencies [[criterium "0.4.5"]
+                          [org.clojure/test.check "0.9.0"]]}
    :prof {:source-paths ["prof"]
-          :dependencies [[com.clojure-goes-fast/clj-async-profiler "0.4.0" :scope "provided"]]}
+          :dependencies [[com.clojure-goes-fast/clj-async-profiler "0.4.0"]]}
 
    :big-heap {:jvm-opts ["-Xmx9g" "-Xms9G"]}
    :med-heap {:jvm-opts ["-Xmx5g" "-Xms5G"]}
