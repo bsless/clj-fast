@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ -z "$CIRCLE_PULL_REQUEST" ] && [ "$CIRCLE_BRANCH" = "master" ] && ! head -1 project.clj | grep -q SNAPSHOT
+then
+    lein do clean, deploy clojars
+fi
+
+exit 0;
