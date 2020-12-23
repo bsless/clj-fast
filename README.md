@@ -75,8 +75,10 @@ See [results.md](doc/results.md) for experiments' detailed benchmark results.
 Add in your `project.clj`:
 
 ```clojure
-[bsless/clj-fast "0.0.8"]
+[bsless/clj-fast "0.0.9"]
 ```
+
+WARNING: Due to a bug in leiningen, versions built prior to `0.0.9` will pull in extra dependencies. Make sure to upgrade!
 
 ### Functions and Macros
 
