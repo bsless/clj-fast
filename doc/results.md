@@ -57,7 +57,7 @@
 ### Running tests
 
 ```bash
-lein do clean, uberjar
+lein with-profile +direct,+bench,+cli,+test-build do clean, uberjar
 java -Xmx8G -Xms8G \
      -XX:+UseG1GC \
      -jar target/uberjar/clj-fast-0.0.9-SNAPSHOT.jar \
