@@ -1,5 +1,19 @@
 # Change Log
 
+## [Unreleased]
+
+### Add
+
+- Tests from Clojure's test suit to catch some edge cases
+
+### Fix
+
+- Fix callsite analysis of quoted forms. Now functions calls and quoted forms are handled correctly.
+
+## [0.0.9]
+
+- Add Circlci integration
+
 ## [0.0.8] - 2020-09-28
 
 ### Add
