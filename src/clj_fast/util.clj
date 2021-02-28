@@ -13,7 +13,12 @@
   [xs]
   (instance? clojure.lang.LazySeq xs))
 
-(def sequence? (some-fn lazy? sequential?))
+(defn- quoted-coll?
+  [xs]
+  (and (coll? xs)
+       (= 'quote (first xs))))
+
+(def sequence? (some-fn lazy? vector? quoted-coll?))
 
 (defn try-resolve
   [sym]
@@ -30,10 +35,16 @@
   (let [xs (try-resolve? xs)]
     (sequence? xs)))
 
+(defn- dequote
+  [xs]
+  (if (quoted-coll? xs)
+    (second xs)
+    xs))
+
 (defn simple-seq
   [xs]
   (let [xs (try-resolve? xs)]
-    (and (sequence? xs) (seq xs))))
+    (and (sequence? xs) (into [] (seq (dequote xs))))))
 
 (defn bind-seq
   [xs]
