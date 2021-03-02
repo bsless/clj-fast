@@ -13,6 +13,7 @@
   (:require
    [clojure.core :as core]
    [clj-fast.util :as u]
+   [clj-fast.core :as c]
    [clj-fast.inline :as inline]))
 
 ;;; redefine clojure.core functions
@@ -99,14 +100,42 @@
    (core/fn [m ks f & args]
      (if (u/simple-seq? ks)
        `(inline/update-in ~m ~ks ~f ~@args)
-       `(core/update-in ~m ~ks ~f ~@args)))}
-  ([m ks f & args]
-   (core/let [up (core/fn up [m ks f args]
-                   (core/let [[k & ks] ks]
-                     (if ks
-                       (core/assoc m k (up (core/get m k) ks f args))
-                       (core/assoc m k (apply f (core/get m k) args)))))]
-     (up m ks f args))))
+       `(c/fast-update-in ~m ~ks ~f ~@args)))}
+  ([m ks f]
+   (core/let [up (core/fn up [m ks f]
+              (core/let [[k & ks] ks]
+                (if ks
+                  (core/assoc m k (up (core/get m k) ks f))
+                  (core/assoc m k (f (core/get m k))))))]
+     (up m ks f)))
+  ([m ks f a]
+   (core/let [up (core/fn up [m ks f a]
+              (core/let [[k & ks] ks]
+                (if ks
+                  (core/assoc m k (up (core/get m k) ks f a))
+                  (core/assoc m k (f (core/get m k) a)))))]
+     (up m ks f a)))
+  ([m ks f a b]
+   (core/let [up (core/fn up [m ks f a b]
+              (core/let [[k & ks] ks]
+                (if ks
+                  (core/assoc m k (up (core/get m k) ks f a b))
+                  (core/assoc m k (f (core/get m k) a b)))))]
+     (up m ks f a b)))
+  ([m ks f a b c]
+   (core/let [up (core/fn up [m ks f a b c]
+              (core/let [[k & ks] ks]
+                (if ks
+                  (core/assoc m k (up (core/get m k) ks f a b c))
+                  (core/assoc m k (f (core/get m k) a b c)))))]
+     (up m ks f a b c)))
+  ([m ks f a b c & args]
+   (core/let [up (core/fn up [m ks f a b c args]
+              (core/let [[k & ks] ks]
+                (if ks
+                  (core/assoc m k (up (core/get m k) ks f a b c args))
+                  (core/assoc m k (apply f (core/get m k) a b c args)))))]
+     (up m ks f a b c args))))
 
 (core/defn get-in
   "Returns the value in a nested associative structure,

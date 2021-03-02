@@ -57,3 +57,40 @@
     (if (instance? clojure.lang.IKVReduce l)
       (.kvreduce ^clojure.lang.IKVReduce l rf r)
       (p/kv-reduce l rf r))))
+
+(defn fast-update-in
+  ([m ks f]
+   (let [up (fn up [m ks f]
+              (let [[k & ks] ks]
+                (if ks
+                  (assoc m k (up (get m k) ks f))
+                  (assoc m k (f (get m k))))))]
+     (up m ks f)))
+  ([m ks f a]
+   (let [up (fn up [m ks f a]
+              (let [[k & ks] ks]
+                (if ks
+                  (assoc m k (up (get m k) ks f a))
+                  (assoc m k (f (get m k) a)))))]
+     (up m ks f a)))
+  ([m ks f a b]
+   (let [up (fn up [m ks f a b]
+              (let [[k & ks] ks]
+                (if ks
+                  (assoc m k (up (get m k) ks f a b))
+                  (assoc m k (f (get m k) a b)))))]
+     (up m ks f a b)))
+  ([m ks f a b c]
+   (let [up (fn up [m ks f a b c]
+              (let [[k & ks] ks]
+                (if ks
+                  (assoc m k (up (get m k) ks f a b c))
+                  (assoc m k (f (get m k) a b c)))))]
+     (up m ks f a b c)))
+  ([m ks f a b c & args]
+   (let [up (fn up [m ks f a b c args]
+              (let [[k & ks] ks]
+                (if ks
+                  (assoc m k (up (get m k) ks f a b c args))
+                  (assoc m k (apply f (get m k) a b c args)))))]
+     (up m ks f a b c args))))

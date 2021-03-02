@@ -5,6 +5,7 @@
 ### Add
 
 - Tests from Clojure's test suit to catch some edge cases
+- Faster update-in which takes advantage of variadic arities, bug introduces ugly code duplication
 
 ### Fix
 

@@ -111,4 +111,13 @@
   (let [m {:a {:b 1}}]
     (t/is (= {:a {:b 2}} (sut/update-in m [:a :b] + 1)))
     (t/is (= {:a {:b 1}
-              :c {:d true}} (sut/update-in m [:c :d] not)))))
+              :c {:d true}} (sut/update-in m [:c :d] not))))
+  (t/testing "Variadic arity"
+    (let [m {:a 1}
+          ks [:a]]
+      (t/are [result expr] (= result expr)
+        {:a 1} (sut/update-in m ks +)
+        {:a 2} (sut/update-in m ks + 1)
+        {:a 3} (sut/update-in m ks + 1 1)
+        {:a 4} (sut/update-in m ks + 1 1 1)
+        {:a 5} (sut/update-in m ks + 1 1 1 1)))))
