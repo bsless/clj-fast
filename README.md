@@ -187,7 +187,7 @@ instead of run time.
 ##### ConcurrentHashMap
 
 ```clojure
-(require '[clj-fast.collections.concurrent-hash-map :as chm])
+(require '[clj-fast.collections.concurrent-map :as chm])
 ```
 
 - `->concurrent-hash-map`: constructor.
