@@ -18,7 +18,7 @@
 
 (defrecord Foo [a b c d])
 
-(defn -main []
+(defn -main [& _args]
   (prof/clear-results)
   (let [m {:a 1 :b 2 :c 3 :d 4 "x" "y"}
         foo (->Foo 1 2 3 4)]
