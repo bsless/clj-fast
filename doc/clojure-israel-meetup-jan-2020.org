@@ -1,0 +1,180 @@
+#+title: Unpredictably Faster Clojure
+#+author: Ben Sless
+#+email: ben.sless@gmail.com
+#+language: en
+#+OPTIONS: num:nil toc:nil
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_EXTRA_CSS: https://raw.githubusercontent.com/rafadc/org-reveal/master/local.css
+#+REVEAL_TRANS: Slide
+#+REVEAL_THEME: solarized
+
+* Who?
+
+  - Ben Sless
+  - BE Engineer @Appsflyer
+  - EE turned SE
+  - I like lisp, FP, CSP and distributed systems.
+
+* Acknowledgments
+
+** Tommi Reiman 
+   
+   - Inspired this talk 
+   - Naked Performance With Clojure (ClojureTRE 2019).
+
+** Nir Rubinstein 
+   
+   - Support and mentoring
+
+* Agenda
+
+  - Motivation
+  - The Costs of Iteration
+  - Macros to the rescue?
+  - Benchmarks results
+  - Profiling
+  - A few tips
+  - Future plans
+
+* Motivation
+
+  - Performance doesn't matter until it does
+  - I want to help Clojurians give a decent fight to less fun languages.
+
+* On Optimization
+
+** Premature optimization is the root of all evil
+
+** Yet we should not pass up our opportunities in that critical 3%
+
+* The Performance Costs of Iteration
+
+** clojure.core
+
+*** Functions are written to be generic
+
+*** Plenty of functions, better composition
+
+*** reducing over sequences
+
+    #+begin_src clojure
+      (defn get-in
+        ([m ks]
+         (reduce1 get m ks))
+        ([m ks not-found]
+         (loop [sentinel (Object.)
+                m m
+                ks (seq ks)]
+           (if ks
+             (let [m (get m (first ks) sentinel)]
+               (if (identical? sentinel m)
+                 not-found
+                 (recur sentinel m (next ks))))
+             m))))
+    #+end_src
+
+*** iterating with next
+
+    #+begin_src clojure
+      (defn select-keys
+        [map keyseq]
+        (loop [ret {} keys (seq keyseq)]
+          (if keys
+            (let [entry (. clojure.lang.RT (find map (first keys)))]
+              (recur
+               (if entry
+                 (conj ret entry)
+                 ret)
+               (next keys)))
+            (with-meta ret (meta map)))))
+    #+end_src
+
+*** rest args
+
+    #+begin_src clojure
+      (defn conj
+        ([] [])
+        ([coll] coll)
+        ([coll x] (clojure.lang.RT/conj coll x))
+        ([coll x & xs]
+         (if xs
+           (recur (clojure.lang.RT/conj coll x) (first xs) (next xs))
+           (clojure.lang.RT/conj coll x))))
+
+      (defn assoc-in
+        [m [k & ks] v]
+        (if ks
+          (assoc m k (assoc-in (get m k) ks v))
+          (assoc m k v)))
+    #+end_src
+
+** Macros vs. Functions
+
+   | criterion   | macro          | function      |
+   |-------------+----------------+---------------|
+   | usability   | tailored       | generic       |
+   | composition | only w/ macros | +1            |
+   | performance | can be better  | usually worse |
+
+** Case Study: ~get-in~
+
+   #+begin_src clojure
+     (reduce1 get m ks)
+     ;; vs.
+     `(-> ~m ~@(map (fn [k] `(get ~k)) ks))
+   #+end_src
+
+** Results overview
+
+   Ranges are for 1 to 4 keys.
+
+   | implementation | core (ns) | macro (ns) |
+   |----------------+-----------+------------|
+   | get-in         | 40 - 80   | 8 - 23     |
+   | assoc-in       | 55 - 215  | 35 - 65    |
+   | select-keys    | 190 - 435 | 25 - 55    |
+
+* Many Ways To Get
+
+** Which is fastest?
+
+  #+begin_src clojure
+    (let [m {:a 1 :b 2 :c 3 :d 4}
+          foo (->Foo 1 2 3 4)]
+      (get m :c)
+      (:c m)
+      (m :c)
+  
+      (get foo :c)
+      (.get ^Foo foo :c)
+      (:c foo)
+      (.c ^Foo foo))
+  #+end_src
+
+** The results are in
+   
+  #+begin_src clojure
+    (let [m {:a 1 :b 2 :c 3 :d 4}
+          foo (->Foo 1 2 3 4)]
+      (get m :c) ;; 12 ns
+      (:c m) ;; 10.7 ns
+      (m :c) ;; 9.6 ns
+  
+      (get foo :c) ;; 19 ns
+      (.get ^Foo foo :c) ;; 13 ns
+      (:c foo) ;; 6.7 ns
+      (.c ^Foo foo)) ;; 4.4 ns
+  #+end_src
+
+* Some Other Considerations
+
+  When on a tight performance budget:
+
+  - Avoid ~merge~.
+  - Avoid using sequences as keys in a map.
+  - Figure out when you can perhaps use Java collections behind the scenes where performance matters.
+
+* Where you can get it?
+  
+  - github.com/bsless/clj-fast
+  - ~[bsless/clj-fast "0.0.2-alpha"]~

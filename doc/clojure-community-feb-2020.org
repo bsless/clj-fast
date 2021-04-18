@@ -1,0 +1,269 @@
+#+title: Unpredictably Faster Clojure
+#+author: Ben Sless
+#+email: ben.sless@gmail.com
+#+language: en
+#+OPTIONS: num:nil toc:nil
+#+REVEAL_ROOT: file:///home/bensless/.local/reveal.js
+#+REVEAL_EXTRA_CSS: https://raw.githubusercontent.com/rafadc/org-reveal/master/local.css
+#+REVEAL_TRANS: Slide
+#+REVEAL_THEME: solarized
+
+* Who?
+
+  - Ben Sless
+  - BE Engineer PDS@Appsflyer
+
+* Acknowledgments
+
+** Tommi Reiman
+
+   - Inspired this talk
+   - Naked Performance With Clojure (ClojureTRE 2019).
+
+** Nir Rubinstein
+
+   - Support and mentoring
+
+** Joinr
+
+   [[file:images/joinr.png]]
+
+* Agenda
+
+  - Motivation
+  - The Costs of Iteration
+  - Macros to the rescue?
+  - Benchmarks results
+  - A few tips
+  - Showcase
+  - Status and plans
+
+* Motivation
+
+  - Performance doesn't matter until it does.
+  - Clojure is fun.
+  - Other languages are less fun.
+  - We need the right tools for the job, which sometimes means going fast.
+
+* On Optimization
+
+** Premature optimization is the root of all evil
+
+** Yet we should not pass up our opportunities in that critical 3%
+
+* The Performance Costs of Iteration
+
+** clojure.core
+
+*** Functions are written to be generic
+
+*** Plenty of functions, better composition
+
+*** reducing over sequences
+
+    #+begin_src clojure
+      (defn get-in
+        ([m ks]
+         (reduce1 get m ks))
+        ([m ks not-found]
+         (loop [sentinel (Object.)
+                m m
+                ks (seq ks)]
+           (if ks
+             (let [m (get m (first ks) sentinel)]
+               (if (identical? sentinel m)
+                 not-found
+                 (recur sentinel m (next ks))))
+             m))))
+    #+end_src
+
+*** iterating with next
+
+    #+begin_src clojure
+      (defn select-keys
+        [map keyseq]
+        (loop [ret {} keys (seq keyseq)]
+          (if keys
+            (let [entry (. clojure.lang.RT (find map (first keys)))]
+              (recur
+               (if entry
+                 (conj ret entry)
+                 ret)
+               (next keys)))
+            (with-meta ret (meta map)))))
+    #+end_src
+
+*** rest args
+
+    #+begin_src clojure
+      (defn conj
+        ([] [])
+        ([coll] coll)
+        ([coll x] (clojure.lang.RT/conj coll x))
+        ([coll x & xs]
+         (if xs
+           (recur (clojure.lang.RT/conj coll x) (first xs) (next xs))
+           (clojure.lang.RT/conj coll x))))
+
+      (defn assoc-in
+        [m [k & ks] v]
+        (if ks
+          (assoc m k (assoc-in (get m k) ks v))
+          (assoc m k v)))
+    #+end_src
+
+** Macros vs. Functions
+
+   | criterion   | macro          | function      |
+   |-------------+----------------+---------------|
+   | usability   | tailored       | generic       |
+   | composition | only w/ macros | +1            |
+   | performance | can be better  | usually worse |
+
+** Case Study: ~get-in~
+
+   #+begin_src clojure
+     (reduce1 get m ks)
+     ;; vs.
+     `(-> ~m ~@(map (fn [k] `(get ~k)) ks))
+     ;; expands to:
+     (get (get ... (get (get m k0) k1) ... ) kn)
+   #+end_src
+
+*** Static analysis of flow control
+
+** Results
+
+*** get in
+
+   [[file:images/get-in_width_keys_2.png]]
+
+*** assoc
+
+   [[file:images/assoc_width_keys_2.png]]
+
+*** assoc in
+
+   [[file:images/assoc-in_width_keys_2.png]]
+
+*** update in
+
+   [[file:images/update-in_width_keys_2.png]]
+
+*** merge
+
+   [[file:images/merge_width_keys_2.png]]
+
+
+*** select keys
+
+   [[file:images/select-keys_width_keys_2.png]]
+
+* Many Ways To Get
+
+** Which is fastest?
+
+  #+begin_src clojure
+    (let [m {:a 1 :b 2 :c 3 :d 4}
+          foo (->Foo 1 2 3 4)]
+      (get m :c)
+      (:c m)
+      (m :c)
+
+      (get foo :c)
+      (.get ^Foo foo :c)
+      (:c foo)
+      (.c ^Foo foo))
+  #+end_src
+
+** The results are in
+
+*** map
+
+    [[file:images/get_keys_width_1.png]]
+
+*** record
+
+    [[file:images/get-rec_keys_width_1.png]]
+
+* Some Other Considerations
+
+  When on a tight performance budget:
+
+  - Avoid ~merge~.
+  - Avoid reflection (duh!). ~satisfies?~ is reflection!
+  - Avoid using Cloure collections as keys in a map.
+  - Figure out when you can perhaps use Java collections behind the
+    scenes where performance matters.
+
+* So what does it look like?
+
+** Just like Clojure
+
+   #+begin_src clojure
+     (def ks [:a :b])
+
+     (inline/assoc m :a 1 :b 2)
+     (inline/fast-assoc m :a 1 :b 2)
+
+     (inline/get-in m ks)
+     (inline/get-in m [:c :d])
+     (inline/get-some-in m [:c :d])
+
+     (inline/assoc-in m [:c :d] foo)
+     (inline/update-in m [:c :d] inc)
+
+     (inline/select-keys m [:a :b :c])
+
+     (inline/merge m1 m2 m3)
+
+     (def assoc* (inline/memoize-c 3 assoc))
+   #+end_src
+
+* What's inside?
+
+  - inline
+  - core
+  - collections
+    - hashmap
+    - concurrent hashmap
+  - lenses
+
+* Status
+
+** Actively developed
+
+** Metosin
+
+   [[file:images/metosin.png]]
+
+** Github
+
+   [[file:images/github.png]]
+
+* Can I Use It?
+
+** TL;DR
+
+   yes
+
+** Should You Bother?
+
+   - On paper, there is no loss but time.
+   - Profile your service to figure out if the effort is worth it
+   - If 50% of your CPU is churning Clojure data, YES.
+
+** Profile?
+
+   - Use a flame graph!
+   - ~core\$(get_in)|(update_in)|(assoc_in)|(select_keys)|merge~
+
+* Future Plans
+
+  - Add inline definitions to `clojure.core` functions - drop in replacement.
+  - Faster records?
+
+* Where you can get it?
+
+  - github.com/bsless/clj-fast
+  - ~[bsless/clj-fast "0.0.6"]~
