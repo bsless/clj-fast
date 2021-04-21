@@ -695,7 +695,7 @@
 (def cli-options
   [["-n" "--name NAME" "Benchmarks nickname"
     :default ""]
-   ["-o" "--out-path" "Output path"
+   ["-o" "--out-path OUT-PATH" "Output path"
     :default "./benchmarks"]
    ["-q" "--quick QUICK" "quick"
     :parse-fn #(Boolean/parseBoolean %)
