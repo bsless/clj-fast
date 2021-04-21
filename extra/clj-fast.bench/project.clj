@@ -9,5 +9,6 @@
                  [org.clojure/tools.cli "0.4.2"]]
   :main clj-fast.bench
   :target-path "target/%s"
+  :uberjar-name "bench.jar"
   :profiles {:uberjar {:jvm-opts ["-Dclojure.compiler.direct-linking=true"]
                        :aot :all}})
