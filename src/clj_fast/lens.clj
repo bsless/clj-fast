@@ -64,6 +64,43 @@
     `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms v))))
 
+(defn put-many
+  "Take two functions, putter and getter, symbol m, sequence of pairs of
+  [ks v] such that every ks is a sequence of keys and v is an expression
+  and constructs an assoc-in structure, as if inlining core Clojure's
+  assoc-in in a minimal number of calls.
+  getter must be a mapping of
+  (f sym k) -> get-expr, for example:
+  (fn [sym k] `(get sym k))
+
+  similarly, putter must to the same with assoc."
+  [putter getter m kvs]
+  (assert (even? (count kvs)))
+  (letfn [(collapse ;; plan
+            [kvs]
+            (reduce
+             (fn [m [path v]]
+               (assoc-in m (map (fn [k] {::node k}) path) {::leaf v}))
+             {}
+             kvs))
+          (explode ;; translate plan to execution
+            [m form]
+            (let [parent (gensym "parent__")
+                  bindings
+                  (reduce
+                   (fn [bs [k v]]
+                     (if (::leaf v)
+                       (conj bs parent (putter parent (::node k) (::leaf v)))
+                       (let [child (gensym "child__")]
+                         (conj bs
+                               child (getter parent (::node k))
+                               parent (putter parent (::node k) (explode child v))))))
+                   [parent m]
+                   form)]
+              `(let [~@bindings]
+                 ~parent)))]
+    (explode m (collapse (partition 2 kvs)))))
+
 (defn update
   "Take two functions, putter and getter, symbol m, sequence ks and
   symbol v and constructs an update-in structure, as if inlining
