@@ -199,6 +199,46 @@
    (fn [m k] `(c/get ~m ~k))
    m (u/simple-seq ks) v))
 
+(defn- collapse
+  [kvs]
+  (reduce
+   (fn [m [path v]]
+     (c/assoc-in m (map (fn [k] {::node k}) path) {::leaf v}))
+   {}
+   kvs))
+
+(defn- explode
+  [m form]
+  (let [parent (gensym "parent__")
+        bindings
+        (reduce
+         (fn [bs [k v]]
+           (if (::leaf v)
+             (conj bs parent `(c/assoc ~parent ~(::node k) ~(::leaf v)))
+             (let [child (gensym "child__")]
+               (conj bs
+                     child `(c/get ~parent ~(::node k))
+                     parent `(c/assoc ~parent ~(::node k) ~(explode child v))))))
+         [parent m]
+         form)]
+    `(let [~@bindings]
+       ~parent)))
+
+(comment
+  (def kvs
+    [[[:x :y] 1]
+     [[:x :z :a] 2]
+     [[:x :z :b] 3]
+     [[:x :z :c] 4]])
+
+  (explode 'm (collapse kvs)))
+
+(defmacro assoc-in+
+  "Like assoc-in but inlines the calls when a static sequence of keys is
+  provided."
+  [m ks v & ksvs]
+  (explode m (collapse (into [[ks v]] (partition 2 ksvs)))))
+
 (defmacro update-in
   "Like update-in but inlines the calls when a static sequence of keys is
   provided."
