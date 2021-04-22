@@ -189,6 +189,7 @@
     `(let ~bindings
        ~form)))
 
+#_
 (defmacro assoc-in
   "Like assoc-in but inlines the calls when a static sequence of keys is
   provided."
@@ -199,10 +200,12 @@
    (fn [m k] `(c/get ~m ~k))
    m (u/simple-seq ks) v))
 
-(defmacro assoc-in+
+(defmacro assoc-in
   "Like assoc-in but inlines the calls when a static sequence of keys is
-  provided."
+  provided.
+  Can take an unlimited number of [ks v] pairs"
   [m & ksvs]
+  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
   (lens/put-many
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
