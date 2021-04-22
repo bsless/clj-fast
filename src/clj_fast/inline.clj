@@ -40,8 +40,10 @@
         `(clojure.lang.RT/get ~m ~k ~@nf)))))
 
 (defmacro get
-  [m k & nf]
-  (apply -get m k nf))
+  ([m k]
+   (-get m k))
+  ([m k nf]
+   (-get m k nf)))
 
 (defn -nth2
   [c i]
