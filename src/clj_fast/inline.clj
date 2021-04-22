@@ -154,9 +154,14 @@
 (defmacro get-in
   "Like `get-in` but faster and uses code generation.
   `ks` must be either vector, list or set."
-  [m ks]
-  {:pre [(u/simple-seq? ks)]}
-  (lens/get (fn [k] `(c/get ~k)) m ks))
+  ([m ks]
+   {:pre [(u/simple-seq? ks)]}
+   (lens/get (fn [k] `(c/get ~k)) m ks))
+  ([m ks nf]
+   {:pre [(u/simple-seq? ks)]}
+   (let [g (gensym)]
+     `(let [~g ~nf]
+        ~(lens/get (fn [k] `(c/get ~k ~g)) m ks)))))
 
 (defmacro get-some-in
   "Like get-in, but nil-checks every intermediate value."
