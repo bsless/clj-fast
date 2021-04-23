@@ -189,6 +189,7 @@
     `(let ~bindings
        ~form)))
 
+#_
 (defmacro assoc-in
   "Like assoc-in but inlines the calls when a static sequence of keys is
   provided."
@@ -198,6 +199,21 @@
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
    m (u/simple-seq ks) v))
+
+(defmacro assoc-in
+  "Like assoc-in but inlines the calls when a static sequence of keys is
+  provided.
+  Can take an unlimited number of [ks v] pairs.
+  Caution:
+  For more than one path-value pair this macro will reorder your code
+  and eliminate forms. Rely on side-effects and order at your own
+  peril."
+  [m & ksvs]
+  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
+  (lens/put-many
+   (fn [m k v] `(c/assoc ~m ~k ~v))
+   (fn [m k] `(c/get ~m ~k))
+   m ksvs))
 
 (defmacro update-in
   "Like update-in but inlines the calls when a static sequence of keys is

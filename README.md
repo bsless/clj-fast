@@ -127,6 +127,8 @@ Examples:
 
 (inline/assoc-in m [:c :d] foo)
 
+(inline/assoc-in m [:c :d] foo [:c :b] bar)
+
 (inline/update-in m [:c :d] inc)
 
 (inline/select-keys m [:a :b :c])
@@ -139,6 +141,8 @@ Examples:
 ##### Notes
 
 - Merge analysis unrolls inline maps as well.
+- Warning: additional arities of assoc-in will cause code reordering.
+  Beware of side effects.
 
 ##### Additions
 
