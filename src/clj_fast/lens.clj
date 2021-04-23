@@ -99,7 +99,27 @@
                    form)]
               `(let [~@bindings]
                  ~parent)))]
-    (explode m (collapse (partition 2 kvs)))))
+    (let [{:keys [context kvs]}
+          (reduce
+           (fn [{:keys [context kvs]} [path v]]
+             (let [{:keys [bindings syms]} (u/extract-bindings path)]
+               {:context (into context bindings)
+                :kvs (conj kvs [syms v])}))
+           {:context []
+            :kvs []}
+           (partition 2 kvs))]
+      (if (seq context)
+        `(let [~@context]
+           ~(explode m (collapse kvs)))
+        (explode m (collapse kvs))))))
+
+(comment
+  (put-many
+   (fn [m k v] `(assoc ~m ~k ~v))
+   (fn [m k] `(get ~m ~k))
+   'm
+   '[[:a (rand) :b] 1
+     [:a (rand) :c] 2]))
 
 (defn update
   "Take two functions, putter and getter, symbol m, sequence ks and

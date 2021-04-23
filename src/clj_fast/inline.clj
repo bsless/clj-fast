@@ -212,9 +212,7 @@
   provided.
   Can take an unlimited number of [ks v] pairs.
   Caution:
-  For more than one path-value pair this macro will reorder your code
-  and eliminate forms. Rely on side-effects and order at your own
-  peril."
+  For more than one path-value pair this macro will reorder code."
   [m & ksvs]
   {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
   (lens/put-many

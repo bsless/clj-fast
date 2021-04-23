@@ -77,7 +77,8 @@
     (t/is (= {:a {:b 2 :c 3}} (sut/assoc-in m [:a :b] 2 [:a :c] 3)))
     (t/is (= {:a 2} (sut/assoc-in m [:a] 2)))
     (t/is (= {:a 2 :b 3} (sut/assoc-in m [:a] 2 [:b] 3)))
-    (t/is (= {:a {:b 1 4 2}} (sut/assoc-in m [:a (inc 3)] 2)))))
+    (t/is (= {:a {:b 1 4 2}} (sut/assoc-in m [:a (inc 3)] 2)))
+    (t/is (= {:a {:b 1 4 2 6 6}} (sut/assoc-in m [:a (inc 3)] 2 [:a (inc 5)] 6)))))
 
 (t/deftest update-in
   (let [m {:a {:b 1}}]
