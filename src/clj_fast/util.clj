@@ -76,11 +76,16 @@
          syms []]
     (if xs
       (let [x (first xs)]
-        (if (coll? x)
+        (if (any-expression? x)
           (let [sym (gensym)]
             (recur (next xs) (conj bindings sym x) (conj syms sym)))
           (recur (next xs) bindings (conj syms x))))
       {:bindings bindings :syms syms})))
+
+(comment
+  (extract-bindings '[1 2 3])
+  (extract-bindings '[1 [2] 3])
+  (extract-bindings '[1 (inc 2) 3]))
 
 (defn destruct-map
   [m ks]

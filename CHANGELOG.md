@@ -16,6 +16,11 @@
 - inline/get not-found arity allowed any number of arguments, explicitly changed to one. [#24](https://github.com/bsless/clj-fast/issues/24)
 - Fix callsite analysis of quoted forms. Now functions calls and quoted forms are handled correctly.
 
+### Improve
+
+- Relax the constraints in extract-bindings, making it less aggressive
+  but still correct.
+
 ## [0.0.9]
 
 - Add Circlci integration
