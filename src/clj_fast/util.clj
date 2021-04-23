@@ -44,7 +44,7 @@
 (defn simple-seq
   [xs]
   (let [xs (try-resolve? xs)]
-    (and (sequential? xs) (into [] (seq (dequote xs))))))
+    (when (sequential? xs) (into [] (seq (dequote xs))))))
 
 (defn bind-seq
   [xs]
