@@ -203,7 +203,11 @@
 (defmacro assoc-in
   "Like assoc-in but inlines the calls when a static sequence of keys is
   provided.
-  Can take an unlimited number of [ks v] pairs"
+  Can take an unlimited number of [ks v] pairs.
+  Caution:
+  For more than one path-value pair this macro will reorder your code
+  and eliminate forms. Rely on side-effects and order at your own
+  peril."
   [m & ksvs]
   {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
   (lens/put-many
