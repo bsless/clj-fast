@@ -4,8 +4,11 @@
 
 ### Add
 
+- Variadic arity assoc-in. The analysis collapses all paths to a tree
+  with leaves being the values to be assoc-ed and plans out a minimal
+  execution. Also see [#23](https://github.com/bsless/clj-fast/issues/23)
 - Tests from Clojure's test suit to catch some edge cases
-- Faster update-in which takes advantage of variadic arities, bug introduces ugly code duplication
+- Faster update-in which takes advantage of variadic arities, but introduces ugly code duplication
 
 ### Fix
 
