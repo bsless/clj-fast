@@ -50,6 +50,23 @@
   [xs]
   (vec (mapcat list (repeatedly gensym) xs)))
 
+(defn any-expression?
+  "True if anything about `e` looks like a call and not literal
+  expressions."
+  [e]
+  (cond
+    (list? e) true
+    (coll? e) (boolean (some any-expression? e))
+    :else false))
+
+(comment
+  (any-expression? [1 2 3])
+  (any-expression? '[1 (inc 2) 3])
+  (any-expression? '[1 [[[[[[(inc 2)]]]]]] 3])
+  (any-expression? '[1 [[[[[[2]]]]]] 3])
+  (any-expression? '[1 {:a 2} 3])
+  (any-expression? '[1 {:a (inc 2)} 3]))
+
 (defn extract-bindings
   "Analyzes in input sequences of code, xs, and extracts any collection
   out of it to be replaced by a gensym and its respective binding."
