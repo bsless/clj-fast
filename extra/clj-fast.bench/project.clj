@@ -3,8 +3,8 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [bsless/clj-fast "0.0.10-SNAPSHOT"]
-                 [criterium "0.4.5"]
-                 [com.clojure-goes-fast/clj-async-profiler "0.4.0"]
+                 [criterium "0.4.6"]
+                 [com.clojure-goes-fast/clj-async-profiler "0.5.0"]
                  [org.clojure/test.check "0.9.0"]
                  [org.clojure/tools.cli "0.4.2"]]
   :main clj-fast.bench
