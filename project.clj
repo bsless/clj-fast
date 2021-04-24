@@ -13,7 +13,10 @@
                         ["snapshots" :clojars]]
   :profiles
   {:dev
-   {:dependencies
+   {:jvm-opts ["-Djdk.attach.allowAttachSelf"
+               "-XX:+UnlockDiagnosticVMOptions"
+               "-XX:+DebugNonSafepoints"]
+    :dependencies
     [[criterium "0.4.5"]
      [com.clojure-goes-fast/clj-async-profiler "0.4.0"]]}}
   :repl-options {:init-ns clj-fast.core})
