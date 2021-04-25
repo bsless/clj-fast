@@ -120,11 +120,13 @@
 
 ;;; Credit joinr for the idea, see #6.
 (defn- static-merge
-  [m]
-  (if (map? m)
-    (let [args (apply concat m)]
-      `(assoc ~@args))
-    `(conj ~m)))
+  ([m]
+   (static-merge m `conj))
+  ([m op]
+   (if (map? m)
+     (let [args (apply concat m)]
+       `(assoc ~@args))
+     `(~op ~m))))
 
 (defmacro merge
   "Like core/merge but inlines the sequence of maps to conj."
