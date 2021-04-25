@@ -12,6 +12,9 @@
 - Faster update-in which takes advantage of variadic arities, but introduces ugly code duplication
 - Faster versions of subseq/rsubseq which don't use sets for checking
   test functions identity.
+- Static merge in `fast-map-merge`.
+- `as` macro for annotating symbols.
+- Box operations which mimic atom and volatile semantics.
 
 ### Fix
 
@@ -24,6 +27,7 @@
 
 - Relax the constraints in extract-bindings, making it less aggressive
   but still correct.
+- Remove fn allocation in `fast-map-merge`.
 
 ## [0.0.9]
 
