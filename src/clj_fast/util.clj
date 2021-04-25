@@ -2,6 +2,11 @@
   (:require
    [clojure.string]))
 
+(defmacro as
+  [tag sym]
+  (let [tag (if (class? tag) (.getName ^Class tag) (str tag))]
+    `(with-meta ~sym {:tag ~tag})))
+
 (defn eq?
   {:inline
    (fn [o1 o2]
