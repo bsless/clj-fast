@@ -125,10 +125,10 @@
   (into
    #{}
    (comp
-    (map #(.getName %))
+    (map #(.getName ^Class %))
     (remove #(clojure.string/starts-with? % "__"))
     (remove #(clojure.string/starts-with? % "const__"))
     (map keyword))
-   (.getFields clazz)))
+   (.getFields ^Class clazz)))
 
 (def record-fields (memoize record-fields*))
