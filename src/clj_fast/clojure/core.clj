@@ -9,7 +9,7 @@
 (ns clj-fast.clojure.core
   (:refer-clojure
    :exclude
-   [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-])
+   [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn- subseq rsubseq])
   (:require
    [clojure.core :as core]
    [clj-fast.util :as u]
@@ -478,3 +478,74 @@
   {:added "1.0"}
   [name & decls]
   (list* `defn (with-meta name (assoc (meta name) :private true)) decls))
+
+(core/defn- >mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc key]
+  (core/fn [e]
+    (> ^Number (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- >=mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc key]
+  (core/fn [e]
+    (>= ^Number (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc test key]
+  (core/fn [e]
+    (test ^Number (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- seek
+  [include ^clojure.lang.Sorted  sc key]
+  (core/when-let [s (. sc seqFrom key true)]
+    (core/let [e (.first ^clojure.lang.ISeq s)]
+      (if (include e) s (next s)))))
+
+(core/defn subseq
+  "sc must be a sorted collection, test(s) one of <, <=, > or
+  >=. Returns a seq of those entries with keys ek for
+  which (test (.. sc comparator (compare ek key)) 0) is true"
+  {:added "1.0"
+   :static true}
+  ([^clojure.lang.Sorted sc test key]
+   (cond
+     (core/identical? >  test) (seek (>mk-bound-fn  sc key) sc key)
+     (core/identical? >= test) (seek (>=mk-bound-fn sc key) sc key)
+     :else
+     (take-while (mk-bound-fn sc test key) (. sc seq true))))
+  ([^clojure.lang.Sorted sc start-test start-key end-test end-key]
+   (when-let [[e :as s] (. sc seqFrom start-key true)]
+     (take-while (mk-bound-fn sc end-test end-key)
+                 (if ((mk-bound-fn sc start-test start-key) e) s (next s))))))
+
+(core/defn- rseek
+  [include ^clojure.lang.Sorted  sc key]
+  (core/when-let [s (. sc seqFrom key false)]
+    (core/let [e (.first ^clojure.lang.ISeq s)]
+      (if (include e) s (next s)))))
+
+(core/defn- <mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc key]
+  (core/fn [e]
+    (< ^Number (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn- <=mk-bound-fn
+  {:private true}
+  [^clojure.lang.Sorted sc key]
+  (core/fn [e]
+    (<= ^Number (.. sc comparator (compare (. sc entryKey e) key)) 0)))
+
+(core/defn rsubseq
+  ([^clojure.lang.Sorted sc test key]
+   (cond
+     (core/identical? <  test) (rseek (<mk-bound-fn  sc key) sc key)
+     (core/identical? <= test) (rseek (<=mk-bound-fn sc key) sc key)
+     :else
+     (take-while (mk-bound-fn sc test key) (. sc seq false))))
+  ([^clojure.lang.Sorted sc start-test start-key end-test end-key]
+   (core/when-let [[e :as s] (. sc seqFrom end-key false)]
+     (take-while (mk-bound-fn sc start-test start-key)
+                 (if ((mk-bound-fn sc end-test end-key) e) s (next s))))))
