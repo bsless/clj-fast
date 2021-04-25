@@ -138,9 +138,9 @@
 (defmacro fast-map-merge
   "Like merge but uses fast-map-merge instead."
   [& [m & ms]]
-  (let [conjs# (map (fn [m] `(f/fast-map-merge ~m)) ms)
+  (let [ops# (map (fn [m] (static-merge m `f/fast-map-merge)) ms)
         m0 (if (map? m) m `(or ~m {}))]
-    `(-> ~m0 ~@conjs#)))
+    `(-> ~m0 ~@ops#)))
 
 (defmacro tmerge
   "Like merge but uses rmerge! and an intermediate transient map."
