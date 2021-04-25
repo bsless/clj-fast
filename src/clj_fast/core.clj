@@ -38,11 +38,7 @@
   the first. If a key occurs in more than one map, the mapping from
   te latter (left-to-right) will be the mapping in the result."
   [x y]
-  (reduce-kv
-   (fn [m k v]
-     (fast-assoc m k v))
-   x
-   y))
+  (reduce-kv fast-assoc x y))
 
 ;;; Credit github.com/joinr: github.com/bsless/clj-fast/issues/1
 (defn rmerge!
