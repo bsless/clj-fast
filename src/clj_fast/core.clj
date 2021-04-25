@@ -1,6 +1,9 @@
 (ns clj-fast.core
   (:require
-   [clojure.core.protocols :as p]))
+   [clj-fast.util :refer [as]]
+   [clojure.core.protocols :as p])
+  (:import
+   (clojure.lang Box)))
 
 (defn entry-at
   "Returns the map-entry mapped to key or nil if key not present."
@@ -90,3 +93,65 @@
                   (assoc m k (up (get m k) ks f a b c args))
                   (assoc m k (apply f (get m k) a b c args)))))]
      (up m ks f a b c args))))
+
+(definline box!
+  "Returns `v` inside a mutable box."
+  [v]
+  `(Box. ~v))
+
+(definline unbox!
+  "Get `v` out of mutable box."
+  [^Box b]
+  `(.-val ~(as Box b)))
+
+(definline bset!
+  "Sets the value of Box to `v` without regard to its current value.
+  Returns `v`."
+  [^Box b v]
+  `(set! (. ~(as Box b) val) ~v))
+
+(definline bset-vals!
+  "Sets the value of `b` to `v`. Returns `[old new]`, the values in the
+  box before and after the reset."
+  [^Box b v]
+  `(let [old# (unbox! ~b)
+         new# (bset! ~b ~v)]
+     [old# new#]))
+
+(defn bswap!
+  "Unsafely swaps the value of the box to be:
+  (apply f current-value-of-box args).
+  Stateful and messy."
+  {:inline-arities #{2 3 4 5 6}
+   :inline (fn [b f & args] `(bset! ~b (~f (unbox! ~b) ~@args)))}
+  ([^Box b f] (bset! b (f (unbox! b))))
+  ([^Box b f x] (bset! b (f (unbox! b) x)))
+  ([^Box b f x y] (bset! b (f (unbox! b) x y)))
+  ([^Box b f x y z] (bset! b (f (unbox! b) x y z)))
+  ([^Box b f x y z & args] (bset! b (apply f (unbox! b) x y z args))))
+
+(defn bswap-vals!
+  "Unsafely swaps the value of the box to be:
+  (apply f current-value-of-box args).
+  Returns `[old new]`
+  Stateful and messy."
+  {:inline-arities #{2 3 4 5 6}
+   :inline
+   (fn [b f & args]
+     `(let [old# (unbox! ~b)]
+        [old# (bset! ~b (~f (unbox! ~b) ~@args))]))}
+  ([^Box b f]
+   (let [old (unbox! b)]
+     [old (bset! b (f old))]))
+  ([^Box b f x]
+   (let [old (unbox! b)]
+     [old (bset! b (f old x))]))
+  ([^Box b f x y]
+   (let [old (unbox! b)]
+     [old (bset! b (f old x y))]))
+  ([^Box b f x y z]
+   (let [old (unbox! b)]
+     [old (bset! b (f old x y z))]))
+  ([^Box b f x y z & args]
+   (let [old (unbox! b)]
+     [old (bset! b (apply f old x y z args))])))
