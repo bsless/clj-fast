@@ -93,7 +93,7 @@
                     (fn [bs [k v]]
                       (let [node (::node k)]
                         (if-let [leaf (::leaf v)]
-                          (conj bs parent (putter parent node (combiner parent leaf)))
+                          (conj bs parent (putter parent node (combiner (getter parent node) leaf)))
                           (let [child (gensym "child__")]
                             (conj bs
                                   child (getter parent node)
