@@ -74,45 +74,47 @@
   (fn [sym k] `(get sym k))
 
   similarly, putter must to the same with assoc."
-  [putter getter m kvs]
-  (assert (even? (count kvs)))
-  (letfn [(collapse ;; plan
-            [kvs]
-            (reduce
-             (fn [m [path v]]
-               (assoc-in m (map (fn [k] {::node k}) path) {::leaf v}))
-             {}
-             kvs))
-          (explode ;; translate plan to execution
-            [m form]
-            (let [parent (gensym "parent__")
-                  bindings
-                  (reduce
-                   (fn [bs [k v]]
-                     (let [node (::node k)]
-                       (if-let [leaf (::leaf v)]
-                         (conj bs parent (putter parent node leaf))
-                         (let [child (gensym "child__")]
-                           (conj bs
-                                 child (getter parent node)
-                                 parent (putter parent node (explode child v)))))))
-                   [parent m]
-                   form)]
-              `(let [~@bindings]
-                 ~parent)))]
-    (let [{:keys [context kvs]}
-          (reduce
-           (fn [{:keys [context kvs]} [path v]]
-             (let [{:keys [bindings syms]} (u/extract-bindings path)]
-               {:context (into context bindings)
-                :kvs (conj kvs [syms v])}))
-           {:context []
-            :kvs []}
-           (partition 2 kvs))]
-      (if (seq context)
-        `(let [~@context]
-           ~(explode m (collapse kvs)))
-        (explode m (collapse kvs))))))
+  ([putter getter m kvs]
+   (put-many putter getter (fn [_parent leaf] leaf) m kvs))
+  ([putter getter combiner m kvs]
+   (assert (even? (count kvs)))
+   (letfn [(collapse ;; plan
+             [kvs]
+             (reduce
+              (fn [m [path v]]
+                (assoc-in m (map (fn [k] {::node k}) path) {::leaf v}))
+              {}
+              kvs))
+           (explode ;; translate plan to execution
+             [m form]
+             (let [parent (gensym "parent__")
+                   bindings
+                   (reduce
+                    (fn [bs [k v]]
+                      (let [node (::node k)]
+                        (if-let [leaf (::leaf v)]
+                          (conj bs parent (putter parent node (combiner parent leaf)))
+                          (let [child (gensym "child__")]
+                            (conj bs
+                                  child (getter parent node)
+                                  parent (putter parent node (explode child v)))))))
+                    [parent m]
+                    form)]
+               `(let [~@bindings]
+                  ~parent)))]
+     (let [{:keys [context kvs]}
+           (reduce
+            (fn [{:keys [context kvs]} [path v]]
+              (let [{:keys [bindings syms]} (u/extract-bindings path)]
+                {:context (into context bindings)
+                 :kvs (conj kvs [syms v])}))
+            {:context []
+             :kvs []}
+            (partition 2 kvs))]
+       (if (seq context)
+         `(let [~@context]
+            ~(explode m (collapse kvs)))
+         (explode m (collapse kvs)))))))
 
 (comment
   (put-many
