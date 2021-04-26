@@ -64,17 +64,22 @@
     `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms v))))
 
-(defn put-many
-  "Take two functions, putter and getter, symbol m, sequence of pairs of
-  [ks v] such that every ks is a sequence of keys and v is an expression
-  and constructs an assoc-in structure, as if inlining core Clojure's
-  assoc-in in a minimal number of calls.
+(defn update-many
+  "Take three functions, putter, getter and updater, symbol m, sequence of
+  pairs of [ks v] such that every ks is a sequence of keys and v is an
+  expression and constructs an assoc-in structure, as if inlining core
+  Clojure's assoc-in in a minimal number of calls.
+
   getter must be a mapping of
   (f sym k) -> get-expr, for example:
   (fn [sym k] `(get sym k))
 
-  similarly, putter must to the same with assoc."
-  [putter getter m kvs]
+  similarly, putter must do the same with assoc.
+
+  updater is a mapping of
+  (f old-val new-val) -> new-expr, for example
+  (fn [f v] `(apply ~f ~v))"
+  [putter getter updater m kvs]
   (assert (even? (count kvs)))
   (letfn [(collapse ;; plan
             [kvs]
@@ -90,7 +95,9 @@
                   (reduce
                    (fn [bs [k v]]
                      (if (::leaf v)
-                       (conj bs parent (putter parent (::node k) (::leaf v)))
+                       (conj bs parent
+                             (putter parent (::node k)
+                                     (updater (::leaf v) (getter parent (::node k)))))
                        (let [child (gensym "child__")]
                          (conj bs
                                child (getter parent (::node k))
@@ -113,7 +120,20 @@
            ~(explode m (collapse kvs)))
         (explode m (collapse kvs))))))
 
+(defn put-many
+  "like `update-many` but overrides the old key values."
+  [putter getter m kvs]
+  (update-many putter getter (fn [v _] v) m kvs))
+
 (comment
+  (update-many
+   (fn [m k fv] `(assoc ~m ~k ~fv))
+   (fn [m k] `(get ~m ~k))
+   (fn [f v] `(apply ~f ~v))
+   'm
+   '[[:a :b] max
+     [:a :c] min])
+
   (put-many
    (fn [m k v] `(assoc ~m ~k ~v))
    (fn [m k] `(get ~m ~k))

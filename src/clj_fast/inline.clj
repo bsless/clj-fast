@@ -222,6 +222,27 @@
    (fn [m k] `(c/get ~m ~k))
    m ksvs))
 
+(defmacro update-many
+  [m & ksfs]
+  (lens/update-many
+   (fn [m k fv] `(c/assoc ~m ~k ~fv))
+   (fn [m k] `(c/get ~m ~k))
+   (fn [f v] `(~f ~v))
+   m ksfs))
+
+(defmacro update-many->
+  "Takes an unlimited number of [ks f] pairs.
+  f are forms to be applied to existing values in a -> threading macro.
+  ~Unquoted values are overriden like in assoc-in."
+  [m & ksfs]
+  (lens/update-many
+   (fn [m k fv] `(c/assoc ~m ~k ~fv))
+   (fn [m k] `(c/get ~m ~k))
+   (fn [f v] (if (and (seq? f) (= `c/unquote (first f)))
+               (second f)
+               `(-> ~v ~f)))
+   m ksfs))
+
 (defmacro update-in
   "Like update-in but inlines the calls when a static sequence of keys is
   provided."
