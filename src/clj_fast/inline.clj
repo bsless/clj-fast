@@ -217,7 +217,7 @@
   For more than one path-value pair this macro will reorder code."
   [m & ksvs]
   {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
-  (lens/put-many
+  (lens/update-many
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
    m ksvs))

@@ -64,7 +64,7 @@
     `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms v))))
 
-(defn put-many
+(defn update-many
   "Take two functions, putter and getter, symbol m, sequence of pairs of
   [ks v] such that every ks is a sequence of keys and v is an expression
   and constructs an assoc-in structure, as if inlining core Clojure's
@@ -75,7 +75,7 @@
 
   similarly, putter must to the same with assoc."
   ([putter getter m kvs]
-   (put-many putter getter (fn [_parent leaf] leaf) m kvs))
+   (update-many putter getter (fn [_parent leaf] leaf) m kvs))
   ([putter getter combiner m kvs]
    (assert (even? (count kvs)))
    (letfn [(collapse ;; plan
@@ -117,7 +117,7 @@
          (explode m (collapse kvs)))))))
 
 (comment
-  (put-many
+  (update-many
    (fn [m k v] `(assoc ~m ~k ~v))
    (fn [m k] `(get ~m ~k))
    'm
