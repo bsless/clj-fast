@@ -216,7 +216,8 @@
   Caution:
   For more than one path-value pair this macro will reorder code."
   [m & ksvs]
-  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
+  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))
+         (apply distinct? (take-nth 2 ksvs))]}
   (lens/update-many
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
@@ -230,7 +231,8 @@
   (update-many-in m [:a :b] f [:a :c] (g 1))
   The expr must be a `seq?` or a symbol."
   [m & ks-exprs]
-  {:pre [(every? u/simple-seq? (take-nth 2 ks-exprs))]}
+  {:pre [(every? u/simple-seq? (take-nth 2 ks-exprs))
+         (apply distinct? (take-nth 2 ks-exprs))]}
   (lens/update-many
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
