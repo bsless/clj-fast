@@ -122,7 +122,21 @@
    (fn [m k] `(get ~m ~k))
    'm
    '[[:a (rand) :b] 1
-     [:a (rand) :c] 2]))
+     [:a (rand) :c] 2])
+
+  (def kfas
+    '[
+      [:a :b :c] [f arg1 arg2]
+      [:a :b :d] [g arg3 arg4]
+      [:a :b :e] [h]
+      ])
+
+  (update-many
+   (fn [m k v] `(assoc ~m ~k ~v))
+   (fn [m k] `(get ~m ~k))
+   (fn [parent leaf] `(-> ~parent ~@leaf))
+   'm
+   kfas))
 
 (defn update
   "Take two functions, putter and getter, symbol m, sequence ks and

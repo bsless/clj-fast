@@ -222,6 +222,32 @@
    (fn [m k] `(c/get ~m ~k))
    m ksvs))
 
+(defmacro update-in->
+  "Like update-in but inlines the calls when a static sequence of keys is
+  provided.
+  Can take an unlimited number of [ks exprs] pairs.
+  Unlike update-in, expressions are not & args, i.e.:
+  (update-many-in m [:a :b] f [:a :c] (g 1))
+  The expr must be a `seq?` or a symbol."
+  [m & ks-exprs]
+  {:pre [(every? u/simple-seq? (take-nth 2 ks-exprs))]}
+  (lens/update-many
+   (fn [m k v] `(c/assoc ~m ~k ~v))
+   (fn [m k] `(c/get ~m ~k))
+   (fn [parent leaf] `(-> ~parent ~leaf))
+   m
+   (into
+    []
+    (comp
+     (partition-all 2)
+     (map
+      (fn [[path expr]]
+        [path (if (seq? expr)
+                expr
+                (list expr))]))
+     cat)
+    ks-exprs)))
+
 (defmacro update-in
   "Like update-in but inlines the calls when a static sequence of keys is
   provided."

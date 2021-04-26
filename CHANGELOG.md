@@ -15,6 +15,7 @@
 - Static merge in `fast-map-merge`.
 - `as` macro for annotating symbols.
 - Box operations which mimic atom and volatile semantics.
+- `update-in->` similar to update-in but takes many arguments.
 
 ### Fix
 
