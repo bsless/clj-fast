@@ -89,12 +89,13 @@
                   bindings
                   (reduce
                    (fn [bs [k v]]
-                     (if (::leaf v)
-                       (conj bs parent (putter parent (::node k) (::leaf v)))
-                       (let [child (gensym "child__")]
-                         (conj bs
-                               child (getter parent (::node k))
-                               parent (putter parent (::node k) (explode child v))))))
+                     (let [node (::node k)]
+                       (if-let [leaf (::leaf v)]
+                         (conj bs parent (putter parent node leaf))
+                         (let [child (gensym "child__")]
+                           (conj bs
+                                 child (getter parent node)
+                                 parent (putter parent node (explode child v)))))))
                    [parent m]
                    form)]
               `(let [~@bindings]
