@@ -91,12 +91,13 @@
     (t/is (= {:a {:b 2}} (sut/update-in-> m [:a :b] (+ 1))))
     (t/is (= {:a {:b 1}
               :c {:d true}} (sut/update-in-> m [:c :d] not))))
-  (let [m {:a {:b 1 :c 2}}]
-    (t/is (= {:a {:b 2 :c 1 :e 3}}
+  (let [m {:a {:b 1 :c 2 :x 1}}]
+    (t/is (= {:a {:b 2 :c 1 :e 3 :x 3}}
              (sut/update-in->
               m
               [:a :b] inc
               [:a :c] dec
+              [:a :x] (+ 2)
               [:a :e] ((fnil inc 2)))))))
 
 (t/deftest dissoc-in
