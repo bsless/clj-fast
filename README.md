@@ -263,6 +263,34 @@ when type-hinted).
    [clj-fast.clojure.core :refer [get nth assoc get-in merge assoc-in update-in select-keys memoize destructure let fn loop defn defn-]]))
 ```
 
+## General Note Note On Performance And Profiling
+
+Profiling and performance measurements on the JVM are not an exact
+science.
+The variety of contributing factors and their possible interactions are
+far from all being accounted for.
+
+Still, one of the most significant factors is the JVM's JIT compiler.
+
+It is absolutely essential where performance is concerned.
+
+Some tools such as Leiningen suppress the JIT to enable faster start-up
+times. While this is desirable in a development environment, it must be
+properly configured for profiling or production tasks.
+
+The JVM's configuration settings can be examined by evaluating:
+
+```clojure
+(into [] (.getInputArguments (java.lang.management.ManagementFactory/getRuntimeMXBean)))
+```
+
+If you see `TieredStopAtLevel=1` or any number below 4 you're
+essentially running without aggressive JIT on.
+
+With Leiningen, make sure to either use a different profile or override
+the `:jvm-opts` to get the best performance possible and realistic
+profiling results.
+
 ## Related Projects
 
 ### Structural
