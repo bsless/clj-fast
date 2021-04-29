@@ -295,13 +295,13 @@ profiling results.
 
 ### Structural
 
-(Structural)[https://github.com/joinr/structural] is a small library by
+[Structural](https://github.com/joinr/structural) is a small library by
 joinr (Tom) which provides more efficient destructuring macros with type
 hints.
 
 ### Stringer
 
-(Stringer)[https://github.com/kumarshantanu/stringer] is a library by
+[Stringer](https://github.com/kumarshantanu/stringer) is a library by
 Shantanu Kumar for fast string operations. Of interest are the
 capabilities it provides in faster string building and formatting, also
 by "unrolling" the building operations where statically possible.
