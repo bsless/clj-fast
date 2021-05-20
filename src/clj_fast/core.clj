@@ -3,7 +3,7 @@
    [clj-fast.util :refer [as]]
    [clojure.core.protocols :as p])
   (:import
-   (clojure.lang Box)))
+   (clojure.lang Box TransformerIterator RT)))
 
 (defn entry-at
   "Returns the map-entry mapped to key or nil if key not present."
@@ -155,3 +155,102 @@
   ([^Box b f x y z & args]
    (let [old (unbox! b)]
      [old (bset! b (apply f old x y z args))])))
+
+(definline iter
+  [xs]
+  `(RT/iter ~xs))
+
+(defn- -transformer-iterator
+  "Emit code for unrolling TransformerIterator/createMulti call"
+  ([xf coll]
+   `(TransformerIterator/create ~xf (iter ~coll)))
+  ([xf coll & colls]
+   (let [colls (cons coll colls)
+         n (count colls)
+         ll (as "java.util.ArrayList" (gensym "ll__"))
+         adds (map (fn [coll] `(.add ~ll (iter ~coll))) colls)]
+     `(let [~ll (java.util.ArrayList. ~n)]
+        ~@adds
+        (TransformerIterator/createMulti ~xf ~ll)))))
+
+(comment
+  (-transformer-iterator 'xf 'xs 'ys 'zs))
+
+(defn transformer-iterator
+  {:inline
+   (fn [xf & colls] (apply -transformer-iterator xf colls))
+   :inline-arities #{2 3 4}}
+  ([xf coll]
+   (TransformerIterator/create xf (iter coll)))
+  ([xf coll0 coll1]
+   (let [ll (java.util.ArrayList. 2)]
+     (.add ll (iter coll0))
+     (.add ll (iter coll1))
+     (TransformerIterator/createMulti xf ll)))
+  ([xf coll0 coll1 coll2]
+   (let [ll (java.util.ArrayList. 3)]
+     (.add ll (iter coll0))
+     (.add ll (iter coll1))
+     (.add ll (iter coll2))
+     (TransformerIterator/createMulti xf ll)))
+  ([xf coll0 coll1 coll2 colls]
+   (let [ll (java.util.ArrayList. 3)]
+     (.add ll (iter coll0))
+     (.add ll (iter coll1))
+     (.add ll (iter coll2))
+     (doseq [coll colls] (.add ll (iter coll)))
+     (TransformerIterator/createMulti xf ll))))
+
+(comment
+  (transformer-iterator identity [1 2 3] [4 5 6]))
+
+(definline -iterator-seq
+  [iter]
+  `(or (clojure.lang.RT/chunkIteratorSeq ~iter) ()))
+
+(comment
+  (-iterator-seq (transformer-iterator (map vector) [1 2 3] [4 5 6])))
+
+(defn fast-sequence
+  ([coll]
+   (if (seq? coll) coll
+       (or (seq coll) ())))
+  ([xform coll]
+   (-iterator-seq (transformer-iterator xform coll)))
+  ([xform coll0 coll1]
+   (-iterator-seq (transformer-iterator xform coll0 coll1)))
+  ([xform coll0 coll1 coll2]
+   (-iterator-seq (transformer-iterator xform coll0 coll1 coll2)))
+  ([xform coll0 coll1 coll2 & colls]
+   (-iterator-seq (transformer-iterator xform coll0 coll1 coll2 colls))))
+
+
+(comment
+  (require '[criterium.core :as cc])
+
+  (defmacro bench-sequence*
+    [xf length argc]
+    (let [v (into [] (repeat length 1))
+          args (into [] (repeat argc v))]
+      `(let [xf# ~xf]
+         (println "sequence:" "length" ~length "args count" ~argc)
+         (cc/quick-bench (doall (sequence xf# ~@args)))
+         (println "fast-sequence:" "length" ~length "args count" ~argc)
+         (cc/quick-bench (doall (fast-sequence xf# ~@args))))))
+
+  (bench-sequence* 'xf 1 1)
+
+  (defmacro bench-sequence
+    [xform length argc]
+    (let [xf (gensym "xf__")
+          body (for [length (range 1 length) argc (range 1 argc)]
+                 `(bench-sequence* ~xf ~length ~argc))]
+      `(let [~xf ~xform]
+         ~@body)))
+
+  (defn run-bench-sequence
+    []
+    (bench-sequence (map vector) 6 7))
+
+  (run-bench-sequence)
+)
