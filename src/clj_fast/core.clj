@@ -53,6 +53,31 @@
   [coll]
   `(.count ~(as clojure.lang.Counted coll)))
 
+(definline short-circuiting-merge
+  "Return a function which will merge two maps and short circuit if any of
+  them are empty or nil."
+  [count-fn merge-fn]
+  `(fn [x# y#]
+     (if (zero? (~count-fn x#))
+       y#
+       (if (zero? (~count-fn y#))
+         x#
+         (~merge-fn x# y#)))))
+
+(defmacro def-short-circuiting-merge
+  "Define a short-circuiting merge function. Will use the provided
+  `count-fn` and `merge-fn`.
+  Example:
+  (def-short-circuiting-merge sc-merge count merge)
+  Can take advantage of `inline` implementations as well."
+  [name count-fn merge-fn]
+  (let [ifn (:inline (meta #'short-circuiting-merge))
+        inline (ifn count-fn merge-fn)]
+    `(do
+       (def ~name (short-circuiting-merge ~count-fn ~merge-fn))
+       (alter-meta! (var ~name) assoc :inline ~inline)
+       (var ~name))))
+
 ;;; Credit github.com/joinr: github.com/bsless/clj-fast/issues/1
 (defn rmerge!
   "Returns a transient map that consists of the second of the maps assoc-ed

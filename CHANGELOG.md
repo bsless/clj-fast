@@ -18,6 +18,8 @@
 - `update-in->` similar to update-in but takes many arguments.
 - `kvreduce` - dispatches directly to `IKVReduce` `.kvreduce()` method instead of going through a protocol.
 - Add `fast-count`.
+- Add `short-circuiting-merge` which returns a merge function which short circuits according to `count-fn` with `merge-fn`.
+- Add `def-short-circuiting-merge` as convenience wrapper around `short-circuiting-merge` for def-ing named functions.
 
 ### Fix
 
