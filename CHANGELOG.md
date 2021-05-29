@@ -17,6 +17,7 @@
 - Box operations which mimic atom and volatile semantics.
 - `update-in->` similar to update-in but takes many arguments.
 - `kvreduce` - dispatches directly to `IKVReduce` `.kvreduce()` method instead of going through a protocol.
+- Add `fast-count`.
 
 ### Fix
 

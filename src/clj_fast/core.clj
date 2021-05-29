@@ -47,6 +47,12 @@
   [x y]
   (reduce-kv fast-assoc x y))
 
+(definline fast-count
+  "like [[clojure.core/count]] but works only for clojure.lang.Counted
+  collections."
+  [coll]
+  `(.count ~(as clojure.lang.Counted coll)))
+
 ;;; Credit github.com/joinr: github.com/bsless/clj-fast/issues/1
 (defn rmerge!
   "Returns a transient map that consists of the second of the maps assoc-ed
