@@ -45,7 +45,7 @@
   the first. If a key occurs in more than one map, the mapping from
   te latter (left-to-right) will be the mapping in the result."
   [x y]
-  (reduce-kv fast-assoc x y))
+  `(kvreduce fast-assoc ~x ~y))
 
 (definline fast-count
   "like [[clojure.core/count]] but works only for clojure.lang.Counted

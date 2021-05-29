@@ -32,6 +32,7 @@
   but still correct.
 - Remove fn allocation in `fast-map-merge`.
 - Change `fast-map-merge` to `definline`.
+- Use `kvreduce` instead of `reduce-kv` in `fast-map-merge`.
 
 ## [0.0.9]
 
