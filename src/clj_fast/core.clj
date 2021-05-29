@@ -34,6 +34,10 @@
   [^clojure.lang.Associative a k v]
   (.assoc a k v))
 
+(definline kvreduce
+  [f init amap]
+  `(.kvreduce ~(as clojure.lang.IKVReduce amap) ~f ~init))
+
 ;;; Credit Metosin
 ;;; https://github.com/metosin/compojure-api/blob/master/src/compojure/api/common.clj#L46
 (defn fast-map-merge
