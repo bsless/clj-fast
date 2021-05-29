@@ -31,6 +31,7 @@
 - Relax the constraints in extract-bindings, making it less aggressive
   but still correct.
 - Remove fn allocation in `fast-map-merge`.
+- Change `fast-map-merge` to `definline`.
 
 ## [0.0.9]
 

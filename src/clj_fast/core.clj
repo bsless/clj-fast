@@ -40,7 +40,7 @@
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/compojure-api/blob/master/src/compojure/api/common.clj#L46
-(defn fast-map-merge
+(definline fast-map-merge
   "Returns a map that consists of the second of the maps assoc-ed onto
   the first. If a key occurs in more than one map, the mapping from
   te latter (left-to-right) will be the mapping in the result."
