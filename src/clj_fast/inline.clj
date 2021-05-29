@@ -216,11 +216,39 @@
   Caution:
   For more than one path-value pair this macro will reorder code."
   [m & ksvs]
-  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))]}
-  (lens/put-many
+  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))
+         (apply distinct? (take-nth 2 ksvs))]}
+  (lens/update-many
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
    m ksvs))
+
+(defmacro update-in->
+  "Like update-in but inlines the calls when a static sequence of keys is
+  provided.
+  Can take an unlimited number of [ks exprs] pairs.
+  Unlike update-in, expressions are not & args, i.e.:
+  (update-in-> m [:a :b] f [:a :c] (g 1))
+  The expr must be a `seq?` or a symbol."
+  [m & ks-exprs]
+  {:pre [(every? u/simple-seq? (take-nth 2 ks-exprs))
+         (apply distinct? (take-nth 2 ks-exprs))]}
+  (lens/update-many
+   (fn [m k v] `(c/assoc ~m ~k ~v))
+   (fn [m k] `(c/get ~m ~k))
+   (fn [parent leaf] `(-> ~parent ~leaf))
+   m
+   (into
+    []
+    (comp
+     (partition-all 2)
+     (map
+      (fn [[path expr]]
+        [path (if (seq? expr)
+                expr
+                (list expr))]))
+     cat)
+    ks-exprs)))
 
 (defmacro update-in
   "Like update-in but inlines the calls when a static sequence of keys is

@@ -64,7 +64,7 @@
     `(let [~g ~m ~@bindings ~@bs]
        ~(iter gs+ syms v))))
 
-(defn put-many
+(defn update-many
   "Take two functions, putter and getter, symbol m, sequence of pairs of
   [ks v] such that every ks is a sequence of keys and v is an expression
   and constructs an assoc-in structure, as if inlining core Clojure's
@@ -74,52 +74,69 @@
   (fn [sym k] `(get sym k))
 
   similarly, putter must to the same with assoc."
-  [putter getter m kvs]
-  (assert (even? (count kvs)))
-  (letfn [(collapse ;; plan
-            [kvs]
-            (reduce
-             (fn [m [path v]]
-               (assoc-in m (map (fn [k] {::node k}) path) {::leaf v}))
-             {}
-             kvs))
-          (explode ;; translate plan to execution
-            [m form]
-            (let [parent (gensym "parent__")
-                  bindings
-                  (reduce
-                   (fn [bs [k v]]
-                     (if (::leaf v)
-                       (conj bs parent (putter parent (::node k) (::leaf v)))
-                       (let [child (gensym "child__")]
-                         (conj bs
-                               child (getter parent (::node k))
-                               parent (putter parent (::node k) (explode child v))))))
-                   [parent m]
-                   form)]
-              `(let [~@bindings]
-                 ~parent)))]
-    (let [{:keys [context kvs]}
-          (reduce
-           (fn [{:keys [context kvs]} [path v]]
-             (let [{:keys [bindings syms]} (u/extract-bindings path)]
-               {:context (into context bindings)
-                :kvs (conj kvs [syms v])}))
-           {:context []
-            :kvs []}
-           (partition 2 kvs))]
-      (if (seq context)
-        `(let [~@context]
-           ~(explode m (collapse kvs)))
-        (explode m (collapse kvs))))))
+  ([putter getter m kvs]
+   (update-many putter getter (fn [_parent leaf] leaf) m kvs))
+  ([putter getter combiner m kvs]
+   (assert (even? (count kvs)))
+   (letfn [(collapse ;; plan
+             [kvs]
+             (reduce
+              (fn [m [path v]]
+                (assoc-in m (map (fn [k] {::node k}) path) {::leaf v}))
+              {}
+              kvs))
+           (explode ;; translate plan to execution
+             [m form]
+             (let [parent (gensym "parent__")
+                   bindings
+                   (reduce
+                    (fn [bs [k v]]
+                      (let [node (::node k)]
+                        (if-let [leaf (::leaf v)]
+                          (conj bs parent (putter parent node (combiner (getter parent node) leaf)))
+                          (let [child (gensym "child__")]
+                            (conj bs
+                                  child (getter parent node)
+                                  parent (putter parent node (explode child v)))))))
+                    [parent m]
+                    form)]
+               `(let [~@bindings]
+                  ~parent)))]
+     (let [{:keys [context kvs]}
+           (reduce
+            (fn [{:keys [context kvs]} [path v]]
+              (let [{:keys [bindings syms]} (u/extract-bindings path)]
+                {:context (into context bindings)
+                 :kvs (conj kvs [syms v])}))
+            {:context []
+             :kvs []}
+            (partition 2 kvs))]
+       (if (seq context)
+         `(let [~@context]
+            ~(explode m (collapse kvs)))
+         (explode m (collapse kvs)))))))
 
 (comment
-  (put-many
+  (update-many
    (fn [m k v] `(assoc ~m ~k ~v))
    (fn [m k] `(get ~m ~k))
    'm
    '[[:a (rand) :b] 1
-     [:a (rand) :c] 2]))
+     [:a (rand) :c] 2])
+
+  (def kfas
+    '[
+      [:a :b :c] [f arg1 arg2]
+      [:a :b :d] [g arg3 arg4]
+      [:a :b :e] [h]
+      ])
+
+  (update-many
+   (fn [m k v] `(assoc ~m ~k ~v))
+   (fn [m k] `(get ~m ~k))
+   (fn [parent leaf] `(-> ~parent ~@leaf))
+   'm
+   kfas))
 
 (defn update
   "Take two functions, putter and getter, symbol m, sequence ks and
