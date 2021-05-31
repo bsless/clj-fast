@@ -27,6 +27,9 @@
 - Fix callsite analysis of quoted forms. Now functions calls and quoted forms are handled correctly.
 - inline/assoc-in new implementation did not extract bindings. Fixing
   this allows using side-effecting functions as keys
+- Found an edge-case with adding type hints on inline args - literals
+  would lose their inferred types and cause reflection warnings by
+  taking on the meta. Narrowed down to cover only symbols.
 
 ### Improve
 

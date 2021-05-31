@@ -4,13 +4,18 @@
 
 (defmacro as
   [tag sym]
-  (let [tag (if (class? tag) (.getName ^Class tag) (str tag))]
-    `(with-meta ~sym {:tag ~tag})))
+  (if (symbol? sym)
+    (let [tag (if (class? tag) (.getName ^Class tag) (str tag))]
+      `(with-meta ~sym {:tag ~tag}))
+    sym))
 
 (defn eq?
   {:inline
-   (fn [o1 o2]
-     `(.equals ~(with-meta o1 {:tag 'java.lang.Object}) ~o2))}
+   (fn eq? [o1 o2]
+     (if (symbol? o1)
+       (let [o1 (as java.lang.Object o1)]
+         `(.equals ~o1 ~o2))
+       `(let [o# ~o1] (eq? o# o1))))}
   [^Object o1 o2]
   (.equals o1 o2))
 

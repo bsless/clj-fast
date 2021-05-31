@@ -5,19 +5,26 @@
   (:import
    (clojure.lang Box)))
 
+(set! *warn-on-reflection* true)
+
 (defn entry-at
   "Returns the map-entry mapped to key or nil if key not present."
   {:inline
-   (fn [m k]
-     `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
+   (fn entry-at [m k]
+     (if (symbol? m)
+       `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k)
+       `(let [m# ~m] (entry-at m# ~k))))}
   [^clojure.lang.IPersistentMap m k]
   (.entryAt m k))
 
 (defn val-at
   "Returns the value mapped to key or nil if key not present."
   {:inline
-   (fn [m k & nf]
-     `(.valAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k ~@nf))
+   (fn val-at [m k & nf]
+     (if (symbol? m)
+       (let [m (as clojure.lang.IPersistentMap m)]
+         `(.valAt ~m ~k ~@nf))
+       `(let [m# ~m] (val-at m# ~k ~@nf))))
    :inline-arities #{2 3}}
   ([^clojure.lang.IPersistentMap m k]
    (.valAt m k))
@@ -26,17 +33,23 @@
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/reitit/blob/0bcfda755f139d14cf4eff37e2b294f573215213/modules/reitit-core/src/reitit/impl.cljc#L136
-(defn fast-assoc
+(definline fast-assoc
   "Like assoc but only takes one kv pair. Slightly faster."
-  {:inline
-   (fn [a k v]
-     `(.assoc ~(with-meta a {:tag 'clojure.lang.Associative}) ~k ~v))}
-  [^clojure.lang.Associative a k v]
-  (.assoc a k v))
+  [a k v]
+  (if (symbol? a)
+    (let [a (as clojure.lang.Associative a)]
+      `(.assoc ~a ~k ~v))
+    `(let [a# ~a] (fast-assoc a# ~k ~v))))
 
-(definline kvreduce
-  [f init amap]
-  `(.kvreduce ~(as clojure.lang.IKVReduce amap) ~f ~init))
+(defn kvreduce
+  {:inline
+   (fn kvreduce [f init amap]
+     (if (symbol? amap)
+       (let [amap (as clojure.lang.IKVReduce amap)]
+         `(.kvreduce ~amap ~f ~init))
+       `(let [amap# ~amap] (kvreduce ~f ~init amap#))))}
+  [f init ^clojure.lang.IKVReduce amap]
+  (.kvreduce amap f init))
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/compojure-api/blob/master/src/compojure/api/common.clj#L46
@@ -51,7 +64,10 @@
   "like [[clojure.core/count]] but works only for clojure.lang.Counted
   collections."
   [coll]
-  `(.count ~(as clojure.lang.Counted coll)))
+  (if (symbol? coll)
+    (let [coll (as clojure.lang.Counted coll)]
+      `(.count ~coll))
+    `(let [coll# ~coll] (fast-count coll#))))
 
 (definline short-circuiting-merge
   "Return a function which will merge two maps and short circuit if any of
