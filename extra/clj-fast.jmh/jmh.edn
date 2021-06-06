@@ -1,0 +1,24 @@
+{:benchmarks
+ [{:name :core/get-in :fn clojure.core/get-in :args [:state/map :state/ks]}
+  {:name :inline/get-in :fn clj-fast.bench/invoke :args [:state/inline-get-in-fn :state/map]}
+  {:name :inline/get-some-in :fn clj-fast.bench/invoke :args [:state/inline-get-some-in-fn :state/map]}
+  {:name :core/select-keys :fn clojure.core/select-keys :args [:state/map :state/ks]}
+  {:name :inline/select-keys :fn clj-fast.bench/invoke :args [:state/inline-select-keys :state/map]}
+  {:name :inline/fast-select-keys :fn clj-fast.bench/invoke :args [:state/inline-fast-select-keys :state/map]}
+  ]
+ :states
+ {
+  :map-size {:fn (fn [x] (int (Math/pow 10 x))) :args [:param/log-map-size]}
+  :map {:fn clj-fast.bench/mrand-nested-map :args [:param/type :state/map-size :param/keys-depth]}
+  :ks {:fn clj-fast.bench/randpath :args [:state/map]}
+
+  :inline-get-in-fn {:fn clj-fast.bench/inline-get-in-fn :args [:state/ks]}
+  :inline-get-some-in-fn {:fn clj-fast.bench/inline-get-some-in-fn :args [:state/ks]}
+
+  :inline-select-keys {:fn clj-fast.bench/inline-select-keys :args [:state/ks]}
+  :inline-fast-select-keys {:fn clj-fast.bench/inline-fast-select-keys :args [:state/ks]}
+  }
+ :params
+ {:log-map-size [0 #_#_1 2]
+  :keys-depth [1 2 #_3 #_4]
+  :type :keyword?}}
