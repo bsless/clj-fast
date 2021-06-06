@@ -5,19 +5,26 @@
   (:import
    (clojure.lang Box)))
 
+(set! *warn-on-reflection* true)
+
 (defn entry-at
   "Returns the map-entry mapped to key or nil if key not present."
   {:inline
-   (fn [m k]
-     `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k))}
+   (fn entry-at [m k]
+     (if (symbol? m)
+       `(.entryAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k)
+       `(let [m# ~m] (entry-at m# ~k))))}
   [^clojure.lang.IPersistentMap m k]
   (.entryAt m k))
 
 (defn val-at
   "Returns the value mapped to key or nil if key not present."
   {:inline
-   (fn [m k & nf]
-     `(.valAt ~(with-meta m {:tag 'clojure.lang.IPersistentMap}) ~k ~@nf))
+   (fn val-at [m k & nf]
+     (if (symbol? m)
+       (let [m (as clojure.lang.IPersistentMap m)]
+         `(.valAt ~m ~k ~@nf))
+       `(let [m# ~m] (val-at m# ~k ~@nf))))
    :inline-arities #{2 3}}
   ([^clojure.lang.IPersistentMap m k]
    (.valAt m k))
@@ -26,22 +33,66 @@
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/reitit/blob/0bcfda755f139d14cf4eff37e2b294f573215213/modules/reitit-core/src/reitit/impl.cljc#L136
-(defn fast-assoc
+(definline fast-assoc
   "Like assoc but only takes one kv pair. Slightly faster."
+  [a k v]
+  (if (symbol? a)
+    (let [a (as clojure.lang.Associative a)]
+      `(.assoc ~a ~k ~v))
+    `(let [a# ~a] (fast-assoc a# ~k ~v))))
+
+(defn kvreduce
   {:inline
-   (fn [a k v]
-     `(.assoc ~(with-meta a {:tag 'clojure.lang.Associative}) ~k ~v))}
-  [^clojure.lang.Associative a k v]
-  (.assoc a k v))
+   (fn kvreduce [f init amap]
+     (if (symbol? amap)
+       (let [amap (as clojure.lang.IKVReduce amap)]
+         `(.kvreduce ~amap ~f ~init))
+       `(let [amap# ~amap] (kvreduce ~f ~init amap#))))}
+  [f init ^clojure.lang.IKVReduce amap]
+  (.kvreduce amap f init))
 
 ;;; Credit Metosin
 ;;; https://github.com/metosin/compojure-api/blob/master/src/compojure/api/common.clj#L46
-(defn fast-map-merge
+(definline fast-map-merge
   "Returns a map that consists of the second of the maps assoc-ed onto
   the first. If a key occurs in more than one map, the mapping from
   te latter (left-to-right) will be the mapping in the result."
   [x y]
-  (reduce-kv fast-assoc x y))
+  `(kvreduce fast-assoc ~x ~y))
+
+(definline fast-count
+  "like [[clojure.core/count]] but works only for clojure.lang.Counted
+  collections."
+  [coll]
+  (if (symbol? coll)
+    (let [coll (as clojure.lang.Counted coll)]
+      `(.count ~coll))
+    `(let [coll# ~coll] (fast-count coll#))))
+
+(definline short-circuiting-merge
+  "Return a function which will merge two maps and short circuit if any of
+  them are empty or nil."
+  [count-fn merge-fn]
+  `(fn [x# y#]
+     (if (zero? (~count-fn x#))
+       y#
+       (if (zero? (~count-fn y#))
+         x#
+         (~merge-fn x# y#)))))
+
+(defmacro def-short-circuiting-merge
+  "Define a short-circuiting merge function. Will use the provided
+  `count-fn` and `merge-fn`.
+  Example:
+  (def-short-circuiting-merge sc-merge count merge)
+  Can take advantage of `inline` implementations as well."
+  [name count-fn merge-fn]
+  (let [ifn (:inline (meta #'short-circuiting-merge))
+        inline (ifn count-fn merge-fn)]
+    `(do
+       (def ~name (short-circuiting-merge ~count-fn ~merge-fn))
+       (alter-meta! (var ~name) assoc :inline ~inline)
+       (var ~name))))
 
 ;;; Credit github.com/joinr: github.com/bsless/clj-fast/issues/1
 (defn rmerge!

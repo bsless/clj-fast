@@ -16,6 +16,10 @@
 - `as` macro for annotating symbols.
 - Box operations which mimic atom and volatile semantics.
 - `update-in->` similar to update-in but takes many arguments.
+- `kvreduce` - dispatches directly to `IKVReduce` `.kvreduce()` method instead of going through a protocol.
+- Add `fast-count`.
+- Add `short-circuiting-merge` which returns a merge function which short circuits according to `count-fn` with `merge-fn`.
+- Add `def-short-circuiting-merge` as convenience wrapper around `short-circuiting-merge` for def-ing named functions.
 
 ### Fix
 
@@ -23,12 +27,17 @@
 - Fix callsite analysis of quoted forms. Now functions calls and quoted forms are handled correctly.
 - inline/assoc-in new implementation did not extract bindings. Fixing
   this allows using side-effecting functions as keys
+- Found an edge-case with adding type hints on inline args - literals
+  would lose their inferred types and cause reflection warnings by
+  taking on the meta. Narrowed down to cover only symbols.
 
 ### Improve
 
 - Relax the constraints in extract-bindings, making it less aggressive
   but still correct.
 - Remove fn allocation in `fast-map-merge`.
+- Change `fast-map-merge` to `definline`.
+- Use `kvreduce` instead of `reduce-kv` in `fast-map-merge`.
 
 ## [0.0.9]
 
