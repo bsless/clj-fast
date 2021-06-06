@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.0.10] - 2021-06-06
+
 ### Add
 
 - Variadic arity assoc-in. The analysis collapses all paths to a tree
