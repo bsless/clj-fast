@@ -45,7 +45,7 @@
 (defonce -syms (map symbol -strs))
 (defonce r (range))
 
-(def gens
+(defonce gens
   {:keyword? (fn [n] (take n -kws))
    :map? (fn [n] (drop 1 (gen/sample (s/gen map?) (inc n))))
    :string? (fn [n] (take n -strs))
