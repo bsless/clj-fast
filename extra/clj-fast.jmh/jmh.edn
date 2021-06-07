@@ -4,31 +4,31 @@
   {:group :get-in :name :inline/get-in :fn clj-fast.bench/invoke :args [:state/inline-get-in-fn :state/map]}
   {:group :get-in :name :inline/get-some-in :fn clj-fast.bench/invoke :args [:state/inline-get-some-in-fn :state/map]}
 
-  {:group :assoc-in :name :core/assoc-in :fn clojure.core/assoc-in :args [:state/map :state/ks]}
+  {:group :assoc-in :name :core/assoc-in :fn clojure.core/assoc-in :args [:state/map :state/ks :param/zero]}
   {:group :assoc-in :name :inline/assoc-in :fn clj-fast.bench/invoke :args [:state/inline-assoc-in :state/map]}
 
-  {:group :update-in :name :core/update-in :fn clojure.core/update-in :args [:state/map :state/ks]}
+  {:group :update-in :name :core/update-in :fn clojure.core/update-in :args [:state/map :state/ks :param/identity]}
   {:group :update-in :name :inline/update-in :fn clj-fast.bench/invoke :args [:state/inline-update-in :state/map]}
 
   {:group :select-keys :name :core/select-keys :fn clojure.core/select-keys :args [:state/map :state/ks]}
   {:group :select-keys :name :inline/select-keys :fn clj-fast.bench/invoke :args [:state/inline-select-keys :state/map]}
   {:group :select-keys :name :inline/fast-select-keys :fn clj-fast.bench/invoke :args [:state/inline-fast-select-keys :state/map]}
 
-  {:group :assoc :name :core/assoc :fn clojure.core/assoc :args [:state/assoc :state/map]}
+  {:group :assoc :name :core/assoc :fn clojure.core/assoc :args [:state/assoc :state/map :param/zero]}
   {:group :assoc :name :inline/assoc :fn clj-fast.bench/invoke :args [:state/inline-assoc :state/map]}
   {:group :assoc :name :inline/fast-assoc :fn clj-fast.bench/invoke :args [:state/inline-fast-assoc :state/map]}
 
   {:group :merge :name :core/merge :fn clojure.core/merge :args [:state/merge]}
   {:group :merge :name :inline/merge :fn clj-fast.bench/invoke :args [:state/inline-merge]}
-  {:group :merge :name :inline/fast-map-merge :fn clj-fast-map.bench/invoke :args [:state/inline-fast-map-merge]}
+  {:group :merge :name :inline/fast-map-merge :fn clj-fast.bench/invoke :args [:state/inline-fast-map-merge]}
 
   ]
  :states
  {
-  :type {:fn (fn [k] (get {:keyword? keyword?} keyword?)) :args [:param/type]}
+  :type {:fn (fn [k] (println "type" k) (get {:keyword? keyword?} k keyword?)) :args [:param/type]}
   :map-size {:fn (fn [x] (int (Math/pow 10 x))) :args [:param/log-map-size]}
-  :map {:fn clj-fast.bench/mrand-nested-map :args [:state/type :state/map-size :param/count]}
-  :maps {:fn (fn [n p width] (repeatedly n #(randmap! p width))) :args [:param/count :state/type :state/map-size]}
+  :map {:fn clj-fast.bench/mrand-nested-map :args [:param/type :state/map-size :param/count]}
+  :maps {:fn (fn [n p width] (repeatedly n (fn [] (clj-fast.bench/randmap! p width)))) :args [:param/count :state/type :state/map-size]}
   :ks {:fn clj-fast.bench/randpath :args [:state/map]}
 
   :inline-get-in-fn {:fn clj-fast.bench/inline-get-in-fn :args [:state/ks]}
@@ -52,8 +52,10 @@
 
   }
  :params
- {:log-map-size [0 #_#_1 2]
-  :count [1 2 #_3 #_4]
+ {:log-map-size [0 1 2 3]
+  :count [1 2 3 4]
+  :identity identity
+  :zero 0
   :type [:keyword?]}
 
  :selectors
