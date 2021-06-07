@@ -153,7 +153,7 @@
   (let [n 6
         ks (mapv (fn [n] (symbol (str "m" n))) (range n))
         args (conj ks :as 'args)
-        cases (apply concat (drop 1 (map-indexed (fn [i ks] [i `(fn [~@ks] (~sym ~@ks ~@more))]) (reductions conj [] ks))))]
+        cases (apply concat (drop 1 (map-indexed (fn [i ks] [i `(fn [] (~sym ~@ks ~@more))]) (reductions conj [] ks))))]
     `(defn ~name
        [~args]
        (case (count ~'args)
@@ -221,7 +221,7 @@
   (let [n 6
         ks (mapv (fn [n] (symbol (str "m" n))) (range n))
         args (conj ks :as 'args)
-        cases (apply concat (drop 1 (map-indexed (fn [i ks] [i `(let [f# (~sym ~i noop)] (fn [~@ks] (f# ~@ks)))]) (reductions conj [] ks))))]
+        cases (apply concat (drop 1 (map-indexed (fn [i ks] [i `(let [f# (~sym ~i noop)] (fn [] (f# ~@ks)))]) (reductions conj [] ks))))]
     `(defn ~name
        [~args]
        (case (count ~'args)
@@ -232,7 +232,7 @@
   (let [n 6
         ks (mapv (fn [n] (symbol (str "m" n))) (range n))
         args (conj ks :as 'args)
-        cases (apply concat (drop 1 (map-indexed (fn [i ks] [i `(let [f# (~sym noop)] (fn [~@ks] (f# ~@ks)))]) (reductions conj [] ks))))]
+        cases (apply concat (drop 1 (map-indexed (fn [i ks] [i `(let [f# (~sym noop)] (fn [] (f# ~@ks)))]) (reductions conj [] ks))))]
     `(defn ~name
        [~args]
        (case (count ~'args)
