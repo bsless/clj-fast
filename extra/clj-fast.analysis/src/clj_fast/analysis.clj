@@ -11,8 +11,13 @@
   [s]
   (clojure.edn/read-string (slurp s)))
 
-(def common
-  #{:assoc :merge :get-in :select-keys :assoc-in :update-in :memoize})
+(defn load-run
+  [run]
+  (->>
+   (load-results (str "../clj-fast.jmh/results/" (name run) ".edn"))
+   (mapv (fn [{{n :count size :log-map-size} :params label :name [score] :score}]
+           {:count n :log-size size :name label :score score}))
+   (array-map run)))
 
 (defn title
   [bench ctrl n]
@@ -28,18 +33,18 @@
     (fn [m [run-type run-data]]
       (let [by-x (group-by x-dim run-data)
             by-y (group-by y-dim run-data)
-            y-label "mean execution time (ns)"
+            y-label "throughput (ops/s)"
             y-charts
             (reduce
              (fn [m [y-val y-data]]
                (let [y-ds (i/dataset y-data)
                      x-label (case x-dim
-                               :width "log10 map size (elements)"
+                               (:log-size :width) "log10 map size (elements)"
                                :type "data type")
                      chart
                      (charts/bar-chart
-                      x-dim :mean
-                      :group-by :bench
+                      x-dim :score
+                      :group-by :name
                       :data y-ds
                       :legend true
                       :title (title run-type y-dim y-val)
@@ -55,8 +60,8 @@
                      x-label "number of elements"
                      chart
                      (charts/bar-chart
-                      y-dim :mean
-                      :group-by :bench
+                      y-dim :score
+                      :group-by :name
                       :data x-ds
                       :legend true
                       :title (title run-type x-dim x-val)
@@ -67,7 +72,101 @@
              by-x)]
         (assoc m run-type {x-dim x-charts y-dim y-charts})))
     {}
-    (filter (fn [[k _]] (common k)) raw-data))))
+    raw-data)))
+
+(defn bar-charts
+  ([raw-data x-dim y-dim]
+   (reduce
+    (fn [m [run-type run-data]]
+      (let [by-x (group-by x-dim run-data)
+            by-y (group-by y-dim run-data)
+            y-label "throughput (ops/s)"
+            y-charts
+            (reduce
+             (fn [m [y-val y-data]]
+               (let [y-ds (i/dataset y-data)
+                     x-label (case x-dim
+                               (:log-size :width) "log10 map size (elements)"
+                               :type "data type")
+                     chart
+                     (charts/bar-chart
+                      x-dim :score
+                      :group-by :name
+                      :data y-ds
+                      :legend true
+                      :title (title run-type y-dim y-val)
+                      :x-label x-label
+                      :y-label y-label)]
+                 (assoc m y-val chart)))
+             {}
+             by-y)
+            x-charts
+            (reduce
+             (fn [m [x-val x-data]]
+               (let [x-ds (i/dataset x-data)
+                     x-label "number of elements"
+                     chart
+                     (charts/bar-chart
+                      y-dim :score
+                      :group-by :name
+                      :data x-ds
+                      :legend true
+                      :title (title run-type x-dim x-val)
+                      :x-label x-label
+                      :y-label y-label)]
+                 (assoc m x-val chart)))
+             {}
+             by-x)]
+        (assoc m run-type {x-dim x-charts y-dim y-charts})))
+    {}
+    raw-data)))
+
+(defn line-charts
+  ([raw-data x-dim y-dim]
+   (reduce
+    (fn [m [run-type run-data]]
+      (let [by-x (group-by x-dim run-data)
+            by-y (group-by y-dim run-data)
+            y-label "throughput (ops/s)"
+            y-charts
+            (reduce
+             (fn [m [y-val y-data]]
+               (let [y-ds (i/dataset y-data)
+                     x-label (case x-dim
+                               (:log-size :width) "log10 map size (elements)"
+                               :type "data type")
+                     chart
+                     (charts/line-chart
+                      x-dim :score
+                      :group-by :name
+                      :data y-ds
+                      :legend true
+                      :title (title run-type y-dim y-val)
+                      :x-label x-label
+                      :y-label y-label)]
+                 (assoc m y-val chart)))
+             {}
+             by-y)
+            x-charts
+            (reduce
+             (fn [m [x-val x-data]]
+               (let [x-ds (i/dataset x-data)
+                     x-label "number of elements"
+                     chart
+                     (charts/line-chart
+                      y-dim :score
+                      :group-by :name
+                      :data x-ds
+                      :legend true
+                      :title (title run-type x-dim x-val)
+                      :x-label x-label
+                      :y-label y-label)]
+                 (assoc m x-val chart)))
+             {}
+             by-x)]
+        (assoc m run-type {x-dim x-charts y-dim y-charts})))
+    {}
+    raw-data)))
 
 (defn chart-get
   [k raw-data]
@@ -127,7 +226,7 @@
 
 (defn ks->path
   [[run dim num]]
-  (let [other-dim (if (= dim :keys) :width :keys)]
+  (let [other-dim (if (= dim :count) :log-size :count)]
     (clojure.string/join
      "_"
      (mapv
@@ -160,43 +259,15 @@
       (set-log-axis! chart 3))))
 
 (comment
+  #_jmh
 
+  (def run :assoc-in)
+  (def raw-data (into {} (map load-run) [:get-in :assoc-in]))
+  (def cs (common-charts raw-data :log-size :count))
+  (def cs (line-charts raw-data :log-size :count))
+  (write-charts cs)
+  (i/view (get-in cs [run :log-size 1]))
+  (i/view (get-in cs [run :count 1]))
+  (i/view (get-in cs [run :count 4]))
 
-  (def raw-data
-    (-> "./benchmarks/2020-sep-17-java8-g1-clj-fast-bench.edn"
-        load-results
-        (update :merge #(remove (comp #{1} :keys) %))
-        ))
-
-  (def get-rec-raw-data
-    (->
-     "./benchmarks/get-rec-clj-fast-bench.edn"
-     load-results))
-
-  (def all-charts
-    (merge
-     (chart-get-rec :get-rec get-rec-raw-data)
-     (common-charts (dissoc raw-data :memoize))
-     (common-charts
-      (select-keys raw-data [:memoize]) :type :keys)
-     (chart-get :get raw-data)))
-
-  (keys all-charts)
-
-  (i/view (get-in all-charts [:merge :width 1]))
-  (i/view (get-in all-charts [:merge :width 2]))
-  (i/view (get-in all-charts [:merge :keys 3]))
-
-  ;;; Format merge nicely because the results vary widely
-  (mapv (fn [e c] (set-log-axis! c e))
-       [3 4 5 6 7]
-       (vals (get-in all-charts [:merge :width])))
-
-  (mapv (fn [e c] (set-log-axis! c e))
-       [3 3 3 3 3]
-       (vals (get-in all-charts [:merge :keys])))
-
-  (write-charts all-charts)
-  (write-charts (select-keys all-charts [:merge]))
-
-  )
+  ,)
