@@ -7,18 +7,18 @@
   {:group :assoc-in :name :core/assoc-in :fn clojure.core/assoc-in :args [:state/map :state/ks :param/zero]}
   {:group :assoc-in :name :inline/assoc-in :fn clj-fast.bench/invoke :args [:state/inline-assoc-in :state/map]}
 
-  {:group :update-in :name :core/update-in :fn clojure.core/update-in :args [:state/map :state/ks :param/identity]}
+  {:group :update-in :name :core/update-in :fn clj-fast.bench/invoke :args [:state/update-in :state/map]}
   {:group :update-in :name :inline/update-in :fn clj-fast.bench/invoke :args [:state/inline-update-in :state/map]}
 
   {:group :select-keys :name :core/select-keys :fn clojure.core/select-keys :args [:state/map :state/ks]}
   {:group :select-keys :name :inline/select-keys :fn clj-fast.bench/invoke :args [:state/inline-select-keys :state/map]}
   {:group :select-keys :name :inline/fast-select-keys :fn clj-fast.bench/invoke :args [:state/inline-fast-select-keys :state/map]}
 
-  {:group :assoc :name :core/assoc :fn clojure.core/assoc :args [:state/assoc :state/map :param/zero]}
+  {:group :assoc :name :core/assoc :fn clj-fast.bench/invoke :args [:state/assoc :state/map]}
   {:group :assoc :name :inline/assoc :fn clj-fast.bench/invoke :args [:state/inline-assoc :state/map]}
   {:group :assoc :name :inline/fast-assoc :fn clj-fast.bench/invoke :args [:state/inline-fast-assoc :state/map]}
 
-  {:group :merge :name :core/merge :fn clojure.core/merge :args [:state/merge]}
+  {:group :merge :name :core/merge :fn clj-fast.bench/invoke :args [:state/merge]}
   {:group :merge :name :inline/merge :fn clj-fast.bench/invoke :args [:state/inline-merge]}
   {:group :merge :name :inline/fast-map-merge :fn clj-fast.bench/invoke :args [:state/inline-fast-map-merge]}
 
@@ -36,6 +36,7 @@
 
   :inline-assoc-in {:fn clj-fast.bench/inline-assoc-in :args [:state/ks]}
 
+  :update-in {:fn clj-fast.bench/-update-in :args [:state/ks]}
   :inline-update-in {:fn clj-fast.bench/inline-update-in :args [:state/ks]}
 
   :inline-select-keys {:fn clj-fast.bench/inline-select-keys :args [:state/ks]}

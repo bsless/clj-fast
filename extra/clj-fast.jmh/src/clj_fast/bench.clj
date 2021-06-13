@@ -205,7 +205,8 @@
 
 ;;; UPDATE-IN
 
-(declare inline-update-in)
+(declare -update-in inline-update-in inline-fast-update-in)
+(def-inline-ks -update-in update-in identity)
 (def-inline-ks inline-update-in inline/update-in identity)
 
 ;;; memoize
