@@ -16,7 +16,7 @@
   (->>
    (load-results (str "../clj-fast.jmh/results/" (name run) ".edn"))
    (mapv (fn [{{n :count size :log-map-size} :params label :name [score] :score}]
-           {:count n :log-size size :name label :score score}))
+           {:count n :log-size size :name label :score score :time (/ 1 score)}))
    (array-map run)))
 
 (defn title
@@ -24,55 +24,6 @@
   (clojure.string/join
    " "
    ["Benchmark" (name bench) "-" (str (name ctrl) ":") n]))
-
-(defn common-charts
-  ([raw-data]
-   (common-charts raw-data :width :keys))
-  ([raw-data x-dim y-dim]
-   (reduce
-    (fn [m [run-type run-data]]
-      (let [by-x (group-by x-dim run-data)
-            by-y (group-by y-dim run-data)
-            y-label "throughput (ops/s)"
-            y-charts
-            (reduce
-             (fn [m [y-val y-data]]
-               (let [y-ds (i/dataset y-data)
-                     x-label (case x-dim
-                               (:log-size :width) "log10 map size (elements)"
-                               :type "data type")
-                     chart
-                     (charts/bar-chart
-                      x-dim :score
-                      :group-by :name
-                      :data y-ds
-                      :legend true
-                      :title (title run-type y-dim y-val)
-                      :x-label x-label
-                      :y-label y-label)]
-                 (assoc m y-val chart)))
-             {}
-             by-y)
-            x-charts
-            (reduce
-             (fn [m [x-val x-data]]
-               (let [x-ds (i/dataset x-data)
-                     x-label "number of elements"
-                     chart
-                     (charts/bar-chart
-                      y-dim :score
-                      :group-by :name
-                      :data x-ds
-                      :legend true
-                      :title (title run-type x-dim x-val)
-                      :x-label x-label
-                      :y-label y-label)]
-                 (assoc m x-val chart)))
-             {}
-             by-x)]
-        (assoc m run-type {x-dim x-charts y-dim y-charts})))
-    {}
-    raw-data)))
 
 (defn bar-charts
   ([raw-data x-dim y-dim]
@@ -107,53 +58,6 @@
                      x-label "number of elements"
                      chart
                      (charts/bar-chart
-                      y-dim :score
-                      :group-by :name
-                      :data x-ds
-                      :legend true
-                      :title (title run-type x-dim x-val)
-                      :x-label x-label
-                      :y-label y-label)]
-                 (assoc m x-val chart)))
-             {}
-             by-x)]
-        (assoc m run-type {x-dim x-charts y-dim y-charts})))
-    {}
-    raw-data)))
-
-(defn line-charts
-  ([raw-data x-dim y-dim]
-   (reduce
-    (fn [m [run-type run-data]]
-      (let [by-x (group-by x-dim run-data)
-            by-y (group-by y-dim run-data)
-            y-label "throughput (ops/s)"
-            y-charts
-            (reduce
-             (fn [m [y-val y-data]]
-               (let [y-ds (i/dataset y-data)
-                     x-label (case x-dim
-                               (:log-size :width) "log10 map size (elements)"
-                               :type "data type")
-                     chart
-                     (charts/line-chart
-                      x-dim :score
-                      :group-by :name
-                      :data y-ds
-                      :legend true
-                      :title (title run-type y-dim y-val)
-                      :x-label x-label
-                      :y-label y-label)]
-                 (assoc m y-val chart)))
-             {}
-             by-y)
-            x-charts
-            (reduce
-             (fn [m [x-val x-data]]
-               (let [x-ds (i/dataset x-data)
-                     x-label "number of elements"
-                     chart
-                     (charts/line-chart
                       y-dim :score
                       :group-by :name
                       :data x-ds
@@ -253,20 +157,21 @@
 
 (defn logify
   [k raw-data]
-  (let [xs (vals (get-in raw-data [k :width]))
-        ys (vals (get-in raw-data [k :keys]))]
+  (let [xs (vals (get-in raw-data [k :log-size]))
+        ys (vals (get-in raw-data [k :count]))]
     (doseq [chart (concat xs ys)]
       (set-log-axis! chart 3))))
 
 (comment
   #_jmh
 
-  (def run :assoc-in)
-  (def raw-data (into {} (map load-run) [:get-in :assoc-in]))
-  (def cs (common-charts raw-data :log-size :count))
-  (def cs (line-charts raw-data :log-size :count))
+  (def run :merge)
+  (def raw-data (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in]))
+  (def cs (bar-charts raw-data :log-size :count))
+  (logify :merge cs)
   (write-charts cs)
   (i/view (get-in cs [run :log-size 1]))
+  (i/view (get-in cs [run :log-size 3]))
   (i/view (get-in cs [run :count 1]))
   (i/view (get-in cs [run :count 4]))
 
