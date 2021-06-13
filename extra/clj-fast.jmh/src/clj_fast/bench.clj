@@ -77,6 +77,10 @@
    (let [s (genn! n p)]
      (zipmap s s))))
 
+(defn randmaps!
+  [n p size]
+  (repeatedly n (fn [] (clj-fast.bench/randmap! p size))))
+
 (defn randmap
   #_([n]
    (randmap keyword? n))

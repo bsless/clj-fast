@@ -28,7 +28,7 @@
   :type {:fn (fn [k] (println "type" k) (get {:keyword? keyword?} k keyword?)) :args [:param/type]}
   :map-size {:fn (fn [x] (int (Math/pow 10 x))) :args [:param/log-map-size]}
   :map {:fn clj-fast.bench/mrand-nested-map :args [:param/type :state/map-size :param/count]}
-  :maps {:fn (fn [n p width] (repeatedly n (fn [] (clj-fast.bench/randmap! p width)))) :args [:param/count :state/type :state/map-size]}
+  :maps {:fn clj-fast.bench/randmaps! :args [:param/count :state/type :state/map-size]}
   :ks {:fn clj-fast.bench/randpath :args [:state/map]}
 
   :inline-get-in-fn {:fn clj-fast.bench/inline-get-in-fn :args [:state/ks]}
