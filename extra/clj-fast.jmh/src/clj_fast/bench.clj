@@ -200,14 +200,16 @@
 
 ;;; ASSOC-IN
 
-(declare inline-assoc-in)
+(declare inline-assoc-in inline-fast-assoc-in )
 (def-inline-ks inline-assoc-in inline/assoc-in 0)
+(def-inline-ks inline-fast-assoc-in inline/fast-assoc-in 0)
 
 ;;; UPDATE-IN
 
 (declare -update-in inline-update-in inline-fast-update-in)
 (def-inline-ks -update-in update-in identity)
 (def-inline-ks inline-update-in inline/update-in identity)
+(def-inline-ks inline-fast-update-in inline/fast-update-in identity)
 
 ;;; memoize
 

@@ -6,9 +6,11 @@
 
   {:group :assoc-in :name :core/assoc-in :fn clojure.core/assoc-in :args [:state/map :state/ks :param/zero]}
   {:group :assoc-in :name :inline/assoc-in :fn clj-fast.bench/invoke :args [:state/inline-assoc-in :state/map]}
+  {:group :assoc-in :name :inline/fast-assoc-in :fn clj-fast.bench/invoke :args [:state/inline-fast-assoc-in :state/map]}
 
   {:group :update-in :name :core/update-in :fn clj-fast.bench/invoke :args [:state/update-in :state/map]}
   {:group :update-in :name :inline/update-in :fn clj-fast.bench/invoke :args [:state/inline-update-in :state/map]}
+  {:group :update-in :name :inline/fast-update-in :fn clj-fast.bench/invoke :args [:state/inline-fast-update-in :state/map]}
 
   {:group :select-keys :name :core/select-keys :fn clojure.core/select-keys :args [:state/map :state/ks]}
   {:group :select-keys :name :inline/select-keys :fn clj-fast.bench/invoke :args [:state/inline-select-keys :state/map]}
@@ -25,7 +27,7 @@
   ]
  :states
  {
-  :type {:fn (fn [k] (println "type" k) (get {:keyword? keyword?} k keyword?)) :args [:param/type]}
+  :type {:fn (fn [k] (get {:keyword? keyword?} k keyword?)) :args [:param/type]}
   :map-size {:fn (fn [x] (int (Math/pow 10 x))) :args [:param/log-map-size]}
   :map {:fn clj-fast.bench/mrand-nested-map :args [:param/type :state/map-size :param/count]}
   :maps {:fn clj-fast.bench/randmaps! :args [:param/count :state/type :state/map-size]}
@@ -35,9 +37,11 @@
   :inline-get-some-in-fn {:fn clj-fast.bench/inline-get-some-in-fn :args [:state/ks]}
 
   :inline-assoc-in {:fn clj-fast.bench/inline-assoc-in :args [:state/ks]}
+  :inline-fast-assoc-in {:fn clj-fast.bench/inline-fast-assoc-in :args [:state/ks]}
 
   :update-in {:fn clj-fast.bench/-update-in :args [:state/ks]}
   :inline-update-in {:fn clj-fast.bench/inline-update-in :args [:state/ks]}
+  :inline-fast-update-in {:fn clj-fast.bench/inline-fast-update-in :args [:state/ks]}
 
   :inline-select-keys {:fn clj-fast.bench/inline-select-keys :args [:state/ks]}
   :inline-fast-select-keys {:fn clj-fast.bench/inline-fast-select-keys :args [:state/ks]}
