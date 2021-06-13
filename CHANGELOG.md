@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Add
+
+- `fast-assoc-in` - uses `fast-assoc` and `val-at` directly
+- `fast-updatge-in` - same as `fast-assoc-in`.
+
 ## [0.0.10] - 2021-06-06
 
 ### Add
