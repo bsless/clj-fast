@@ -12,7 +12,7 @@
   {:group :update-in :name :inline/update-in :fn clj-fast.bench/invoke :args [:state/inline-update-in :state/map]}
   {:group :update-in :name :inline/fast-update-in :fn clj-fast.bench/invoke :args [:state/inline-fast-update-in :state/map]}
 
-  {:group :select-keys :name :core/select-keys :fn clojure.core/select-keys :args [:state/map :state/ks]}
+  {:group :select-keys :name :core/select-keys :fn clj-fast.bench/invoke :args [:state/-select-keys :state/map]}
   {:group :select-keys :name :inline/select-keys :fn clj-fast.bench/invoke :args [:state/inline-select-keys :state/map]}
   {:group :select-keys :name :inline/fast-select-keys :fn clj-fast.bench/invoke :args [:state/inline-fast-select-keys :state/map]}
 
@@ -43,8 +43,10 @@
   :inline-update-in {:fn clj-fast.bench/inline-update-in :args [:state/ks]}
   :inline-fast-update-in {:fn clj-fast.bench/inline-fast-update-in :args [:state/ks]}
 
-  :inline-select-keys {:fn clj-fast.bench/inline-select-keys :args [:state/ks]}
-  :inline-fast-select-keys {:fn clj-fast.bench/inline-fast-select-keys :args [:state/ks]}
+  :selection {:fn clj-fast.bench/genn :args [:param/count :param/type]}
+  :-select-keys {:fn clj-fast.bench/-select-keys :args [:state/selection]}
+  :inline-select-keys {:fn clj-fast.bench/inline-select-keys :args [:state/selection]}
+  :inline-fast-select-keys {:fn clj-fast.bench/inline-fast-select-keys :args [:state/selection]}
 
   :assoc {:fn clj-fast.bench/-assoc :args [:state/ks]}
   :inline-assoc {:fn clj-fast.bench/inline-assoc :args [:state/ks]}

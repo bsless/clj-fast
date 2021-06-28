@@ -194,7 +194,8 @@
 
 ;;; SELECT-KEYS
 
-(declare inline-select-keys inline-fast-select-keys)
+(declare -select-keys inline-select-keys inline-fast-select-keys)
+(def-inline-ks -select-keys select-keys)
 (def-inline-ks inline-select-keys inline/select-keys)
 (def-inline-ks inline-fast-select-keys inline/fast-select-keys)
 
