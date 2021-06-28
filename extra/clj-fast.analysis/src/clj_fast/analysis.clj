@@ -166,7 +166,7 @@
   #_jmh
 
   (def run :merge)
-  (def raw-data (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in]))
+  (def raw-data (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in :select-keys]))
   (def cs (bar-charts raw-data :log-size :count))
   (logify :merge cs)
   (write-charts cs)
