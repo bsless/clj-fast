@@ -66,7 +66,7 @@ under certain constraints, and replaced by faster code.
 
 ## Results
 
-See [results.md](doc/results.md) for experiments' detailed benchmark results.
+See [results.md](extra/clj-fast.analysis/doc/results.md) for experiments' detailed benchmark results.
 
 ## Usage
 
