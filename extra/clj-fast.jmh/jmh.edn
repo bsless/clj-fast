@@ -24,6 +24,14 @@
   {:group :merge :name :inline/merge :fn clj-fast.bench/invoke :args [:state/inline-merge]}
   {:group :merge :name :inline/fast-map-merge :fn clj-fast.bench/invoke :args [:state/inline-fast-map-merge]}
 
+
+  {:group :memo :name :core/memoize :fn clj-fast.bench/invoke :args [:state/memoize]}
+  {:group :memo :name :cm-memoize :fn clj-fast.bench/invoke :args [:state/cm-memoize]}
+  {:group :memo :name :hm-memoize :fn clj-fast.bench/invoke :args [:state/hm-memoize]}
+  {:group :memo :name :memoize-n :fn clj-fast.bench/invoke :args [:state/memoize-n]}
+  {:group :memo :name :memoize-c :fn clj-fast.bench/invoke :args [:state/memoize-c]}
+  {:group :memo :name :memoize-h :fn clj-fast.bench/invoke :args [:state/memoize-h]}
+
   ]
  :states
  {
@@ -57,6 +65,14 @@
   :inline-tmerge {:fn clj-fast.bench/inline-tmerge :args [:state/maps]}
   :inline-fast-map-merge {:fn clj-fast.bench/inline-fast-map-merge :args [:state/maps]}
 
+  :args {:fn (fn [x] (range x)) :args [:param/count]}
+  :memoize {:fn clj-fast.bench/-memoize :args [:state/args]}
+  :cm-memoize {:fn clj-fast.bench/cm-memoize :args [:state/args]}
+  :hm-memoize {:fn clj-fast.bench/hm-memoize :args [:state/args]}
+  :memoize-n {:fn clj-fast.bench/-memoize* :args [:state/args]}
+  :memoize-c {:fn clj-fast.bench/-memoize-c* :args [:state/args]}
+  :memoize-h {:fn clj-fast.bench/-memoize-h* :args [:state/args]}
+
   }
  :params
  {:log-map-size [0 1 2 3]
@@ -73,4 +89,5 @@
   :select-keys (comp #{:select-keys} :group)
   :assoc (comp #{:assoc} :group)
   :merge (comp #{:merge} :group)
+  :memo (comp #{:memo} :group)
   }}
