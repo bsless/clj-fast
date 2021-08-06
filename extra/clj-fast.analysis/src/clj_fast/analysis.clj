@@ -11,12 +11,24 @@
   [s]
   (clojure.edn/read-string (slurp s)))
 
+(defn relative-results
+  [xs]
+  (for [[_count g] (group-by :count xs)
+        [_size g] (group-by :log-size g)
+        :let [base (first (filter (fn [rec] (= "core" (namespace (:name rec)))) g))
+              base-score (:score base)]
+        rec g
+        :let [score (:score rec)]]
+    (assoc rec :relative-score (* 100 (- (/ score base-score) 1)))))
+
 (defn load-run
   [run]
   (->>
    (load-results (str "../clj-fast.jmh/results/" (name run) ".edn"))
    (mapv (fn [{{n :count size :log-map-size} :params label :name [score] :score}]
            {:count n :log-size size :name label :score score :time (/ 1 score)}))
+   relative-results
+   (into [])
    (array-map run)))
 
 (defn title
@@ -25,13 +37,19 @@
    " "
    ["Benchmark" (name bench) "-" (str (name ctrl) ":") n]))
 
+(def labels
+  {:score "throughput (ops/s)"
+   :relative-score "throughput change %"})
+
 (defn bar-charts
   ([raw-data x-dim y-dim]
+   (bar-charts raw-data x-dim y-dim :score))
+  ([raw-data x-dim y-dim metric]
    (reduce
     (fn [m [run-type run-data]]
       (let [by-x (group-by x-dim run-data)
             by-y (group-by y-dim run-data)
-            y-label "throughput (ops/s)"
+            y-label (get labels metric)
             y-charts
             (reduce
              (fn [m [y-val y-data]]
@@ -41,7 +59,7 @@
                                :type "data type")
                      chart
                      (charts/bar-chart
-                      x-dim :score
+                      x-dim metric
                       :group-by :name
                       :data y-ds
                       :legend true
@@ -58,7 +76,7 @@
                      x-label "number of elements"
                      chart
                      (charts/bar-chart
-                      y-dim :score
+                      y-dim metric
                       :group-by :name
                       :data x-ds
                       :legend true
@@ -148,12 +166,15 @@
     (.setRangeAxis plot axis)))
 
 (defn write-charts
-  [all-charts]
-  (let [flat (flatten-map all-charts)]
-    (doseq [[ks chart] flat
-            :let [fname (ks->path ks)
-                  path (str "./doc/images/" fname ".png")]]
-      (i/save chart path))))
+  ([all-charts]
+   (write-charts all-charts {}))
+  ([all-charts {:keys [prefix]
+                :or {prefix ""}}]
+   (let [flat (flatten-map all-charts)]
+     (doseq [[ks chart] flat
+             :let [fname (ks->path ks)
+                   path (str "./doc/images/" prefix fname ".png")]]
+       (i/save chart path)))))
 
 (defn logify
   [k raw-data]
@@ -166,11 +187,20 @@
   #_jmh
 
   (def run :merge)
-  (def raw-data (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in :select-keys]))
+  (def raw-data
+    (->
+     (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in :select-keys])
+     (update :merge #(filterv (complement (comp #{1} :count)) %))))
+
   (def cs (bar-charts raw-data :log-size :count))
   (logify :merge cs)
   (write-charts cs)
+
+  (def rcs (bar-charts raw-data :log-size :count :relative-score))
+  (write-charts rcs {:prefix "relative-"})
+
   (i/view (get-in cs [run :log-size 1]))
+  (i/view (get-in rcs [run :log-size 1]))
   (i/view (get-in cs [run :log-size 3]))
   (i/view (get-in cs [run :count 1]))
   (i/view (get-in cs [run :count 4]))
