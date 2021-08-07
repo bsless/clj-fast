@@ -65,7 +65,7 @@
   :inline-tmerge {:fn clj-fast.bench/inline-tmerge :args [:state/maps]}
   :inline-fast-map-merge {:fn clj-fast.bench/inline-fast-map-merge :args [:state/maps]}
 
-  :args {:fn (fn [x] (range x)) :args [:param/count]}
+  :args {:fn clj-fast.bench/genn :args [:param/count :param/type]}
   :memoize {:fn clj-fast.bench/-memoize :args [:state/args]}
   :cm-memoize {:fn clj-fast.bench/cm-memoize :args [:state/args]}
   :hm-memoize {:fn clj-fast.bench/hm-memoize :args [:state/args]}
