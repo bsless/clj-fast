@@ -1,0 +1,2995 @@
+
+({:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 2567613.1098651625,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [2.590850813538299E7 3.1043734355113316E7],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.1896744013702754E7,
+   :histogram
+   ([[2.0E7 2.125E7] 0]
+    [[2.125E7 2.25E7] 4]
+    [[2.25E7 2.375E7] 1]
+    [[2.375E7 2.5E7] 0]
+    [[2.5E7 2.625E7] 0]
+    [[2.625E7 2.75E7] 0]
+    [[2.75E7 2.875E7] 5]
+    [[2.875E7 3.0E7] 5]
+    [[3.0E7 3.125E7] 6]
+    [[3.125E7 3.25E7] 4]
+    [[3.25E7 3.375E7] 0]
+    [[3.375E7 3.5E7] 0]
+    [[3.5E7 3.625E7] 0]
+    [[3.625E7 3.75E7] 0]
+    [[3.75E7 3.875E7] 0]),
+   :mean 2.8476121245248154E7,
+   :n 25,
+   :variance 1.174905902155972E13,
+   :stdev 3427690.041640247,
+   :max 3.235164129713421E7,
+   :percentiles
+   {0.0 2.1896744013702754E7,
+    50.0 2.983665390127282E7,
+    90 3.205814929557318E7,
+    95 3.229602969655192E7,
+    99 3.235164129713421E7,
+    99.9 3.235164129713421E7,
+    99.99 3.235164129713421E7,
+    99.999 3.235164129713421E7,
+    99.9999 3.235164129713421E7,
+    100 3.235164129713421E7},
+   :sum 7.119030311312039E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2.8476121245248154E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 678852.7912985709,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [2.878462081589095E7 3.0142326398488093E7],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.822011525237264E7,
+   :histogram
+   ([[2.8E7 2.825E7] 1]
+    [[2.825E7 2.85E7] 2]
+    [[2.85E7 2.875E7] 2]
+    [[2.875E7 2.9E7] 3]
+    [[2.9E7 2.925E7] 8]
+    [[2.925E7 2.95E7] 0]
+    [[2.95E7 2.975E7] 1]
+    [[2.975E7 3.0E7] 1]
+    [[3.0E7 3.025E7] 2]
+    [[3.025E7 3.05E7] 0]
+    [[3.05E7 3.075E7] 2]
+    [[3.075E7 3.1E7] 0]
+    [[3.1E7 3.125E7] 3]
+    [[3.125E7 3.15E7] 0]
+    [[3.15E7 3.175E7] 0]),
+   :mean 2.946347360718952E7,
+   :n 25,
+   :variance 8.212873483139072E11,
+   :stdev 906249.0542416623,
+   :max 3.11895407186426E7,
+   :percentiles
+   {0.0 2.822011525237264E7,
+    50.0 2.91919545182402E7,
+    90 3.1026612412220392E7,
+    95 3.1152449021038838E7,
+    99 3.11895407186426E7,
+    99.9 3.11895407186426E7,
+    99.99 3.11895407186426E7,
+    99.999 3.11895407186426E7,
+    99.9999 3.11895407186426E7,
+    100 3.11895407186426E7},
+   :sum 7.36586840179738E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2.946347360718952E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 2577377.0733611677,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [2.527313220562488E7 3.0427886352347218E7],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.1889436111201048E7,
+   :histogram
+   ([[2.0E7 2.125E7] 0]
+    [[2.125E7 2.25E7] 5]
+    [[2.25E7 2.375E7] 0]
+    [[2.375E7 2.5E7] 0]
+    [[2.5E7 2.625E7] 0]
+    [[2.625E7 2.75E7] 2]
+    [[2.75E7 2.875E7] 12]
+    [[2.875E7 3.0E7] 1]
+    [[3.0E7 3.125E7] 0]
+    [[3.125E7 3.25E7] 2]
+    [[3.25E7 3.375E7] 3]
+    [[3.375E7 3.5E7] 0]
+    [[3.5E7 3.625E7] 0]
+    [[3.625E7 3.75E7] 0]
+    [[3.75E7 3.875E7] 0]),
+   :mean 2.7850509278986048E7,
+   :n 25,
+   :variance 1.1838586141602271E13,
+   :stdev 3440724.6535580656,
+   :max 3.3374380736213103E7,
+   :percentiles
+   {0.0 2.1889436111201048E7,
+    50.0 2.811076183669275E7,
+    90 3.2758913391569454E7,
+    95 3.3299838795689516E7,
+    99 3.3374380736213103E7,
+    99.9 3.3374380736213103E7,
+    99.99 3.3374380736213103E7,
+    99.999 3.3374380736213103E7,
+    99.9999 3.3374380736213103E7,
+    100 3.3374380736213103E7},
+   :sum 6.962627319746512E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2.7850509278986048E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 1002906.3326819332,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [2.8633929818874E7 3.0639742484237865E7],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.7838152171893623E7,
+   :histogram
+   ([[2.7E7 2.75E7] 0]
+    [[2.75E7 2.8E7] 2]
+    [[2.8E7 2.85E7] 6]
+    [[2.85E7 2.9E7] 2]
+    [[2.9E7 2.95E7] 5]
+    [[2.95E7 3.0E7] 0]
+    [[3.0E7 3.05E7] 0]
+    [[3.05E7 3.1E7] 2]
+    [[3.1E7 3.15E7] 7]),
+   :mean 2.9636836151555933E7,
+   :n 25,
+   :variance 1.792522698381206E12,
+   :stdev 1338851.2607385505,
+   :max 3.1652819121271726E7,
+   :percentiles
+   {0.0 2.7838152171893623E7,
+    50.0 2.9055768655504983E7,
+    90 3.133607974264321E7,
+    95 3.156754206130828E7,
+    99 3.1652819121271726E7,
+    99.9 3.1652819121271726E7,
+    99.99 3.1652819121271726E7,
+    99.999 3.1652819121271726E7,
+    99.9999 3.1652819121271726E7,
+    100 3.1652819121271726E7},
+   :sum 7.409209037888983E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2.9636836151555933E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 79511.1803436956,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [4048261.2610124513 4207283.621699843],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 3892911.7715434446,
+   :histogram
+   ([[3800000.0 3850000.0] 0]
+    [[3850000.0 3900000.0] 1]
+    [[3900000.0 3950000.0] 1]
+    [[3950000.0 4000000.0] 3]
+    [[4000000.0 4050000.0] 0]
+    [[4050000.0 4100000.0] 5]
+    [[4100000.0 4150000.0] 1]
+    [[4150000.0 4200000.0] 6]
+    [[4200000.0 4250000.0] 6]),
+   :mean 4127772.4413561467,
+   :n 25,
+   :variance 1.1266793064849766E10,
+   :stdev 106145.15092480562,
+   :max 4256727.199425144,
+   :percentiles
+   {0.0 3892911.7715434446,
+    50.0 4178888.0558394426,
+    90 4234334.953903736,
+    95 4255725.726769384,
+    99 4256727.199425144,
+    99.9 4256727.199425144,
+    99.99 4256727.199425144,
+    99.999 4256727.199425144,
+    99.9999 4256727.199425144,
+    100 4256727.199425144},
+   :sum 1.0319431103390367E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [4127772.4413561467 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 56256.81338375968,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [702946.128540879 815459.7553083984],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 675338.5012319067,
+   :histogram
+   ([[600000.0 625000.0] 0]
+    [[625000.0 650000.0] 0]
+    [[650000.0 675000.0] 0]
+    [[675000.0 700000.0] 8]
+    [[700000.0 725000.0] 7]
+    [[725000.0 750000.0] 0]
+    [[750000.0 775000.0] 0]
+    [[775000.0 800000.0] 0]
+    [[800000.0 825000.0] 3]
+    [[825000.0 850000.0] 2]
+    [[850000.0 875000.0] 4]),
+   :mean 759202.9419246387,
+   :n 25,
+   :variance 5.640195700747781E9,
+   :stdev 75101.23634633308,
+   :max 884852.4811041515,
+   :percentiles
+   {0.0 675338.5012319067,
+    50.0 722690.473587667,
+    90 870392.6171204151,
+    95 881148.319119566,
+    99 884852.4811041515,
+    99.9 884852.4811041515,
+    99.99 884852.4811041515,
+    99.999 884852.4811041515,
+    99.9999 884852.4811041515,
+    100 884852.4811041515},
+   :sum 1.898007354811597E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [759202.9419246387 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 1056.9364936776453,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [91477.56349442892 93591.4364817842],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 90585.187230362,
+   :histogram
+   ([[90000.0 90500.0] 0]
+    [[90500.0 91000.0] 3]
+    [[91000.0 91500.0] 4]
+    [[91500.0 92000.0] 3]
+    [[92000.0 92500.0] 4]
+    [[92500.0 93000.0] 3]
+    [[93000.0 93500.0] 1]
+    [[93500.0 94000.0] 4]
+    [[94000.0 94500.0] 1]
+    [[94500.0 95000.0] 0]
+    [[95000.0 95500.0] 1]),
+   :mean 92534.49998810656,
+   :n 25,
+   :variance 1990864.5035428728,
+   :stdev 1410.9799798519016,
+   :max 95884.31613207566,
+   :percentiles
+   {0.0 90585.187230362,
+    50.0 92141.97586283526,
+    90 94791.16851919497,
+    95 95705.45375457472,
+    99 95884.31613207566,
+    99.9 95884.31613207566,
+    99.99 95884.31613207566,
+    99.999 95884.31613207566,
+    99.9999 95884.31613207566,
+    100 95884.31613207566},
+   :sum 2313362.499702664},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [92534.49998810656 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 83.3417210426771,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [6865.609936044816 7032.29337813017],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 6736.890474968012,
+   :histogram
+   ([[6700.0 6750.0] 1]
+    [[6750.0 6800.0] 2]
+    [[6800.0 6850.0] 3]
+    [[6850.0 6900.0] 2]
+    [[6900.0 6950.0] 2]
+    [[6950.0 7000.0] 7]
+    [[7000.0 7050.0] 3]
+    [[7050.0 7100.0] 3]
+    [[7100.0 7150.0] 2]),
+   :mean 6948.951657087493,
+   :n 25,
+   :variance 12378.523506940792,
+   :stdev 111.25881316525353,
+   :max 7125.567802903337,
+   :percentiles
+   {0.0 6736.890474968012,
+    50.0 6965.658049957332,
+    90 7091.852488359486,
+    95 7124.0936126633105,
+    99 7125.567802903337,
+    99.9 7125.567802903337,
+    99.99 7125.567802903337,
+    99.999 7125.567802903337,
+    99.9999 7125.567802903337,
+    100 7125.567802903337},
+   :sum 173723.79142718733},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [6948.951657087493 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 29618.005752351346,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [2238754.5969616272 2297990.6084663295],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2180862.2874064543,
+   :histogram
+   ([[2100000.0 2125000.0] 0]
+    [[2125000.0 2150000.0] 0]
+    [[2150000.0 2175000.0] 0]
+    [[2175000.0 2200000.0] 2]
+    [[2200000.0 2225000.0] 3]
+    [[2225000.0 2250000.0] 1]
+    [[2250000.0 2275000.0] 6]
+    [[2275000.0 2300000.0] 8]
+    [[2300000.0 2325000.0] 5]
+    [[2325000.0 2350000.0] 0]
+    [[2350000.0 2375000.0] 0]),
+   :mean 2268372.6027139784,
+   :n 25,
+   :variance 1.5633475696672297E9,
+   :stdev 39539.190301107956,
+   :max 2319589.06673489,
+   :percentiles
+   {0.0 2180862.2874064543,
+    50.0 2275672.7864260795,
+    90 2313461.3829363883,
+    95 2318658.7185226725,
+    99 2319589.06673489,
+    99.9 2319589.06673489,
+    99.99 2319589.06673489,
+    99.999 2319589.06673489,
+    99.9999 2319589.06673489,
+    100 2319589.06673489},
+   :sum 5.6709315067849465E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2268372.6027139784 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 12388.537952532202,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [342517.8387900738 367294.91469513817],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 327361.9040498971,
+   :histogram
+   ([[320000.0 325000.0] 0]
+    [[325000.0 330000.0] 1]
+    [[330000.0 335000.0] 3]
+    [[335000.0 340000.0] 1]
+    [[340000.0 345000.0] 3]
+    [[345000.0 350000.0] 2]
+    [[350000.0 355000.0] 0]
+    [[355000.0 360000.0] 5]
+    [[360000.0 365000.0] 4]
+    [[365000.0 370000.0] 1]
+    [[370000.0 375000.0] 3]
+    [[375000.0 380000.0] 1]
+    [[380000.0 385000.0] 0]
+    [[385000.0 390000.0] 0]
+    [[390000.0 395000.0] 1]),
+   :mean 354906.376742606,
+   :n 25,
+   :variance 2.7351681325140697E8,
+   :stdev 16538.343727574626,
+   :max 391636.87014388316,
+   :percentiles
+   {0.0 327361.9040498971,
+    50.0 358685.8454530522,
+    90 375458.3320947615,
+    95 388092.54850431345,
+    99 391636.87014388316,
+    99.9 391636.87014388316,
+    99.99 391636.87014388316,
+    99.999 391636.87014388316,
+    99.9999 391636.87014388316,
+    100 391636.87014388316},
+   :sum 8872659.41856515},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [354906.376742606 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 985.2802011169173,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [44727.611411736514 46698.17181397035],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 44221.50139063993,
+   :histogram
+   ([[44000.0 44500.0] 4]
+    [[44500.0 45000.0] 8]
+    [[45000.0 45500.0] 1]
+    [[45500.0 46000.0] 4]
+    [[46000.0 46500.0] 2]
+    [[46500.0 47000.0] 1]
+    [[47000.0 47500.0] 0]
+    [[47500.0 48000.0] 2]
+    [[48000.0 48500.0] 3]),
+   :mean 45712.89161285343,
+   :n 25,
+   :variance 1730069.0157517206,
+   :stdev 1315.3208793871254,
+   :max 48152.49654359885,
+   :percentiles
+   {0.0 44221.50139063993,
+    50.0 45499.377242392504,
+    90 48072.59219534414,
+    95 48131.13312452468,
+    99 48152.49654359885,
+    99.9 48152.49654359885,
+    99.99 48152.49654359885,
+    99.999 48152.49654359885,
+    99.9999 48152.49654359885,
+    100 48152.49654359885},
+   :sum 1142822.290321336},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [45712.89161285343 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 19.6730188920646,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [3182.897879170812 3222.243916954941],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 3161.355548497058,
+   :histogram
+   ([[3160.0 3170.0] 3]
+    [[3170.0 3180.0] 3]
+    [[3180.0 3190.0] 2]
+    [[3190.0 3200.0] 3]
+    [[3200.0 3210.0] 6]
+    [[3210.0 3220.0] 1]
+    [[3220.0 3230.0] 3]
+    [[3230.0 3240.0] 1]
+    [[3240.0 3250.0] 2]),
+   :mean 3202.5708980628765,
+   :n 25,
+   :variance 689.7408288409891,
+   :stdev 26.262917371095487,
+   :max 3252.1287214374797,
+   :percentiles
+   {0.0 3161.355548497058,
+    50.0 3202.2703461579977,
+    90 3245.445703861678,
+    95 3250.789585157446,
+    99 3252.1287214374797,
+    99.9 3252.1287214374797,
+    99.99 3252.1287214374797,
+    99.999 3252.1287214374797,
+    99.9999 3252.1287214374797,
+    100 3252.1287214374797},
+   :sum 80064.27245157192},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3202.5708980628765 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 13351.110858215636,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [1546534.2357912604 1573236.4575076918],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 1527162.0494373809,
+   :histogram
+   ([[1520000.0 1525000.0] 0]
+    [[1525000.0 1530000.0] 4]
+    [[1530000.0 1535000.0] 1]
+    [[1535000.0 1540000.0] 0]
+    [[1540000.0 1545000.0] 0]
+    [[1545000.0 1550000.0] 0]
+    [[1550000.0 1555000.0] 2]
+    [[1555000.0 1560000.0] 2]
+    [[1560000.0 1565000.0] 6]
+    [[1565000.0 1570000.0] 2]
+    [[1570000.0 1575000.0] 4]
+    [[1575000.0 1580000.0] 0]
+    [[1580000.0 1585000.0] 4]),
+   :mean 1559885.346649476,
+   :n 25,
+   :variance 3.1767184148301023E8,
+   :stdev 17823.351017219244,
+   :max 1582333.6023216199,
+   :percentiles
+   {0.0 1527162.0494373809,
+    50.0 1563100.5300045337,
+    90 1581375.773206894,
+    95 1582290.7002870976,
+    99 1582333.6023216199,
+    99.9 1582333.6023216199,
+    99.99 1582333.6023216199,
+    99.999 1582333.6023216199,
+    99.9999 1582333.6023216199,
+    100 1582333.6023216199},
+   :sum 3.89971336662369E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [1559885.346649476 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 15387.403892242495,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [245438.18376087592 276212.9915453609],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 227895.1269675145,
+   :histogram
+   ([[220000.0 225000.0] 0]
+    [[225000.0 230000.0] 2]
+    [[230000.0 235000.0] 3]
+    [[235000.0 240000.0] 0]
+    [[240000.0 245000.0] 0]
+    [[245000.0 250000.0] 0]
+    [[250000.0 255000.0] 4]
+    [[255000.0 260000.0] 1]
+    [[260000.0 265000.0] 7]
+    [[265000.0 270000.0] 3]
+    [[270000.0 275000.0] 0]
+    [[275000.0 280000.0] 0]
+    [[280000.0 285000.0] 0]
+    [[285000.0 290000.0] 1]
+    [[290000.0 295000.0] 3]),
+   :mean 260825.58765311842,
+   :n 25,
+   :variance 4.2196324486933786E8,
+   :stdev 20541.743958810748,
+   :max 296703.0106871693,
+   :percentiles
+   {0.0 227895.1269675145,
+    50.0 262298.98227914475,
+    90 292798.02242852247,
+    95 296189.0931306409,
+    99 296703.0106871693,
+    99.9 296703.0106871693,
+    99.99 296703.0106871693,
+    99.999 296703.0106871693,
+    99.9999 296703.0106871693,
+    100 296703.0106871693},
+   :sum 6520639.69132796},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [260825.58765311842 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 588.5168966721837,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [26584.105008074992 27761.138801419358],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 25699.241320828733,
+   :histogram
+   ([[25000.0 25250.0] 0]
+    [[25250.0 25500.0] 0]
+    [[25500.0 25750.0] 1]
+    [[25750.0 26000.0] 2]
+    [[26000.0 26250.0] 0]
+    [[26250.0 26500.0] 3]
+    [[26500.0 26750.0] 3]
+    [[26750.0 27000.0] 1]
+    [[27000.0 27250.0] 2]
+    [[27250.0 27500.0] 2]
+    [[27500.0 27750.0] 2]
+    [[27750.0 28000.0] 6]
+    [[28000.0 28250.0] 2]
+    [[28250.0 28500.0] 1]
+    [[28500.0 28750.0] 0]),
+   :mean 27172.621904747175,
+   :n 25,
+   :variance 617250.9812276671,
+   :stdev 785.6532194471471,
+   :max 28284.84256904052,
+   :percentiles
+   {0.0 25699.241320828733,
+    50.0 27325.771757308426,
+    90 28056.038946069788,
+    95 28231.28327731538,
+    99 28284.84256904052,
+    99.9 28284.84256904052,
+    99.99 28284.84256904052,
+    99.999 28284.84256904052,
+    99.9999 28284.84256904052,
+    100 28284.84256904052},
+   :sum 679315.5476186794},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [27172.621904747175 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 30.488966510262706,
+  :index 0,
+  :ops-per-invocation 1,
+  :score-confidence [2005.2982279116543 2066.2761609321797],
+  :name :core/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 1953.4275399495186,
+   :histogram
+   ([[1900.0 1912.5] 0]
+    [[1912.5 1925.0] 0]
+    [[1925.0 1937.5] 0]
+    [[1937.5 1950.0] 0]
+    [[1950.0 1962.5] 2]
+    [[1962.5 1975.0] 3]
+    [[1975.0 1987.5] 0]
+    [[1987.5 2000.0] 0]
+    [[2000.0 2012.5] 0]
+    [[2012.5 2025.0] 0]
+    [[2025.0 2037.5] 1]
+    [[2037.5 2050.0] 10]
+    [[2050.0 2062.5] 5]
+    [[2062.5 2075.0] 0]
+    [[2075.0 2087.5] 4]),
+   :mean 2035.787194421917,
+   :n 25,
+   :variance 1656.6445003565134,
+   :stdev 40.70189799452248,
+   :max 2087.416049762502,
+   :percentiles
+   {0.0 1953.4275399495186,
+    50.0 2047.537121363525,
+    90 2078.4497590703654,
+    95 2085.678337764328,
+    99 2087.416049762502,
+    99.9 2087.416049762502,
+    99.99 2087.416049762502,
+    99.999 2087.416049762502,
+    99.9999 2087.416049762502,
+    100 2087.416049762502},
+   :sum 50894.67986054793},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2035.787194421917 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5084983.216108402,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [2.943855734680911E8 3.0455553990030783E8],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.934866732364709E8,
+   :histogram
+   ([[2.9E8 2.925E8] 0]
+    [[2.925E8 2.95E8] 7]
+    [[2.95E8 2.975E8] 9]
+    [[2.975E8 3.0E8] 2]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 1]
+    [[3.075E8 3.1E8] 2]
+    [[3.1E8 3.125E8] 4]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 2.9947055668419945E8,
+   :n 25,
+   :variance 4.608111343202676E13,
+   :stdev 6788307.110909668,
+   :max 3.117197525316843E8,
+   :percentiles
+   {0.0 2.934866732364709E8,
+    50.0 2.9540296914889E8,
+    90 3.110187908316823E8,
+    95 3.116652525546161E8,
+    99 3.117197525316843E8,
+    99.9 3.117197525316843E8,
+    99.99 3.117197525316843E8,
+    99.999 3.117197525316843E8,
+    99.9999 3.117197525316843E8,
+    100 3.117197525316843E8},
+   :sum 7.486763917104986E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2.9947055668419945E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5653883.172370514,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [2.952918639570454E8 3.0659963030178636E8],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.927380633089335E8,
+   :histogram
+   ([[2.9E8 2.925E8] 0]
+    [[2.925E8 2.95E8] 5]
+    [[2.95E8 2.975E8] 10]
+    [[2.975E8 3.0E8] 0]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 7]
+    [[3.1E8 3.125E8] 3]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 3.0094574712941587E8,
+   :n 25,
+   :variance 5.6968866332690414E13,
+   :stdev 7547772.27615476,
+   :max 3.112798194576975E8,
+   :percentiles
+   {0.0 2.927380633089335E8,
+    50.0 2.961610920639977E8,
+    90 3.1118617313677275E8,
+    95 3.1127353032578856E8,
+    99 3.112798194576975E8,
+    99.9 3.112798194576975E8,
+    99.99 3.112798194576975E8,
+    99.999 3.112798194576975E8,
+    99.9999 3.112798194576975E8,
+    100 3.112798194576975E8},
+   :sum 7.523643678235397E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.0094574712941587E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5230383.237709491,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [2.955762052214863E8 3.060369716969052E8],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.9255921428852165E8,
+   :histogram
+   ([[2.9E8 2.925E8] 0]
+    [[2.925E8 2.95E8] 6]
+    [[2.95E8 2.975E8] 10]
+    [[2.975E8 3.0E8] 0]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 6]
+    [[3.1E8 3.125E8] 3]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 3.0080658845919573E8,
+   :n 25,
+   :variance 4.875407705589851E13,
+   :stdev 6982411.979817469,
+   :max 3.1091011574431247E8,
+   :percentiles
+   {0.0 2.9255921428852165E8,
+    50.0 2.9681924543056095E8,
+    90 3.1036946664536417E8,
+    95 3.108018744134827E8,
+    99 3.1091011574431247E8,
+    99.9 3.1091011574431247E8,
+    99.99 3.1091011574431247E8,
+    99.999 3.1091011574431247E8,
+    99.9999 3.1091011574431247E8,
+    100 3.1091011574431247E8},
+   :sum 7.520164711479894E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.0080658845919573E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5113665.44336116,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [2.977611997252787E8 3.07988530612001E8],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.9237390186223674E8,
+   :histogram
+   ([[2.9E8 2.925E8] 1]
+    [[2.925E8 2.95E8] 1]
+    [[2.95E8 2.975E8] 9]
+    [[2.975E8 3.0E8] 1]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 9]
+    [[3.1E8 3.125E8] 4]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 3.0287486516863984E8,
+   :n 25,
+   :variance 4.6602427469935414E13,
+   :stdev 6826597.063686666,
+   :max 3.1038299002976227E8,
+   :percentiles
+   {0.0 2.9237390186223674E8,
+    50.0 3.076769854275646E8,
+    90 3.102115173591468E8,
+    95 3.103446397289896E8,
+    99 3.1038299002976227E8,
+    99.9 3.1038299002976227E8,
+    99.99 3.1038299002976227E8,
+    99.999 3.1038299002976227E8,
+    99.9999 3.1038299002976227E8,
+    100 3.1038299002976227E8},
+   :sum 7.571871629215996E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.0287486516863984E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 34940.04282851477,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [6043408.676361732 6113288.7620187625],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 5944010.9945585495,
+   :histogram
+   ([[5900000.0 5925000.0] 0]
+    [[5925000.0 5950000.0] 1]
+    [[5950000.0 5975000.0] 0]
+    [[5975000.0 6000000.0] 2]
+    [[6000000.0 6025000.0] 1]
+    [[6025000.0 6050000.0] 1]
+    [[6050000.0 6075000.0] 2]
+    [[6075000.0 6100000.0] 9]
+    [[6100000.0 6125000.0] 7]
+    [[6125000.0 6150000.0] 2]
+    [[6150000.0 6175000.0] 0]),
+   :mean 6078348.719190247,
+   :n 25,
+   :variance 2.175658774342455E9,
+   :stdev 46643.95753302302,
+   :max 6130601.118698259,
+   :percentiles
+   {0.0 5944010.9945585495,
+    50.0 6093444.198253239,
+    90 6126093.840632849,
+    95 6129904.936166019,
+    99 6130601.118698259,
+    99.9 6130601.118698259,
+    99.99 6130601.118698259,
+    99.999 6130601.118698259,
+    99.9999 6130601.118698259,
+    100 6130601.118698259},
+   :sum 1.5195871797975618E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [6078348.719190247 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 129903.22296886452,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [824271.1991976493 1084077.6451353782],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 716680.7217670454,
+   :histogram
+   ([[700000.0 750000.0] 5]
+    [[750000.0 800000.0] 2]
+    [[800000.0 850000.0] 3]
+    [[850000.0 900000.0] 0]
+    [[900000.0 950000.0] 0]
+    [[950000.0 1000000.0] 5]
+    [[1000000.0 1050000.0] 0]
+    [[1050000.0 1100000.0] 2]
+    [[1100000.0 1150000.0] 4]),
+   :mean 954174.4221665137,
+   :n 25,
+   :variance 3.0073485751735485E10,
+   :stdev 173417.08610092456,
+   :max 1183441.4713230212,
+   :percentiles
+   {0.0 716680.7217670454,
+    50.0 984162.47459627,
+    90 1157725.9846357596,
+    95 1175728.0397910837,
+    99 1183441.4713230212,
+    99.9 1183441.4713230212,
+    99.99 1183441.4713230212,
+    99.999 1183441.4713230212,
+    99.9999 1183441.4713230212,
+    100 1183441.4713230212},
+   :sum 2.3854360554162845E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [954174.4221665137 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5607.883117561173,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [92336.86832850327 103552.63456362562],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 87226.89476854961,
+   :histogram
+   ([[80000.0 82500.0] 0]
+    [[82500.0 85000.0] 0]
+    [[85000.0 87500.0] 1]
+    [[87500.0 90000.0] 4]
+    [[90000.0 92500.0] 0]
+    [[92500.0 95000.0] 2]
+    [[95000.0 97500.0] 7]
+    [[97500.0 100000.0] 5]
+    [[100000.0 102500.0] 1]
+    [[102500.0 105000.0] 0]
+    [[105000.0 107500.0] 0]
+    [[107500.0 110000.0] 1]
+    [[110000.0 112500.0] 4]
+    [[112500.0 115000.0] 0]
+    [[115000.0 117500.0] 0]),
+   :mean 97944.75144606445,
+   :n 25,
+   :variance 5.604563873946664E7,
+   :stdev 7486.363519056942,
+   :max 110852.16841179176,
+   :percentiles
+   {0.0 87226.89476854961,
+    50.0 96654.16931044433,
+    90 110642.22520474986,
+    95 110807.40988016386,
+    99 110852.16841179176,
+    99.9 110852.16841179176,
+    99.99 110852.16841179176,
+    99.999 110852.16841179176,
+    99.9999 110852.16841179176,
+    100 110852.16841179176},
+   :sum 2448618.7861516112},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [97944.75144606445 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 109.45845776921746,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [6986.660123125996 7205.577038664431],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 6850.325857866367,
+   :histogram
+   ([[6800.0 6850.0] 0]
+    [[6850.0 6900.0] 2]
+    [[6900.0 6950.0] 1]
+    [[6950.0 7000.0] 4]
+    [[7000.0 7050.0] 5]
+    [[7050.0 7100.0] 2]
+    [[7100.0 7150.0] 1]
+    [[7150.0 7200.0] 2]
+    [[7200.0 7250.0] 3]
+    [[7250.0 7300.0] 3]
+    [[7300.0 7350.0] 1]),
+   :mean 7096.118580895213,
+   :n 25,
+   :variance 21352.19692436534,
+   :stdev 146.1239094890543,
+   :max 7368.441316195191,
+   :percentiles
+   {0.0 6850.325857866367,
+    50.0 7051.927669222776,
+    90 7301.433228141604,
+    95 7356.549876174199,
+    99 7368.441316195191,
+    99.9 7368.441316195191,
+    99.99 7368.441316195191,
+    99.999 7368.441316195191,
+    99.9999 7368.441316195191,
+    100 7368.441316195191},
+   :sum 177402.96452238032},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [7096.118580895213 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 37918.30540880806,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [3031312.038324458 3107148.649142074],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2956805.619032956,
+   :histogram
+   ([[2900000.0 2925000.0] 0]
+    [[2925000.0 2950000.0] 0]
+    [[2950000.0 2975000.0] 1]
+    [[2975000.0 3000000.0] 4]
+    [[3000000.0 3025000.0] 0]
+    [[3025000.0 3050000.0] 3]
+    [[3050000.0 3075000.0] 1]
+    [[3075000.0 3100000.0] 8]
+    [[3100000.0 3125000.0] 6]
+    [[3125000.0 3150000.0] 2]
+    [[3150000.0 3175000.0] 0]),
+   :mean 3069230.343733266,
+   :n 25,
+   :variance 2.562369504469541E9,
+   :stdev 50619.85286890452,
+   :max 3130865.616279836,
+   :percentiles
+   {0.0 2956805.619032956,
+    50.0 3088664.1764140883,
+    90 3119896.705546618,
+    95 3130142.7932619913,
+    99 3130865.616279836,
+    99.9 3130865.616279836,
+    99.99 3130865.616279836,
+    99.999 3130865.616279836,
+    99.9999 3130865.616279836,
+    100 3130865.616279836},
+   :sum 7.673075859333165E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3069230.343733266 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 17358.408275267902,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [372985.56374301156 407702.3802935474],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 352966.57173292874,
+   :histogram
+   ([[350000.0 355000.0] 2]
+    [[355000.0 360000.0] 2]
+    [[360000.0 365000.0] 1]
+    [[365000.0 370000.0] 4]
+    [[370000.0 375000.0] 1]
+    [[375000.0 380000.0] 0]
+    [[380000.0 385000.0] 0]
+    [[385000.0 390000.0] 0]
+    [[390000.0 395000.0] 0]
+    [[395000.0 400000.0] 0]
+    [[400000.0 405000.0] 3]
+    [[405000.0 410000.0] 6]
+    [[410000.0 415000.0] 5]),
+   :mean 390343.9720182795,
+   :n 25,
+   :variance 5.369869288185328E8,
+   :stdev 23172.978419239353,
+   :max 415463.3984833837,
+   :percentiles
+   {0.0 352966.57173292874,
+    50.0 402338.2629760275,
+    90 414169.0039618728,
+    95 415078.10307201813,
+    99 415463.3984833837,
+    99.9 415463.3984833837,
+    99.99 415463.3984833837,
+    99.999 415463.3984833837,
+    99.9999 415463.3984833837,
+    100 415463.3984833837},
+   :sum 9758599.300456988},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [390343.9720182795 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 903.2821594829481,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [44294.111505853696 46100.6758248196],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 43232.70781059814,
+   :histogram
+   ([[43000.0 43250.0] 1]
+    [[43250.0 43500.0] 2]
+    [[43500.0 43750.0] 2]
+    [[43750.0 44000.0] 1]
+    [[44000.0 44250.0] 0]
+    [[44250.0 44500.0] 2]
+    [[44500.0 44750.0] 0]
+    [[44750.0 45000.0] 2]
+    [[45000.0 45250.0] 2]
+    [[45250.0 45500.0] 2]
+    [[45500.0 45750.0] 1]
+    [[45750.0 46000.0] 2]
+    [[46000.0 46250.0] 1]
+    [[46250.0 46500.0] 2]
+    [[46500.0 46750.0] 5]),
+   :mean 45197.39366533665,
+   :n 25,
+   :variance 1454088.306354453,
+   :stdev 1205.8558397895054,
+   :max 46740.52970594317,
+   :percentiles
+   {0.0 43232.70781059814,
+    50.0 45356.8664071141,
+    90 46661.412824809806,
+    95 46740.17545289084,
+    99 46740.52970594317,
+    99.9 46740.52970594317,
+    99.99 46740.52970594317,
+    99.999 46740.52970594317,
+    99.9999 46740.52970594317,
+    100 46740.52970594317},
+   :sum 1129934.8416334162},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [45197.39366533665 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 31.270114594210998,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [3187.4984947222642 3250.0387239106863],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 3160.911291869414,
+   :histogram
+   ([[3100.0 3112.5] 0]
+    [[3112.5 3125.0] 0]
+    [[3125.0 3137.5] 0]
+    [[3137.5 3150.0] 0]
+    [[3150.0 3162.5] 2]
+    [[3162.5 3175.0] 1]
+    [[3175.0 3187.5] 4]
+    [[3187.5 3200.0] 4]
+    [[3200.0 3212.5] 4]
+    [[3212.5 3225.0] 1]
+    [[3225.0 3237.5] 1]
+    [[3237.5 3250.0] 1]
+    [[3250.0 3262.5] 0]
+    [[3262.5 3275.0] 4]
+    [[3275.0 3287.5] 2]),
+   :mean 3218.7686093164752,
+   :n 25,
+   :variance 1742.620674204528,
+   :stdev 41.744708337758546,
+   :max 3298.4651574249783,
+   :percentiles
+   {0.0 3160.911291869414,
+    50.0 3208.3980377520397,
+    90 3282.0273923570585,
+    95 3293.783691584481,
+    99 3298.4651574249783,
+    99.9 3298.4651574249783,
+    99.99 3298.4651574249783,
+    99.999 3298.4651574249783,
+    99.9999 3298.4651574249783,
+    100 3298.4651574249783},
+   :sum 80469.21523291188},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3218.7686093164752 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 9082.985203901486,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [2067951.0301927987 2086117.0006006018],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2055116.7794950579,
+   :histogram
+   ([[2050000.0 2055000.0] 0]
+    [[2055000.0 2060000.0] 1]
+    [[2060000.0 2065000.0] 5]
+    [[2065000.0 2070000.0] 3]
+    [[2070000.0 2075000.0] 2]
+    [[2075000.0 2080000.0] 2]
+    [[2080000.0 2085000.0] 5]
+    [[2085000.0 2090000.0] 3]
+    [[2090000.0 2095000.0] 2]
+    [[2095000.0 2100000.0] 1]
+    [[2100000.0 2105000.0] 1]),
+   :mean 2077034.0153967002,
+   :n 25,
+   :variance 1.47028365760746E8,
+   :stdev 12125.525380813237,
+   :max 2100056.980488199,
+   :percentiles
+   {0.0 2055116.7794950579,
+    50.0 2079627.3531959283,
+    90 2094252.3583619348,
+    95 2099091.224822383,
+    99 2100056.980488199,
+    99.9 2100056.980488199,
+    99.99 2100056.980488199,
+    99.999 2100056.980488199,
+    99.9999 2100056.980488199,
+    100 2100056.980488199},
+   :sum 5.1925850384917505E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2077034.0153967002 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 12592.695924229423,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [272172.4427916729 297357.8346401317],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 251957.65208281626,
+   :histogram
+   ([[250000.0 255000.0] 4]
+    [[255000.0 260000.0] 1]
+    [[260000.0 265000.0] 0]
+    [[265000.0 270000.0] 0]
+    [[270000.0 275000.0] 0]
+    [[275000.0 280000.0] 0]
+    [[280000.0 285000.0] 4]
+    [[285000.0 290000.0] 1]
+    [[290000.0 295000.0] 9]
+    [[295000.0 300000.0] 3]
+    [[300000.0 305000.0] 3]),
+   :mean 284765.1387159023,
+   :n 25,
+   :variance 2.8260598153256685E8,
+   :stdev 16810.888778781653,
+   :max 304876.31782124186,
+   :percentiles
+   {0.0 251957.65208281626,
+    50.0 291203.06833110645,
+    90 302320.74680366105,
+    95 304234.3351748543,
+    99 304876.31782124186,
+    99.9 304876.31782124186,
+    99.99 304876.31782124186,
+    99.999 304876.31782124186,
+    99.9999 304876.31782124186,
+    100 304876.31782124186},
+   :sum 7119128.467897558},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [284765.1387159023 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 669.2519868029173,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [26415.577348895342 27754.081322501173],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 25863.77906469397,
+   :histogram
+   ([[25000.0 25500.0] 0]
+    [[25500.0 26000.0] 1]
+    [[26000.0 26500.0] 6]
+    [[26500.0 27000.0] 9]
+    [[27000.0 27500.0] 4]
+    [[27500.0 28000.0] 0]
+    [[28000.0 28500.0] 1]
+    [[28500.0 29000.0] 3]
+    [[29000.0 29500.0] 1]),
+   :mean 27084.829335698258,
+   :n 25,
+   :variance 798221.1941337491,
+   :stdev 893.4322549212945,
+   :max 29025.001722313566,
+   :percentiles
+   {0.0 25863.77906469397,
+    50.0 26860.646439182423,
+    90 28742.14759824737,
+    95 28961.824106905548,
+    99 29025.001722313566,
+    99.9 29025.001722313566,
+    99.99 29025.001722313566,
+    99.999 29025.001722313566,
+    99.9999 29025.001722313566,
+    100 29025.001722313566},
+   :sum 677120.7333924564},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [27084.829335698258 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 15.408127126829559,
+  :index 1,
+  :ops-per-invocation 1,
+  :score-confidence [1980.2549800329182 2011.0712342865775],
+  :name :inline/merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 1964.9686960837028,
+   :histogram
+   ([[1960.0 1965.0] 1]
+    [[1965.0 1970.0] 3]
+    [[1970.0 1975.0] 1]
+    [[1975.0 1980.0] 1]
+    [[1980.0 1985.0] 2]
+    [[1985.0 1990.0] 3]
+    [[1990.0 1995.0] 2]
+    [[1995.0 2000.0] 0]
+    [[2000.0 2005.0] 5]
+    [[2005.0 2010.0] 2]
+    [[2010.0 2015.0] 0]
+    [[2015.0 2020.0] 0]
+    [[2020.0 2025.0] 3]
+    [[2025.0 2030.0] 0]
+    [[2030.0 2035.0] 2]),
+   :mean 1995.6631071597478,
+   :n 25,
+   :variance 423.1005818407878,
+   :stdev 20.569408884087743,
+   :max 2034.2149122488659,
+   :percentiles
+   {0.0 1964.9686960837028,
+    50.0 1994.1786873302422,
+    90 2027.5627162322864,
+    95 2033.590099836791,
+    99 2034.2149122488659,
+    99.9 2034.2149122488659,
+    99.99 2034.2149122488659,
+    99.999 2034.2149122488659,
+    99.9999 2034.2149122488659,
+    100 2034.2149122488659},
+   :sum 49891.57767899369},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [1995.6631071597478 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5427874.412569711,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [2.970281403426552E8 3.078838891677946E8],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.921047891369864E8,
+   :histogram
+   ([[2.9E8 2.925E8] 1]
+    [[2.925E8 2.95E8] 1]
+    [[2.95E8 2.975E8] 9]
+    [[2.975E8 3.0E8] 1]
+    [[3.0E8 3.025E8] 3]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 3]
+    [[3.1E8 3.125E8] 7]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 3.024560147552249E8,
+   :n 25,
+   :variance 5.2505342742664164E13,
+   :stdev 7246057.047985764,
+   :max 3.1247495749592304E8,
+   :percentiles
+   {0.0 2.921047891369864E8,
+    50.0 3.00172726007608E8,
+    90 3.122442405562134E8,
+    95 3.1243140780315113E8,
+    99 3.1247495749592304E8,
+    99.9 3.1247495749592304E8,
+    99.99 3.1247495749592304E8,
+    99.999 3.1247495749592304E8,
+    99.9999 3.1247495749592304E8,
+    100 3.1247495749592304E8},
+   :sum 7.561400368880622E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.024560147552249E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 4527209.185200289,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [2.947440193618509E8 3.0379843773225147E8],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.940173005084458E8,
+   :histogram
+   ([[2.9E8 2.925E8] 0]
+    [[2.925E8 2.95E8] 5]
+    [[2.95E8 2.975E8] 11]
+    [[2.975E8 3.0E8] 4]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 0]
+    [[3.1E8 3.125E8] 5]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 2.992712285470512E8,
+   :n 25,
+   :variance 3.652624608246347E13,
+   :stdev 6043694.737696757,
+   :max 3.114573974887201E8,
+   :percentiles
+   {0.0 2.940173005084458E8,
+    50.0 2.96951133202771E8,
+    90 3.1089102534596026E8,
+    95 3.1130050362438506E8,
+    99 3.114573974887201E8,
+    99.9 3.114573974887201E8,
+    99.99 3.114573974887201E8,
+    99.999 3.114573974887201E8,
+    99.9999 3.114573974887201E8,
+    100 3.114573974887201E8},
+   :sum 7.481780713676279E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2.992712285470512E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 4838862.297313734,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [2.98246938262164E8 3.079246628567915E8],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.941883571460284E8,
+   :histogram
+   ([[2.9E8 2.925E8] 0]
+    [[2.925E8 2.95E8] 2]
+    [[2.95E8 2.975E8] 7]
+    [[2.975E8 3.0E8] 1]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 5]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 7]
+    [[3.1E8 3.125E8] 3]
+    [[3.125E8 3.15E8] 0]
+    [[3.15E8 3.175E8] 0]),
+   :mean 3.0308580055947775E8,
+   :n 25,
+   :variance 4.172827608478664E13,
+   :stdev 6459742.725897576,
+   :max 3.1040789670203394E8,
+   :percentiles
+   {0.0 2.941883571460284E8,
+    50.0 3.039045786453192E8,
+    90 3.101681947965413E8,
+    95 3.103604149427063E8,
+    99 3.1040789670203394E8,
+    99.9 3.1040789670203394E8,
+    99.99 3.1040789670203394E8,
+    99.999 3.1040789670203394E8,
+    99.9999 3.1040789670203394E8,
+    100 3.1040789670203394E8},
+   :sum 7.577145013986944E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.0308580055947775E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 5526954.41633559,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [2.963366428616748E8 3.0739055169434595E8],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 1, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2.9490053028124404E8,
+   :histogram
+   ([[2.9E8 2.925E8] 0]
+    [[2.925E8 2.95E8] 1]
+    [[2.95E8 2.975E8] 14]
+    [[2.975E8 3.0E8] 0]
+    [[3.0E8 3.025E8] 0]
+    [[3.025E8 3.05E8] 0]
+    [[3.05E8 3.075E8] 0]
+    [[3.075E8 3.1E8] 2]
+    [[3.1E8 3.125E8] 7]
+    [[3.125E8 3.15E8] 1]
+    [[3.15E8 3.175E8] 0]),
+   :mean 3.0186359727801037E8,
+   :n 25,
+   :variance 5.443969483247665E13,
+   :stdev 7378326.01831043,
+   :max 3.126721106704633E8,
+   :percentiles
+   {0.0 2.9490053028124404E8,
+    50.0 2.967476730613844E8,
+    90 3.1157361810147053E8,
+    95 3.124615790270167E8,
+    99 3.126721106704633E8,
+    99.9 3.126721106704633E8,
+    99.99 3.126721106704633E8,
+    99.999 3.126721106704633E8,
+    99.9999 3.126721106704633E8,
+    100 3.126721106704633E8},
+   :sum 7.546589931950259E9},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.0186359727801037E8 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 301916.07709978626,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [3.0434213412185922E7 3.1038045566385493E7],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 3.0078516471769907E7,
+   :histogram
+   ([[3.0E7 3.0125E7] 2]
+    [[3.0125E7 3.025E7] 2]
+    [[3.025E7 3.0375E7] 1]
+    [[3.0375E7 3.05E7] 1]
+    [[3.05E7 3.0625E7] 6]
+    [[3.0625E7 3.075E7] 2]
+    [[3.075E7 3.0875E7] 1]
+    [[3.0875E7 3.1E7] 3]
+    [[3.1E7 3.1125E7] 3]
+    [[3.1125E7 3.125E7] 1]
+    [[3.125E7 3.1375E7] 1]
+    [[3.1375E7 3.15E7] 1]
+    [[3.15E7 3.1625E7] 1]
+    [[3.1625E7 3.175E7] 0]
+    [[3.175E7 3.1875E7] 0]),
+   :mean 3.0736129489285707E7,
+   :n 25,
+   :variance 1.6244875841237943E11,
+   :stdev 403049.3250365015,
+   :max 3.1537058180605087E7,
+   :percentiles
+   {0.0 3.0078516471769907E7,
+    50.0 3.0640979877775002E7,
+    90 3.1314509535281096E7,
+    95 3.1490962868032563E7,
+    99 3.1537058180605087E7,
+    99.9 3.1537058180605087E7,
+    99.99 3.1537058180605087E7,
+    99.999 3.1537058180605087E7,
+    99.9999 3.1537058180605087E7,
+    100 3.1537058180605087E7},
+   :sum 7.684032372321427E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3.0736129489285707E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 212579.6776618138,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [936512.6464365683 1361672.001760196],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 832954.9529493464,
+   :histogram
+   ([[800000.0 850000.0] 3]
+    [[850000.0 900000.0] 2]
+    [[900000.0 950000.0] 3]
+    [[950000.0 1000000.0] 2]
+    [[1000000.0 1050000.0] 0]
+    [[1050000.0 1100000.0] 0]
+    [[1100000.0 1150000.0] 4]
+    [[1150000.0 1200000.0] 6]
+    [[1200000.0 1250000.0] 0]
+    [[1250000.0 1300000.0] 0]
+    [[1300000.0 1350000.0] 0]
+    [[1350000.0 1400000.0] 0]
+    [[1400000.0 1450000.0] 0]
+    [[1450000.0 1500000.0] 0]
+    [[1500000.0 1550000.0] 0]
+    [[1550000.0 1600000.0] 0]
+    [[1600000.0 1650000.0] 1]),
+   :mean 1149092.3240983821,
+   :n 25,
+   :variance 8.053550846055672E10,
+   :stdev 283787.787722722,
+   :max 1660293.0014160043,
+   :percentiles
+   {0.0 832954.9529493464,
+    50.0 1135795.0546778133,
+    90 1651926.5433526335,
+    95 1657975.3398006596,
+    99 1660293.0014160043,
+    99.9 1660293.0014160043,
+    99.99 1660293.0014160043,
+    99.999 1660293.0014160043,
+    99.9999 1660293.0014160043,
+    100 1660293.0014160043},
+   :sum 2.8727308102459554E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [1149092.3240983821 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 3106.030996772727,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [116987.61298025127 123199.67497379672],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 115367.56015095756,
+   :histogram
+   ([[110000.0 111250.0] 0]
+    [[111250.0 112500.0] 0]
+    [[112500.0 113750.0] 0]
+    [[113750.0 115000.0] 0]
+    [[115000.0 116250.0] 4]
+    [[116250.0 117500.0] 4]
+    [[117500.0 118750.0] 4]
+    [[118750.0 120000.0] 3]
+    [[120000.0 121250.0] 3]
+    [[121250.0 122500.0] 2]
+    [[122500.0 123750.0] 0]
+    [[123750.0 125000.0] 1]
+    [[125000.0 126250.0] 0]
+    [[126250.0 127500.0] 2]
+    [[127500.0 128750.0] 1]),
+   :mean 120093.643977024,
+   :n 25,
+   :variance 1.71931513998801E7,
+   :stdev 4146.462516396368,
+   :max 129514.02721421508,
+   :percentiles
+   {0.0 115367.56015095756,
+    50.0 119456.04034754931,
+    90 127762.72054662784,
+    95 129118.9388441316,
+    99 129514.02721421508,
+    99.9 129514.02721421508,
+    99.99 129514.02721421508,
+    99.999 129514.02721421508,
+    99.9999 129514.02721421508,
+    100 129514.02721421508},
+   :sum 3002341.0994256},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [120093.643977024 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 137.68015014933846,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [8596.937119613602 8872.29741991228],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 2, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 8375.661512251667,
+   :histogram
+   ([[8300.0 8350.0] 0]
+    [[8350.0 8400.0] 1]
+    [[8400.0 8450.0] 1]
+    [[8450.0 8500.0] 0]
+    [[8500.0 8550.0] 1]
+    [[8550.0 8600.0] 3]
+    [[8600.0 8650.0] 4]
+    [[8650.0 8700.0] 3]
+    [[8700.0 8750.0] 1]
+    [[8750.0 8800.0] 1]
+    [[8800.0 8850.0] 2]
+    [[8850.0 8900.0] 2]
+    [[8900.0 8950.0] 2]
+    [[8950.0 9000.0] 2]
+    [[9000.0 9050.0] 2]),
+   :mean 8734.61726976294,
+   :n 25,
+   :variance 33782.09496677777,
+   :stdev 183.79906138709677,
+   :max 9039.522445700122,
+   :percentiles
+   {0.0 8375.661512251667,
+    50.0 8676.904747083237,
+    90 8984.384478378126,
+    95 9031.381830748604,
+    99 9039.522445700122,
+    99.9 9039.522445700122,
+    99.99 9039.522445700122,
+    99.999 9039.522445700122,
+    99.9999 9039.522445700122,
+    100 9039.522445700122},
+   :sum 218365.43174407352},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [8734.61726976294 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 238436.93984099495,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [1.6080030706954611E7 1.6556904586636601E7],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 1.5901332044363663E7,
+   :histogram
+   ([[1.5E7 1.525E7] 0]
+    [[1.525E7 1.55E7] 0]
+    [[1.55E7 1.575E7] 0]
+    [[1.575E7 1.6E7] 6]
+    [[1.6E7 1.625E7] 5]
+    [[1.625E7 1.65E7] 7]
+    [[1.65E7 1.675E7] 5]
+    [[1.675E7 1.7E7] 1]
+    [[1.7E7 1.725E7] 1]
+    [[1.725E7 1.75E7] 0]
+    [[1.75E7 1.775E7] 0]),
+   :mean 1.6318467646795606E7,
+   :n 25,
+   :variance 1.0131902345376399E11,
+   :stdev 318306.4929494276,
+   :max 1.707539357834415E7,
+   :percentiles
+   {0.0 1.5901332044363663E7,
+    50.0 1.6267199972569136E7,
+    90 1.6764080198302917E7,
+    95 1.6998998832876377E7,
+    99 1.707539357834415E7,
+    99.9 1.707539357834415E7,
+    99.99 1.707539357834415E7,
+    99.999 1.707539357834415E7,
+    99.9999 1.707539357834415E7,
+    100 1.707539357834415E7},
+   :sum 4.0796169116989017E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [1.6318467646795606E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 25353.807185996087,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [467127.0454907716 517834.6598627638],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 462147.1282704307,
+   :histogram
+   ([[400000.0 412500.0] 0]
+    [[412500.0 425000.0] 0]
+    [[425000.0 437500.0] 0]
+    [[437500.0 450000.0] 0]
+    [[450000.0 462500.0] 1]
+    [[462500.0 475000.0] 13]
+    [[475000.0 487500.0] 1]
+    [[487500.0 500000.0] 3]
+    [[500000.0 512500.0] 2]
+    [[512500.0 525000.0] 0]
+    [[525000.0 537500.0] 1]
+    [[537500.0 550000.0] 1]
+    [[550000.0 562500.0] 1]
+    [[562500.0 575000.0] 2]
+    [[575000.0 587500.0] 0]),
+   :mean 492480.8526767677,
+   :n 25,
+   :variance 1.145592819951065E9,
+   :stdev 33846.607214772135,
+   :max 564114.5133815481,
+   :percentiles
+   {0.0 462147.1282704307,
+    50.0 473382.4725190997,
+    90 562567.2053088971,
+    95 563915.6007472724,
+    99 564114.5133815481,
+    99.9 564114.5133815481,
+    99.99 564114.5133815481,
+    99.999 564114.5133815481,
+    99.9999 564114.5133815481,
+    100 564114.5133815481},
+   :sum 1.2312021316919193E7},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [492480.8526767677 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 1164.7489134417615,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [54387.079340997334 56716.57716788086],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 53389.106072889495,
+   :histogram
+   ([[53000.0 53500.0] 2]
+    [[53500.0 54000.0] 1]
+    [[54000.0 54500.0] 2]
+    [[54500.0 55000.0] 4]
+    [[55000.0 55500.0] 6]
+    [[55500.0 56000.0] 5]
+    [[56000.0 56500.0] 0]
+    [[56500.0 57000.0] 0]
+    [[57000.0 57500.0] 0]
+    [[57500.0 58000.0] 3]
+    [[58000.0 58500.0] 0]
+    [[58500.0 59000.0] 1]
+    [[59000.0 59500.0] 0]),
+   :mean 55551.8282544391,
+   :n 25,
+   :variance 2417734.1481666085,
+   :stdev 1554.9064756976893,
+   :max 59501.17457125385,
+   :percentiles
+   {0.0 53389.106072889495,
+    50.0 55218.77907035123,
+    90 58100.898063108965,
+    95 59239.879817800305,
+    99 59501.17457125385,
+    99.9 59501.17457125385,
+    99.99 59501.17457125385,
+    99.999 59501.17457125385,
+    99.9999 59501.17457125385,
+    100 59501.17457125385},
+   :sum 1388795.7063609774},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [55551.8282544391 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 101.3363166474299,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [3696.147212525799 3898.8198458206593],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 3, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 3565.1547698552954,
+   :histogram
+   ([[3500.0 3550.0] 0]
+    [[3550.0 3600.0] 1]
+    [[3600.0 3650.0] 3]
+    [[3650.0 3700.0] 6]
+    [[3700.0 3750.0] 0]
+    [[3750.0 3800.0] 0]
+    [[3800.0 3850.0] 3]
+    [[3850.0 3900.0] 2]
+    [[3900.0 3950.0] 10]),
+   :mean 3797.4835291732293,
+   :n 25,
+   :variance 18300.971544244174,
+   :stdev 135.28108346788244,
+   :max 3941.285185238883,
+   :percentiles
+   {0.0 3565.1547698552954,
+    50.0 3847.5945228132705,
+    90 3933.633598144689,
+    95 3939.077413410528,
+    99 3941.285185238883,
+    99.9 3941.285185238883,
+    99.99 3941.285185238883,
+    99.999 3941.285185238883,
+    99.9999 3941.285185238883,
+    100 3941.285185238883},
+   :sum 94937.08822933074},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [3797.4835291732293 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 108927.72616572888,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [1.086228353661562E7 1.1080138988947077E7],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 0, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 1.076339604232586E7,
+   :histogram
+   ([[1.07E7 1.075E7] 0]
+    [[1.075E7 1.08E7] 2]
+    [[1.08E7 1.085E7] 5]
+    [[1.085E7 1.09E7] 2]
+    [[1.09E7 1.095E7] 3]
+    [[1.095E7 1.1E7] 2]
+    [[1.1E7 1.105E7] 5]
+    [[1.105E7 1.11E7] 2]
+    [[1.11E7 1.115E7] 2]
+    [[1.115E7 1.12E7] 0]
+    [[1.12E7 1.125E7] 1]
+    [[1.125E7 1.13E7] 0]
+    [[1.13E7 1.135E7] 1]),
+   :mean 1.0971211262781348E7,
+   :n 25,
+   :variance 2.1145637970483353E10,
+   :stdev 145415.3979827561,
+   :max 1.130721174113373E7,
+   :percentiles
+   {0.0 1.076339604232586E7,
+    50.0 1.097914864956972E7,
+    90 1.118543281206546E7,
+    95 1.1287680271787861E7,
+    99 1.130721174113373E7,
+    99.9 1.130721174113373E7,
+    99.99 1.130721174113373E7,
+    99.999 1.130721174113373E7,
+    99.9999 1.130721174113373E7,
+    100 1.130721174113373E7},
+   :sum 2.742802815695337E8},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [1.0971211262781348E7 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 16013.596983638801,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [347147.6265781199 379174.8205453975],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 1, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 332611.05677162163,
+   :histogram
+   ([[330000.0 335000.0] 2]
+    [[335000.0 340000.0] 0]
+    [[340000.0 345000.0] 2]
+    [[345000.0 350000.0] 4]
+    [[350000.0 355000.0] 5]
+    [[355000.0 360000.0] 2]
+    [[360000.0 365000.0] 0]
+    [[365000.0 370000.0] 1]
+    [[370000.0 375000.0] 1]
+    [[375000.0 380000.0] 2]
+    [[380000.0 385000.0] 1]
+    [[385000.0 390000.0] 1]
+    [[390000.0 395000.0] 1]
+    [[395000.0 400000.0] 2]
+    [[400000.0 405000.0] 0]),
+   :mean 363161.2235617587,
+   :n 25,
+   :variance 4.570057930740478E8,
+   :stdev 21377.69382028959,
+   :max 405984.9741281306,
+   :percentiles
+   {0.0 332611.05677162163,
+    50.0 354885.88677804585,
+    90 397533.29812446795,
+    95 403621.7929432992,
+    99 405984.9741281306,
+    99.9 405984.9741281306,
+    99.99 405984.9741281306,
+    99.999 405984.9741281306,
+    99.9999 405984.9741281306,
+    100 405984.9741281306},
+   :sum 9079030.589043967},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [363161.2235617587 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 590.6506642298889,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [32579.155881435643 33760.45720989542],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 2, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 32016.391499662008,
+   :histogram
+   ([[32000.0 32250.0] 3]
+    [[32250.0 32500.0] 3]
+    [[32500.0 32750.0] 2]
+    [[32750.0 33000.0] 2]
+    [[33000.0 33250.0] 4]
+    [[33250.0 33500.0] 4]
+    [[33500.0 33750.0] 2]
+    [[33750.0 34000.0] 1]
+    [[34000.0 34250.0] 1]
+    [[34250.0 34500.0] 1]
+    [[34500.0 34750.0] 1]),
+   :mean 33169.80654566553,
+   :n 25,
+   :variance 621734.9909694995,
+   :stdev 788.5017380890796,
+   :max 34758.37213139074,
+   :percentiles
+   {0.0 32016.391499662008,
+    50.0 33134.16782219036,
+    90 34450.17927977542,
+    95 34733.04969605935,
+    99 34758.37213139074,
+    99.9 34758.37213139074,
+    99.99 34758.37213139074,
+    99.999 34758.37213139074,
+    99.9999 34758.37213139074,
+    100 34758.37213139074},
+   :sum 829245.1636416382},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [33169.80654566553 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}}
+ {:args (:state/inline-fast-map-merge),
+  :samples 25,
+  :fn clj-fast.bench/invoke,
+  :score-error 14.679283002841718,
+  :index 2,
+  :ops-per-invocation 1,
+  :score-confidence [2422.3390097021115 2451.697575707795],
+  :name :inline/fast-map-merge,
+  :mode :throughput,
+  :params {:count 4, :log-map-size 3, :type :keyword?},
+  :output-time-unit :sec,
+  :statistics
+  {:min 2397.6513566890408,
+   :histogram
+   ([[2390.0 2395.0] 0]
+    [[2395.0 2400.0] 1]
+    [[2400.0 2405.0] 2]
+    [[2405.0 2410.0] 1]
+    [[2410.0 2415.0] 0]
+    [[2415.0 2420.0] 1]
+    [[2420.0 2425.0] 1]
+    [[2425.0 2430.0] 1]
+    [[2430.0 2435.0] 3]
+    [[2435.0 2440.0] 1]
+    [[2440.0 2445.0] 3]
+    [[2445.0 2450.0] 3]
+    [[2450.0 2455.0] 3]
+    [[2455.0 2460.0] 3]
+    [[2460.0 2465.0] 2]),
+   :mean 2437.018292704953,
+   :n 25,
+   :variance 384.0197877701614,
+   :stdev 19.596422830969978,
+   :max 2462.0621937011006,
+   :percentiles
+   {0.0 2397.6513566890408,
+    50.0 2441.980019905068,
+    90 2459.373879046312,
+    95 2461.761917912532,
+    99 2462.0621937011006,
+    99.9 2462.0621937011006,
+    99.99 2462.0621937011006,
+    99.999 2462.0621937011006,
+    99.9999 2462.0621937011006,
+    100 2462.0621937011006},
+   :sum 60925.457317623834},
+  :threads 1,
+  :measurement {:time [10 :sec], :count 1, :iterations 5},
+  :score [2437.018292704953 "ops/s"],
+  :iterations {:synchronize true},
+  :warmup {:time [10 :sec], :count 1, :iterations 5},
+  :timeout [10 :min],
+  :fork
+  {:count 5,
+   :warmups 0,
+   :jvm
+   {:java "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    :args
+    ["-Dfile.encoding=UTF-8"
+     "-Dclojure.compile.path=/home/bensless/Projects/clj-fast/extra/clj-fast.jmh/target/default+jmh+79bd3136/classes"
+     "-Dclj-fast.jmh.version=0.0.0-SNAPSHOT"
+     "-Dclojure.debug=false"],
+    :jdk "1.8.0_282",
+    :jmh "1.24"}},
+  :thread-groups {}})

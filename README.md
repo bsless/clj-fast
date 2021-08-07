@@ -23,6 +23,7 @@
             - [Lenses](#lenses)
     - [Rewriting Core Functions And Macros](#rewriting-core-functions-and-macros)
         - [Usage](#usage-1)
+    - [General Note Note On Performance And Profiling](#general-note-note-on-performance-and-profiling)
     - [Related Projects](#related-projects)
         - [Structural](#structural)
         - [Stringer](#stringer)
@@ -66,7 +67,7 @@ under certain constraints, and replaced by faster code.
 
 ## Results
 
-See [results.md](doc/results.md) for experiments' detailed benchmark results.
+See [results.md](extra/clj-fast.analysis/doc/results.md) for experiments' detailed benchmark results.
 
 ## Usage
 

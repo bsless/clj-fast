@@ -2,17 +2,50 @@
   "Interactive notebook namespace to load, parse and chart benchmark results"
   (:require
    [clojure.edn]
+   [clojure.set :as set]
    [clojure.string]
    [incanter
     [core :as i]
     [charts :as charts]]))
 
+(def default-opts
+  {:x-dim :log-size
+   :y-dim :count})
+
+(def case-opts
+  {:memoize {:x-dim :type}})
+
 (defn load-results
   [s]
   (clojure.edn/read-string (slurp s)))
 
-(def common
-  #{:assoc :merge :get-in :select-keys :assoc-in :update-in :memoize})
+(defn relative-results
+  [run xs]
+  (let [{:keys [x-dim y-dim]} (merge default-opts (get case-opts run))]
+    (for [[_count g] (group-by y-dim xs)
+          [_size g] (group-by x-dim g)
+          :let [base (first (filter (fn [rec] (= "core" (namespace (:name rec)))) g))
+                base-score (:score base)]
+          rec g
+          :let [score (:score rec)]]
+      (assoc rec :relative-score (* 100 (- (/ score base-score) 1))))))
+
+(defn parse-run
+  [{label :name [score] :score :as m}]
+  (set/rename-keys
+   (merge
+    (:params m)
+    {:name label :score score :time (/ 1 score)})
+   {:log-map-size :log-size}))
+
+(defn load-run
+  [run]
+  (->>
+   (load-results (str "../clj-fast.jmh/results/" (name run) ".edn"))
+   (mapv parse-run)
+   (relative-results run)
+   (into [])
+   (array-map run)))
 
 (defn title
   [bench ctrl n]
@@ -20,26 +53,31 @@
    " "
    ["Benchmark" (name bench) "-" (str (name ctrl) ":") n]))
 
-(defn common-charts
+(def labels
+  {:score "throughput (ops/s)"
+   :relative-score "throughput change %"})
+
+(defn bar-charts
   ([raw-data]
-   (common-charts raw-data :width :keys))
-  ([raw-data x-dim y-dim]
+   (bar-charts raw-data :score))
+  ([raw-data metric]
    (reduce
     (fn [m [run-type run-data]]
-      (let [by-x (group-by x-dim run-data)
+      (let [{:keys [x-dim y-dim]} (merge default-opts (get case-opts run-type))
+            by-x (group-by x-dim run-data)
             by-y (group-by y-dim run-data)
-            y-label "mean execution time (ns)"
+            y-label (get labels metric)
             y-charts
             (reduce
              (fn [m [y-val y-data]]
                (let [y-ds (i/dataset y-data)
                      x-label (case x-dim
-                               :width "log10 map size (elements)"
+                               (:log-size :width) "log10 map size (elements)"
                                :type "data type")
                      chart
                      (charts/bar-chart
-                      x-dim :mean
-                      :group-by :bench
+                      x-dim metric
+                      :group-by :name
                       :data y-ds
                       :legend true
                       :title (title run-type y-dim y-val)
@@ -55,8 +93,8 @@
                      x-label "number of elements"
                      chart
                      (charts/bar-chart
-                      y-dim :mean
-                      :group-by :bench
+                      y-dim metric
+                      :group-by :name
                       :data x-ds
                       :legend true
                       :title (title run-type x-dim x-val)
@@ -67,7 +105,7 @@
              by-x)]
         (assoc m run-type {x-dim x-charts y-dim y-charts})))
     {}
-    (filter (fn [[k _]] (common k)) raw-data))))
+    raw-data)))
 
 (defn chart-get
   [k raw-data]
@@ -127,7 +165,7 @@
 
 (defn ks->path
   [[run dim num]]
-  (let [other-dim (if (= dim :keys) :width :keys)]
+  (let [other-dim (if (= dim :count) :log-size :count)]
     (clojure.string/join
      "_"
      (mapv
@@ -145,58 +183,43 @@
     (.setRangeAxis plot axis)))
 
 (defn write-charts
-  [all-charts]
-  (let [flat (flatten-map all-charts)]
-    (doseq [[ks chart] flat
-            :let [fname (ks->path ks)
-                  path (str "./doc/images/" fname ".png")]]
-      (i/save chart path))))
+  ([all-charts]
+   (write-charts all-charts {}))
+  ([all-charts {:keys [prefix]
+                :or {prefix ""}}]
+   (let [flat (flatten-map all-charts)]
+     (doseq [[ks chart] flat
+             :let [fname (ks->path ks)
+                   path (str "./doc/images/" prefix fname ".png")]]
+       (i/save chart path)))))
 
 (defn logify
   [k raw-data]
-  (let [xs (vals (get-in raw-data [k :width]))
-        ys (vals (get-in raw-data [k :keys]))]
+  (let [xs (vals (get-in raw-data [k :log-size]))
+        ys (vals (get-in raw-data [k :count]))]
     (doseq [chart (concat xs ys)]
       (set-log-axis! chart 3))))
 
 (comment
+  #_jmh
 
-
+  (def run :memoize)
   (def raw-data
-    (-> "./benchmarks/2020-sep-17-java8-g1-clj-fast-bench.edn"
-        load-results
-        (update :merge #(remove (comp #{1} :keys) %))
-        ))
-
-  (def get-rec-raw-data
     (->
-     "./benchmarks/get-rec-clj-fast-bench.edn"
-     load-results))
+     (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in :select-keys :memoize])
+     (update :merge #(filterv (complement (comp #{1} :count)) %))))
 
-  (def all-charts
-    (merge
-     (chart-get-rec :get-rec get-rec-raw-data)
-     (common-charts (dissoc raw-data :memoize))
-     (common-charts
-      (select-keys raw-data [:memoize]) :type :keys)
-     (chart-get :get raw-data)))
+  (def cs (bar-charts (select-keys raw-data [:memoize])))
+  (logify :merge cs)
+  (write-charts cs)
 
-  (keys all-charts)
+  (def rcs (bar-charts (select-keys raw-data [:memoize]) :relative-score))
+  (write-charts rcs {:prefix "relative-"})
 
-  (i/view (get-in all-charts [:merge :width 1]))
-  (i/view (get-in all-charts [:merge :width 2]))
-  (i/view (get-in all-charts [:merge :keys 3]))
+  (i/view (get-in cs [run :log-size 1]))
+  (i/view (get-in rcs [run :log-size 1]))
+  (i/view (get-in cs [run :log-size 3]))
+  (i/view (get-in cs [run :count 1]))
+  (i/view (get-in cs [run :count 4]))
 
-  ;;; Format merge nicely because the results vary widely
-  (mapv (fn [e c] (set-log-axis! c e))
-       [3 4 5 6 7]
-       (vals (get-in all-charts [:merge :width])))
-
-  (mapv (fn [e c] (set-log-axis! c e))
-       [3 3 3 3 3]
-       (vals (get-in all-charts [:merge :keys])))
-
-  (write-charts all-charts)
-  (write-charts (select-keys all-charts [:merge]))
-
-  )
+  ,)

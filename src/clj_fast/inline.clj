@@ -223,6 +223,20 @@
    (fn [m k] `(c/get ~m ~k))
    m ksvs))
 
+(defmacro fast-assoc-in
+  "Like assoc-in but inlines the calls when a static sequence of keys is
+  provided.
+  Can take an unlimited number of [ks v] pairs.
+  Caution:
+  For more than one path-value pair this macro will reorder code."
+  [m & ksvs]
+  {:pre [(every? u/simple-seq? (take-nth 2 ksvs))
+         (apply distinct? (take-nth 2 ksvs))]}
+  (lens/update-many
+   (fn [m k v] `(f/fast-assoc ~m ~k ~v))
+   (fn [m k] `(f/val-at ~m ~k nil))
+   m ksvs))
+
 (defmacro update-in->
   "Like update-in but inlines the calls when a static sequence of keys is
   provided.
@@ -258,6 +272,16 @@
   (lens/update
    (fn [m k v] `(c/assoc ~m ~k ~v))
    (fn [m k] `(c/get ~m ~k))
+   m (u/simple-seq ks) f args))
+
+(defmacro fast-update-in
+  "Like update-in but inlines the calls when a static sequence of keys is
+  provided."
+  [m ks f & args]
+  {:pre [(u/simple-seq? ks)]}
+  (lens/update
+   (fn [m k v] `(f/fast-assoc ~m ~k ~v))
+   (fn [m k] `(f/val-at ~m ~k nil))
    m (u/simple-seq ks) f args))
 
 (defmacro dissoc-in
