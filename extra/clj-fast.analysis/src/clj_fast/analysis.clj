@@ -2,32 +2,48 @@
   "Interactive notebook namespace to load, parse and chart benchmark results"
   (:require
    [clojure.edn]
+   [clojure.set :as set]
    [clojure.string]
    [incanter
     [core :as i]
     [charts :as charts]]))
+
+(def default-opts
+  {:x-dim :log-size
+   :y-dim :count})
+
+(def case-opts
+  {:memoize {:x-dim :type}})
 
 (defn load-results
   [s]
   (clojure.edn/read-string (slurp s)))
 
 (defn relative-results
-  [xs]
-  (for [[_count g] (group-by :count xs)
-        [_size g] (group-by :log-size g)
-        :let [base (first (filter (fn [rec] (= "core" (namespace (:name rec)))) g))
-              base-score (:score base)]
-        rec g
-        :let [score (:score rec)]]
-    (assoc rec :relative-score (* 100 (- (/ score base-score) 1)))))
+  [run xs]
+  (let [{:keys [x-dim y-dim]} (merge default-opts (get case-opts run))]
+    (for [[_count g] (group-by y-dim xs)
+          [_size g] (group-by x-dim g)
+          :let [base (first (filter (fn [rec] (= "core" (namespace (:name rec)))) g))
+                base-score (:score base)]
+          rec g
+          :let [score (:score rec)]]
+      (assoc rec :relative-score (* 100 (- (/ score base-score) 1))))))
+
+(defn parse-run
+  [{label :name [score] :score :as m}]
+  (set/rename-keys
+   (merge
+    (:params m)
+    {:name label :score score :time (/ 1 score)})
+   {:log-map-size :log-size}))
 
 (defn load-run
   [run]
   (->>
    (load-results (str "../clj-fast.jmh/results/" (name run) ".edn"))
-   (mapv (fn [{{n :count size :log-map-size} :params label :name [score] :score}]
-           {:count n :log-size size :name label :score score :time (/ 1 score)}))
-   relative-results
+   (mapv parse-run)
+   (relative-results run)
    (into [])
    (array-map run)))
 
@@ -42,12 +58,13 @@
    :relative-score "throughput change %"})
 
 (defn bar-charts
-  ([raw-data x-dim y-dim]
-   (bar-charts raw-data x-dim y-dim :score))
-  ([raw-data x-dim y-dim metric]
+  ([raw-data]
+   (bar-charts raw-data :score))
+  ([raw-data metric]
    (reduce
     (fn [m [run-type run-data]]
-      (let [by-x (group-by x-dim run-data)
+      (let [{:keys [x-dim y-dim]} (merge default-opts (get case-opts run-type))
+            by-x (group-by x-dim run-data)
             by-y (group-by y-dim run-data)
             y-label (get labels metric)
             y-charts
@@ -186,17 +203,17 @@
 (comment
   #_jmh
 
-  (def run :merge)
+  (def run :memoize)
   (def raw-data
     (->
-     (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in :select-keys])
+     (into {} (map load-run) [:get-in :assoc-in :merge :assoc :update-in :select-keys :memoize])
      (update :merge #(filterv (complement (comp #{1} :count)) %))))
 
-  (def cs (bar-charts raw-data :log-size :count))
+  (def cs (bar-charts (select-keys raw-data [:memoize])))
   (logify :merge cs)
   (write-charts cs)
 
-  (def rcs (bar-charts raw-data :log-size :count :relative-score))
+  (def rcs (bar-charts (select-keys raw-data [:memoize]) :relative-score))
   (write-charts rcs {:prefix "relative-"})
 
   (i/view (get-in cs [run :log-size 1]))

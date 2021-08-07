@@ -103,6 +103,16 @@ applies the function to any extra possible arguments, or just calls it.
 lein jmh
 ```
 
+To run a specific test:
+```bash
+lein jmh \
+'{:pprint true 
+  :progress true 
+  :output "memoize.edn" 
+  :select :memo 
+  :params {:type [:keyword? :int? :map?]}}'
+```
+
 ## Generating results
 
 Start a REPL under `extra/clj-fast.analysis`
@@ -283,32 +293,48 @@ Closely related to get-in
 
 ### Test details
 
-memoize was tested against an inlining implementation using a clojure atom
-(`memoize-n`) and one using a concurrent-hash-map (`memoize-c`)
+regular `memoize` was benchmarked against two implementation methods,
+one which packs the arguments to a sequence and one which unrolls it.
+- packed: `core/memoize`, `cm-memoize`, `hm-memoize`
+- unrolled: `memoize-n`, `memoize-cm`, `memoize-hm`
+
+Each of the implementation is backed by a different object:
+- `hm`: `HashMap`
+- `cm`: `ConcurrentHashMap`
+- otherwise a Clojure map.
 
 ### Results
 
-Different implementation are faster depending on the type of the memoized
-arguments:
-- `memoize`: core.memoize, always slower
-- `memoize-n` is better when all arguments are keywords.
-- `memoize-c` is better for any other case.
-- `hm-memoize` is faster than `memoize` but slower than `memoize-c`.
-- `cm-memoize` is faster than `memoize` but slower than `memoize-c`.
+Different implementation are faster depending on the type of the
+memoized arguments, see graphs for details.
 
 ### By number of arguments
+
+#### Throughput
 
 | ![](images/memoize_count_log-size_1.png) | ![](images/memoize_count_log-size_2.png) |
 | :---:                               | :---:                               |
 | ![](images/memoize_count_log-size_3.png) | ![](images/memoize_count_log-size_4.png) |
 
+#### Relative speedup
+
+| ![](images/relative-memoize_count_log-size_1.png) | ![](images/relative-memoize_count_log-size_2.png) |
+| :---:                               | :---:                               |
+| ![](images/relative-memoize_count_log-size_3.png) | ![](images/relative-memoize_count_log-size_4.png) |
+
 ### By type of arguments
 
-| ![](images/memoize_type_keys_int-p.png)    | ![](images/memoize_type_keys_keyword-p.png) |
+#### Throughput
+
+| ![](images/memoize_type_count_int-p.png)    | ![](images/memoize_type_count_keyword-p.png) |
 | :---:                                      | :---:                                       |
-| ![](images/memoize_type_keys_map-p.png)    | ![](images/memoize_type_keys_string-p.png)  |
-|                                            |                                             |
-| ![](images/memoize_type_keys_symbol-p.png) |                                             |
+| ![](images/memoize_type_count_map-p.png)    | |
+
+#### Relative speedup
+
+| ![](images/relative-memoize_type_count_int-p.png)    | ![](images/relative-memoize_type_count_keyword-p.png) |
+| :---:                                      | :---:                                       |
+| ![](images/relative-memoize_type_count_map-p.png)    | |
 
 ## assoc-in
 
