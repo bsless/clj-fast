@@ -33,33 +33,89 @@
 <!-- markdown-toc end -->
 # clj-fast
 
-Library for playing around with low level Clojure code for performance
-reasons given some assumptions. Inspired by [Naked Performance (with
-Clojure) – Tommi Reiman](https://www.youtube.com/watch?v=3SSHjKT3ZmA).
+Faster idiomatic Clojure.
 
-Some of the code is based on implementations in metosin's projects. Credit in code.
+## What is it?
 
-## Purpose
+Low level Clojure can go a long way, given some assumptions.
 
-This repo serves a dual purpose:
+Clojure is highly expressive and quite abstract. This, combined with
+immutability has a knock-on effect on performance. In most cases, it
+does not matter, either because performance isn't an issue, or because
+our problems lie somewhere else.
 
-- Providing faster implementations of Clojure's core functions as
-  macros.
-- Reference guide on the performance characteristics of different ways
-  of using Clojure's data structures.
+This library is for the other set of cases, sticking as close to
+Clojure's API while offering significant performance boosts.
 
-What makes it possible?
+Inspired by [Naked Performance (with Clojure) – Tommi
+Reiman](https://www.youtube.com/watch?v=3SSHjKT3ZmA).
+
+## Why
+
+### Production
+
+When the need arises to improve performance, there can be tension
+between writing idiomatic or even legible code and performance.
+
+clj-fast provides measurably faster implementations which do not
+sacrifice idiomatic Clojure style.
+
+The immediate target is not the every-day application developer, but the
+library author who wants to offer the best performance possible, or the
+developer tasked with optimizing specific pieces of code.
+
+### Education
+
+Serve as a reference guide and handbook on performance characteristics,
+implementation methods, optimization opportunities and benchmark
+methodologies in Clojure.
+
+## How
+
+The biggest gain observed repeatedly is via loop unrolling, to an
+extensive degree.
+
+In some cases, significantly more performance can be gained by
+dispatching to concrete classes instead of via `clojure.lang.RT`.
+Macros and code generation in general are used extensively in the
+library.
+
+They don't compose as well as functions, _caveat emptor_.
+
+> So you're saying Clojure is badly implemented? That it's just slow?
+
+No.
 
 Plenty of Clojure's core functions are implemented to be generic (good)
-and to accept a variable number of arguments (also very good). The
-problem is that we pay for this in performance. Wherever we iterate over
-a sequence of input arguments or dispatch on the class, we lose on
-performance, especially when iterating on arguments and calling `next`,
-`more` or `rest` repeatedly.
+and to accept a variable number of arguments (also very good). 
+Abstraction and flexibility come at the cost of performance. Iteration
+and dynamic class dispatch have a cost. Take a look at Clojure's core
+namespace once and see how many basic functions are implemented using
+iteration with `next` and `rest`.
 
 Plenty of these behaviors are just forms of flow-control, and like `and`
 and `or`, other forms of flow control can too be statically analyzed,
 under certain constraints, and replaced by faster code.
+
+## When
+
+When should this library be used? It depends.
+
+As a general advice, _don't_ require `clj-fast.clojure.core`, refer
+`all` and replace core functions without understanding the implications.
+
+The library contains building blocks and provides some higher level
+constructs built with them. In most cases, I believe using the
+`clj-fast.inline` namespace to be sufficient.
+
+Use it in your library if you feel you must provide the best performance
+you can and don't want to hand craft all the low level code yourself.
+
+Use it in your application if you must and have exhausted all other
+options besides rewriting it in another language. This is after you
+profiled it, analyzed it, and know where your problems are. When all you
+have is a hammer, everything looks like a nail. Fix all other problems
+first.
 
 ## Latest Version
 
@@ -292,6 +348,19 @@ With Leiningen, make sure to either use a different profile or override
 the `:jvm-opts` to get the best performance possible and realistic
 profiling results.
 
+### Specific note on performance and clj-fast
+
+If you intend to use it in your library or application, make sure you
+profiled it first and know where your issues are.
+
+- Use [clj-async-profiler](https://github.com/clojure-goes-fast/clj-async-profiler)
+- Use [criterium](https://github.com/hugoduncan/criterium)
+- Use [JMH](https://github.com/jgpc42/jmh-clojure)
+- Use VisualVM
+
+These are powerful tools. I used them when building this library. Any
+performance problem should first *measured*.
+
 ## Related Projects
 
 ### Structural
@@ -309,7 +378,7 @@ by "unrolling" the building operations where statically possible.
 
 ## License
 
-Copyright © 2019-2020 ben.sless@gmail.com
+Copyright © 2019-2021 ben.sless@gmail.com
 
 Copyright © Rich Hickey for the implementation in `clj-fast.clojure.core`.
 
