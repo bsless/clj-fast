@@ -7,6 +7,12 @@
 - `fast-assoc-in` - uses `fast-assoc` and `val-at` directly
 - `fast-updatge-in` - same as `fast-assoc-in`.
 
+### Benchmarks
+
+- Complete rewrite
+- Run with JMH
+- Results measure throughput and % improvement
+
 ## [0.0.10] - 2021-06-06
 
 ### Add
