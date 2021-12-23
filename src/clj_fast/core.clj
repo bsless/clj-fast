@@ -206,3 +206,15 @@
   ([^Box b f x y z & args]
    (let [old (unbox! b)]
      [old (bset! b (apply f old x y z args))])))
+
+(defmacro definline+
+  [name & decls]
+  (let [[pre-args decls] (split-with (comp not list?) decls)
+        argvs (map first decls)
+        body' (eval (list* `fn (symbol (str "apply-inline-" name)) decls))
+        decls' (map (fn build-decls [argv] (list argv (apply body' argv))) argvs)
+        counts (into #{} (map count) argvs)]
+    `(do
+       (defn ~name ~@pre-args ~@decls')
+       (alter-meta! (var ~name) assoc :inline (fn ~name ~@decls) :inline-arities ~counts)
+       (var ~name))))
