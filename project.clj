@@ -11,6 +11,7 @@
                                     :sign-releases false}]
                         ["releases" :clojars]
                         ["snapshots" :clojars]]
+  :java-source-paths ["src-java"]
   :profiles
   {:dev
    {:jvm-opts ["-Djdk.attach.allowAttachSelf"

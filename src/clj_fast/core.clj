@@ -3,7 +3,8 @@
    [clj-fast.util :refer [as]]
    [clojure.core.protocols :as p])
   (:import
-   (clojure.lang Box)))
+   (io.github.bsless.clj_fast Util)
+   (clojure.lang Box RT)))
 
 (set! *warn-on-reflection* true)
 
@@ -218,3 +219,50 @@
        (defn ~name ~@pre-args ~@decls')
        (alter-meta! (var ~name) assoc :inline (fn ~name ~@decls) :inline-arities ~counts)
        (var ~name))))
+
+(defn pack
+  {:inline (fn pack [& args] (println 'inlining!) `(Util/pack ~@args))
+   :inline-arities (fn [n] (println 'yo n) (< n 21))}
+  ([] (Util/pack))
+  ([a] (Util/pack a))
+  ([a b] (Util/pack a b))
+  ([a b c] (Util/pack a b c))
+  ([a b c d] (Util/pack a b c d))
+  ([a b c d e] (Util/pack a b c d e))
+  ([a b c d e f] (Util/pack a b c d e f))
+  ([a b c d e f g] (Util/pack a b c d e f g))
+  ([a b c d e f g h] (Util/pack a b c d e f g h))
+  ([a b c d e f g h i] (Util/pack a b c d e f g h i))
+  ([a b c d e f g h i j] (Util/pack a b c d e f g h i j))
+  ([a b c d e f g h i j k] (Util/pack a b c d e f g h i j k))
+  ([a b c d e f g h i j k l] (Util/pack a b c d e f g h i j k l))
+  ([a b c d e f g h i j k l m] (Util/pack a b c d e f g h i j k l m))
+  ([a b c d e f g h i j k l m n] (Util/pack a b c d e f g h i j k l m n))
+  ([a b c d e f g h i j k l m n o] (Util/pack a b c d e f g h i j k l m n o))
+  ([a b c d e f g h i j k l m n o p]
+   (Util/pack a b c d e f g h i j k l m n o p))
+  ([a b c d e f g h i j k l m n o p q]
+   (Util/pack a b c d e f g h i j k l m n o p q))
+  ([a b c d e f g h i j k l m n o p q r]
+   (Util/pack a b c d e f g h i j k l m n o p q r))
+  ([a b c d e f g h i j k l m n o p q r s]
+   (Util/pack a b c d e f g h i j k l m n o p q r s))
+  ([a b c d e f g h i j k l m n o p q r s t]
+   (Util/pack a b c d e f g h i j k l m n o p q r s t)))
+
+(import 'clojure.lang.TransformerIterator$MultiIterator)
+
+(defn multi-iterator
+  [a b]
+  (new TransformerIterator$MultiIterator (pack a b)))
+
+
+(defn transformer-iterator
+  ([xform a b]
+   (or (clojure.lang.RT/chunkIteratorSeq
+        (new
+         clojure.lang.TransformerIterator
+         xform
+         (pack a b)
+         true))
+       ())))
