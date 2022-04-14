@@ -14,6 +14,10 @@
 - Run with JMH
 - Results measure throughput and % improvement
 
+### Fix
+
+- Bug in assoc-in where values are false-y
+
 ## [0.0.10] - 2021-06-06
 
 ### Add
