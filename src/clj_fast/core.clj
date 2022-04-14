@@ -150,16 +150,20 @@
   [v]
   `(Box. ~v))
 
+(defmacro as-box
+  [sym]
+  `(as clojure.lang.Box ~sym))
+
 (definline unbox!
   "Get `v` out of mutable box."
   [^Box b]
-  `(.-val ~(as Box b)))
+  `(.-val ~(as-box b)))
 
 (definline bset!
   "Sets the value of Box to `v` without regard to its current value.
   Returns `v`."
   [^Box b v]
-  `(set! (. ~(as Box b) val) ~v))
+  `(set! (. ~(as-box b) val) ~v))
 
 (definline bset-vals!
   "Sets the value of `b` to `v`. Returns `[old new]`, the values in the
