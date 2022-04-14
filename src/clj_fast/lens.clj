@@ -92,7 +92,7 @@
                    (reduce
                     (fn [bs [k v]]
                       (let [node (::node k)]
-                        (if-let [leaf (::leaf v)]
+                        (if-let [[_ leaf] (find v ::leaf)]
                           (conj bs parent (putter parent node (combiner (getter parent node) leaf)))
                           (let [child (gensym "child__")]
                             (conj bs
