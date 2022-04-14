@@ -6,7 +6,7 @@
 
 - `fast-assoc-in` - uses `fast-assoc` and `val-at` directly
 - `fast-updatge-in` - same as `fast-assoc-in`.
-- `definline+` - like `definline` but takes multiple arities
+- `definline` - like `definline` but supports multiple arities
 
 ### Benchmarks
 

@@ -207,14 +207,21 @@
    (let [old (unbox! b)]
      [old (bset! b (apply f old x y z args))])))
 
-(defmacro definline+
+(defmacro definline
+  "Like [[clojure.core/definline]] but also accepts multiple arities."
   [name & decls]
-  (let [[pre-args decls] (split-with (comp not list?) decls)
-        argvs (map first decls)
-        body' (eval (list* `fn (symbol (str "apply-inline-" name)) decls))
-        decls' (map (fn build-decls [argv] (list argv (apply body' argv))) argvs)
-        counts (into #{} (map count) argvs)]
-    `(do
-       (defn ~name ~@pre-args ~@decls')
-       (alter-meta! (var ~name) assoc :inline (fn ~name ~@decls) :inline-arities ~counts)
-       (var ~name))))
+  (let [[pre-args decls] (split-with (comp not (some-fn vector? list?)) decls)]
+    (if (vector? (first decls))
+      (let [[args expr] decls]
+        `(do
+           (defn ~name ~@pre-args ~args ~(apply (eval (list `fn args expr)) args))
+           (alter-meta! (var ~name) assoc :inline (fn ~name ~args ~expr))
+           (var ~name)))
+      (let [argvs (map first decls)
+            body' (eval (list* `fn (symbol (str "apply-inline-" name)) decls))
+            decls' (map (fn build-decls [argv] (list argv (apply body' argv))) argvs)
+            counts (into #{} (map count) argvs)]
+        `(do
+           (defn ~name ~@pre-args ~@decls')
+           (alter-meta! (var ~name) assoc :inline (fn ~name ~@decls) :inline-arities ~counts)
+           (var ~name))))))
